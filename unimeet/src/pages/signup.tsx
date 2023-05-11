@@ -48,7 +48,7 @@ export default function Signup() {
               type="text"
             />
           </LabelStyle>
-          <LabelStyle htmlFor="myInput" className="label">
+          <EmailInput htmlFor="myInput" className="label">
             <span className="label-title">이메일</span>
             <input
               id="myInput"
@@ -57,7 +57,7 @@ export default function Signup() {
               placeholder="인증 받았던 이메일을 입력해주세요"
               type="text"
             />
-          </LabelStyle>
+          </EmailInput>
           <LabelStyle htmlFor="myInput" className="label">
             <span className="label-title">비밀번호</span>
             <input
@@ -125,6 +125,7 @@ const BtnDiv = styled.div`
   display: flex;
   justify-content: center;
 `;
+
 const SubmitBtn = styled.button`
   width: 80%;
   height: 100%;
@@ -319,3 +320,6 @@ const GenderLabel = styled.label`
   }
 `;
 const SelectStyle = styled(LabelStyle)``;
+const EmailInput = styled(LabelStyle)`
+  width: 50vw;
+`;

@@ -17,7 +17,7 @@ const floating1 = keyframes`
         transform: translateY(0);    
     }
     50% {
-      transform: scale3d(1.1, 1.05, 1);
+      transform: scale3d(1.2, 1.15, 1.1);
     }
     100% {
         transform: translateY(0);
@@ -28,7 +28,7 @@ const floating2 = keyframes`
         transform: translateX(0);    
     }
     50% {
-      transform: translate(-15px, -10px);
+      transform: translate(-15px, -20px);
     }
     100% {
         transform: translateX(0);
@@ -39,7 +39,7 @@ const floating3 = keyframes`
         transform: translateY(2px);    
     }
     50% {
-      transform: scale3d(1.1, 1.1, 1.1);
+      transform: scale3d(1.15, 1.15, 1.15);
 }
     
     100% {
@@ -51,7 +51,7 @@ const floating4 = keyframes`
         transform: translateY(0);    
     }
     50% {
-      transform: translate(-15px, 15px);
+      transform: translate(-15px, 20px);
     }
     100% {
         transform: translateY(0);
@@ -82,7 +82,7 @@ const Bubble2 = styled(Bubble)`
   height: 100px;
   width: 100px;
   top: 7%;
-  left: 80%;
+  left: 70%;
   animation: ${floating2} 7s infinite;
   box-shadow: inset 0 0 20px #ffffffbf, inset 10px 0 46px #d8d8d8bd,
     inset 88px 0px 60px #0003ff70, inset -20px -30px 50px #fde9eaed,
