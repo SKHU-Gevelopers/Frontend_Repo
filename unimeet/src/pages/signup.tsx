@@ -100,9 +100,9 @@ export default function Signup() {
               ))}
             </select>
           </SelectStyle>
-          <div>
+          <BtnDiv>
             <SubmitBtn>Sign up to Unimeet</SubmitBtn>
-          </div>
+          </BtnDiv>
         </form>
       </SignupBox>
     </MainBox>
@@ -120,6 +120,10 @@ const glowing = keyframes`
   100% {
     background-position: 0 0;
   }
+`;
+const BtnDiv = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 const SubmitBtn = styled.button`
   width: 80%;

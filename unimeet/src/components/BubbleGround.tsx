@@ -74,23 +74,24 @@ const Bubble = styled.div`
     inset 88px 0px 60px #c2d8fea9, inset -20px -60px 100px #fde9ea91,
     inset 0 50px 140px #fde9ea3b, 0 0 3px #ffffffd6;
   position: fixed;
-  top: 8rem;
-  left: 2rem;
+  top: 16%;
+  left: 7%;
   animation: ${floating1} 6s infinite;
 `;
 const Bubble2 = styled(Bubble)`
   height: 100px;
   width: 100px;
-  top: 3rem;
-  left: 15rem;
+  top: 7%;
+  left: 80%;
   animation: ${floating2} 7s infinite;
   box-shadow: inset 0 0 20px #ffffffbf, inset 10px 0 46px #d8d8d8bd,
     inset 88px 0px 60px #0003ff70, inset -20px -30px 50px #fde9eaed,
     inset 0 50px 140px #ffced042, 0 0 4px #ffffffd6;
 `;
 const Bubble3 = styled(Bubble)`
-  top: 28rem;
-  left: 1rem;
+  top: 58%;
+  left: 9%;
+
   width: 230px;
   height: 230px;
   animation: ${floating4} 4s infinite;
@@ -103,8 +104,8 @@ const Bubble3 = styled(Bubble)`
   );
 `;
 const Bubble4 = styled(Bubble)`
-  top: 44rem;
-  left: 8rem;
+  top: 38%;
+  left: 71%;
   width: 7rem;
   animation: ${floating2} 5s infinite;
   box-shadow: inset 0 0 20px #ffffff8f, inset 10px 0 46px #d8d8d8bd,
@@ -113,8 +114,8 @@ const Bubble4 = styled(Bubble)`
   height: 7rem;
 `;
 const Bubble5 = styled(Bubble4)`
-  top: 37rem;
-  left: 15.5rem;
+    top: 81%;
+    left: 57%;
   width: 8rem;
   height: 8rem;
   animation: ${floating3} 5s infinite;
