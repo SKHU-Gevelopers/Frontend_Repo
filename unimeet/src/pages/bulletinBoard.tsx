@@ -1,3 +1,4 @@
+import Heart from "@/components/HeartCount";
 import styled from "styled-components";
 
 // 데이터라 가정
@@ -65,6 +66,12 @@ export default function BulletinBoard() {
                 <Title>{each.title}</Title>
                 <Text>{each.text}</Text>
               </WritingBox>
+              <ReactionBox>
+                <Heart />
+                <CommentWrap>
+                  <Comment src="/comment.png" alt="댓글" />
+                </CommentWrap>
+              </ReactionBox>
             </Post>
           );
         })}
@@ -124,8 +131,8 @@ const ProfileImageWrap = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 100%;
+  height: 100%;
 `;
 
 const Name = styled.div`
@@ -160,3 +167,24 @@ const Title = styled.div`
 `;
 
 const Text = styled.div``;
+
+const ReactionBox = styled.div`
+  display: flex;
+
+  padding-bottom: 3%;
+
+  width: 100%;
+  height: 7vh;
+`;
+
+const CommentWrap = styled.div`
+  margin-left: 3%;
+
+  width: 6%;
+  height: 3.5vh;
+`;
+
+const Comment = styled.img`
+  width: 100%;
+  height: 100%;
+`;
