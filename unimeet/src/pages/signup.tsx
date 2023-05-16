@@ -3,8 +3,11 @@ import styled from "styled-components";
 import { LoginBox } from "./MainLogin";
 import BubbleGround from "@/components/BubbleGround";
 import { keyframes } from "@emotion/react";
+import { useState } from "react";
 
 export default function Signup() {
+  const [name, setName] = useState('');
+  const [nickname, setNickname] = useState('');
   function handleSubmit(e: any) {
     // Prevent the browser from reloading the page
     e.preventDefault();
@@ -19,9 +22,6 @@ export default function Signup() {
       body: formData,
     });
 
-    // Or you can work with it as a plain object:
-    const formJson = Object.fromEntries(formData.entries());
-    console.log(formJson);
   }
   return (
     <MainBox>
@@ -33,7 +33,8 @@ export default function Signup() {
             <input
               id="myInput"
               className="input"
-              name="name"
+              value={name}
+              onChange={e => setName(e.target.value)}
               placeholder="이름을 입력하세요"
               type="text"
             />
@@ -43,21 +44,35 @@ export default function Signup() {
             <input
               id="myInput"
               className="input"
-              name="nickname"
+              value={name}
+              onChange={e => setName(e.target.value)}
               placeholder="닉네임을 입력하세요"
               type="text"
             />
           </LabelStyle>
-          <EmailInput htmlFor="myInput" className="label">
-            <span className="label-title">이메일</span>
+          <EmailForm>
+            <LabelStyle htmlFor="myInput" className="label">
+              <span className="label-title">이메일</span>
+              <input
+                id="myInput"
+                className="input"
+                name="text"
+                placeholder="인증 받았던 이메일을 입력해주세요"
+                type="text"
+              />
+            </LabelStyle>
+            <SendBtn>인증 요청</SendBtn>
+          </EmailForm>
+          <LabelStyle htmlFor="myInput" className="label">
+            <span className="label-title">인증 번호</span>
             <input
               id="myInput"
               className="input"
-              name="text"
-              placeholder="인증 받았던 이메일을 입력해주세요"
-              type="text"
+
+              placeholder="인증번호를 입력해주세요"
+              type="type"
             />
-          </EmailInput>
+          </LabelStyle>
           <LabelStyle htmlFor="myInput" className="label">
             <span className="label-title">비밀번호</span>
             <input
@@ -250,8 +265,8 @@ const LabelStyle = styled.label`
 `;
 const SignupBox = styled(LoginBox)`
   background-color: #ffffff5e;
-  width: 90vw;
-  height: 100%;
+  height: max-content;
+  width: fit-content;
   display: flex;
   background: #fdfdfd97;
   align-items: center;
@@ -320,6 +335,27 @@ const GenderLabel = styled.label`
   }
 `;
 const SelectStyle = styled(LabelStyle)``;
-const EmailInput = styled(LabelStyle)`
-  width: 50vw;
+
+const SendBtn = styled.button`
+  border: none;
+  background-color: rgb(164, 179, 255);
+  border-radius: 0.3em;
+  font-size: 1em;
+  width: auto;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  margin: 3%;
+  color: #fff;
+  font-weight: 500;
+  transition: all ease-in-out 0.2s;
+  &:hover {
+    background-color: #3052ff;
+  }
+`;
+const EmailForm = styled.form`
+  display: flex;
+  flex-direction: column;
 `;
