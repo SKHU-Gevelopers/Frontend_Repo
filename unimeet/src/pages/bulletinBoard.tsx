@@ -107,7 +107,7 @@ const Post = styled.div`
   width: 100%;
   height: auto;
 
-  border-top: solid 1px purple;
+  border-top: solid 1px #bb8dfb;
 `;
 
 const Writer = styled.div`
