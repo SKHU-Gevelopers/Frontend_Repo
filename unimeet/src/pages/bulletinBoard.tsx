@@ -88,6 +88,9 @@ const MainBox = styled.div`
 
   width: 100%;
   height: auto;
+
+  background-color: #efe3ff;
+  opacity: 0.97;
 `;
 
 const Article = styled.div`
@@ -97,9 +100,6 @@ const Article = styled.div`
 
   width: 100%;
   min-height: 95vh;
-
-  background-color: white;
-  opacity: 1;
   // 0.몇으로 하면 자동적으로 길이가 길어짐에 따라(100vh를 넘었을 때) 색의 경계선이 보임
 `;
 
@@ -114,12 +114,12 @@ const Writer = styled.div`
   display: flex;
   align-items: center;
 
-  padding-top: 1vh;
+  padding-top: 2vh;
   padding-bottom: 1vh;
   padding-left: 3%;
 
   width: 100%;
-  height: 7vh;
+  height: 9vh;
 `;
 
 const ProfileImageWrap = styled.div`
@@ -138,19 +138,25 @@ const ProfileImage = styled.img`
 const Name = styled.div`
   padding-left: 2%;
 
+  font-size: 1.2rem;
   font-weight: 600;
 `;
 
 const PictureWrap = styled.div`
+  display: flex;
+  justify-content: center;
+
   width: 100%;
   height: 20vh;
-
-  background-color: blue;
 `;
 
 const PictureImage = styled.img`
-  width: 100%;
-  height: 500px;
+  width: 93.5%;
+  height: 100%;
+
+  border-radius: 5px;
+
+  background-color: blue;
 `;
 
 const WritingBox = styled.div`
@@ -166,7 +172,9 @@ const Title = styled.div`
   font-weight: 700;
 `;
 
-const Text = styled.div``;
+const Text = styled.div`
+  margin-top: 0.5vh;
+`;
 
 const ReactionBox = styled.div`
   display: flex;
@@ -180,7 +188,7 @@ const ReactionBox = styled.div`
 const CommentWrap = styled.div`
   margin-left: 3%;
 
-  width: 6%;
+  width: 7%;
   height: 3.5vh;
 `;
 
