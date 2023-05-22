@@ -1,13 +1,22 @@
-import { mbtilist, skhuDepartmentList } from "@/constants/mbtilist";
+import { mbtilist, skhuDepartmentList, skhuMajor } from "@/constants/mbtilist";
 import styled from "styled-components";
 import { LoginBox } from "./MainLogin";
 import BubbleGround from "@/components/BubbleGround";
 import { keyframes } from "@emotion/react";
 import { useState } from "react";
+import { OptionGroup } from "@mui/base";
 
-export default function Signup() {
-  const [name, setName] = useState('');
-  const [nickname, setNickname] = useState('');
+export default function Signup(this: any) {
+  const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailVrfCode, setEmailVrfCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [mbti, setMbti] = useState("");
+  const [department, setDepartment] = useState("");
+  const [departmentNum, setDepartmentNum] = useState(0);
+  const [majors, setMajors] = useState(["", ""]);
+
   function handleSubmit(e: any) {
     // Prevent the browser from reloading the page
     e.preventDefault();
@@ -21,7 +30,8 @@ export default function Signup() {
       method: form.method,
       body: formData,
     });
-
+    console.log(departmentNum);
+    console.log(majors);
   }
   return (
     <MainBox>
@@ -34,7 +44,7 @@ export default function Signup() {
               id="myInput"
               className="input"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               placeholder="이름을 입력하세요"
               type="text"
             />
@@ -44,8 +54,8 @@ export default function Signup() {
             <input
               id="myInput"
               className="input"
-              value={name}
-              onChange={e => setName(e.target.value)}
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
               placeholder="닉네임을 입력하세요"
               type="text"
             />
@@ -56,29 +66,33 @@ export default function Signup() {
               <input
                 id="myInput"
                 className="input"
-                name="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="인증 받았던 이메일을 입력해주세요"
                 type="text"
               />
             </LabelStyle>
             <SendBtn>인증 요청</SendBtn>
+            <LabelStyle htmlFor="myInput" className="label">
+              <span className="label-title">인증 번호</span>
+              <input
+                id="myInput"
+                className="input"
+                value={emailVrfCode}
+                onChange={(e) => setEmailVrfCode(e.target.value)}
+                placeholder="인증번호를 입력해주세요"
+                type="type"
+              />
+            </LabelStyle>
+            <SendBtn>인증 확인</SendBtn>
           </EmailForm>
-          <LabelStyle htmlFor="myInput" className="label">
-            <span className="label-title">인증 번호</span>
-            <input
-              id="myInput"
-              className="input"
-
-              placeholder="인증번호를 입력해주세요"
-              type="type"
-            />
-          </LabelStyle>
           <LabelStyle htmlFor="myInput" className="label">
             <span className="label-title">비밀번호</span>
             <input
               id="myInput"
               className="input"
-              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력해주세요"
               type="password"
             />
@@ -101,23 +115,76 @@ export default function Signup() {
           </MyDict>
           <SelectStyle>
             <span className="label-title">mbti</span>
-            <select className="input">
+            <select
+              className="input"
+              value={mbti}
+              onChange={(e) => setMbti(e.target.value)}
+            >
               {mbtilist.map((mbtis) => (
-                <option key={mbtis.id}>{mbtis.mbti}</option>
+                <option key={mbtis.id} value={mbtis.mbti}>
+                  {mbtis.mbti}
+                </option>
               ))}
             </select>
           </SelectStyle>
           <SelectStyle>
             <span className="label-title">소속 학부</span>
-            <select className="input">
+            <select
+              className="input"
+              value={department}
+              onChange={(e) => {
+                setDepartment(e.target.value);
+                setDepartmentNum(Number(e.target.value));
+                const defaultMajors = [skhuMajor[0][0].majors,skhuMajor[0][0].majors];
+                setMajors(defaultMajors)}
+              }
+            >
               {skhuDepartmentList.map((departments) => (
-                <option key={departments.id}>{departments.department}</option>
+                <option key={departments.id} value={departments.id}>
+                  {departments.department}
+                </option>
               ))}
             </select>
           </SelectStyle>
-          <BtnDiv>
-            <SubmitBtn>Sign up to Unimeet</SubmitBtn>
-          </BtnDiv>
+          <SelectStyle>
+            <span className="label-title">소속 학과 1</span>
+            <select
+              className="input"
+              value={majors[0] || ""}
+              defaultValue={majors[0] || skhuMajor[departmentNum][0].majors}
+              onChange={(e) => {
+                const selectedMajor = e.target.value;
+                const updatedMajors = [...majors];
+                updatedMajors[0] = selectedMajor;
+                setMajors(updatedMajors);
+              }}
+            >
+              {skhuMajor[departmentNum].map((major) => (
+                <option key={major.id}>{major.majors}</option>
+              ))}
+            </select>
+          </SelectStyle>
+
+          <SelectStyle>
+            <span className="label-title">소속 학과 2</span>
+            <select
+              className="input"
+              value={majors[1] || ""}
+              defaultValue={majors[1] || skhuMajor[departmentNum][0].majors}
+              onChange={(e) => {
+                const selectedMajor = e.target.value;
+                const updatedMajors = [...majors];
+                updatedMajors[1] = selectedMajor;
+                setMajors(updatedMajors);
+              }}
+            >
+              {skhuMajor[departmentNum].map((major) => (
+                <option key={major?.id}>{major?.majors}</option>
+              ))}
+            </select>
+          </SelectStyle>
+
+          <SignBtn>Sign up to Unimeet</SignBtn>
         </form>
       </SignupBox>
     </MainBox>
@@ -358,4 +425,8 @@ const SendBtn = styled.button`
 const EmailForm = styled.form`
   display: flex;
   flex-direction: column;
+`;
+
+const SignBtn = styled(SendBtn)`
+  width: -webkit-fill-available;
 `;
