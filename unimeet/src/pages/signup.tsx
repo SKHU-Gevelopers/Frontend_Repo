@@ -1,43 +1,133 @@
-import { mbtilist, skhuDepartmentList, skhuMajor } from "@/constants/mbtilist";
+import { mbtilist } from "@/constants/mbtilist";
+import { skhuDepartmentList, skhuMajor } from "@/constants/department";
 import styled from "styled-components";
 import { LoginBox } from "./MainLogin";
 import BubbleGround from "@/components/BubbleGround";
 import { keyframes } from "@emotion/react";
 import { useState } from "react";
-import { OptionGroup } from "@mui/base";
+
+interface DepartmentType {
+  id: number;
+  department: string;
+}
 
 export default function Signup(this: any) {
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [emailVrfCode, setEmailVrfCode] = useState("");
+  const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
   const [mbti, setMbti] = useState("");
   const [department, setDepartment] = useState("");
   const [departmentNum, setDepartmentNum] = useState(0);
   const [majors, setMajors] = useState(["", ""]);
 
-  function handleSubmit(e: any) {
-    // Prevent the browser from reloading the page
+  const handleOptionChange = (event: any) => {
+    setGender(event.target.value);
+  };
+
+  const skhuMajors: { id: number; majors: string }[] = (
+    [] as { id: number; majors: string }[]
+  ).concat(...skhuMajor);
+
+  async function authenticationRequest(e: any) {
     e.preventDefault();
-
-    // Read the form data
     const form = e.target;
-    const formData = new FormData(form);
+    const data = {
+      emailPrefix: email,
+    };
 
-    // You can pass formData as a fetch body directly:
-    fetch("https://unimeet.duckdns.org/users/sign-up", {
-      method: form.method,
-      body: formData,
-    });
-    console.log(departmentNum);
-    console.log(majors);
+    try {
+      const response = await fetch("https://unimeet.duckdns.org/auth/email", {
+        method: "post",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        // 성공한 경우 추가로직 처리
+      } else {
+        // 응답이 실패한 경우 처리
+        console.error("응답이 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("오류가 발생했습니다.", error);
+    }
   }
+
+  async function SignupSubmit(e: any) {
+    e.preventDefault();
+    const data = {
+      name: name,
+      nickname: nickname,
+      email: email,
+      password: password,
+      emailVrfCode: emailVrfCode,
+      gender: gender,
+      mbti: mbti,
+      department: department,
+      majors: majors,
+    };
+
+    try {
+      const response = await fetch(
+        "https://unimeet.duckdns.org/users/sign-up",
+        {
+          method: "post",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        // 요청이 성공한 경우 추가로직 처리
+        console.log("회원가입 성공!");
+      } else {
+        // 요청이 실패한 경우 처리
+        console.error("회원가입 실패!");
+      }
+    } catch (error) {
+      console.error("오류가 발생했습니다.", error);
+    }
+  }
+
   return (
     <MainBox>
       <BubbleGround />
       <SignupBox>
-        <form method="post" onSubmit={handleSubmit}>
+        <EmailForm onSubmit={authenticationRequest}>
+          <LabelStyle htmlFor="myInput" className="label">
+            <span className="label-title">이메일</span>
+            <input
+              id="myInput"
+              className="input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="인증 받았던 이메일을 입력해주세요"
+              type="text"
+            />
+          </LabelStyle>
+          <SendBtn>인증 요청</SendBtn>
+        </EmailForm>
+        <form method="post" onSubmit={SignupSubmit}>
+          <LabelStyle htmlFor="myInput" className="label">
+            <span className="label-title">인증 번호</span>
+            <input
+              id="myInput"
+              className="input"
+              value={emailVrfCode}
+              onChange={(e) => setEmailVrfCode(e.target.value)}
+              placeholder="인증번호를 입력해주세요"
+              type="type"
+            />
+          </LabelStyle>
           <LabelStyle htmlFor="myInput" className="label">
             <span className="label-title">이름</span>
             <input
@@ -60,32 +150,7 @@ export default function Signup(this: any) {
               type="text"
             />
           </LabelStyle>
-          <EmailForm>
-            <LabelStyle htmlFor="myInput" className="label">
-              <span className="label-title">이메일</span>
-              <input
-                id="myInput"
-                className="input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="인증 받았던 이메일을 입력해주세요"
-                type="text"
-              />
-            </LabelStyle>
-            <SendBtn>인증 요청</SendBtn>
-            <LabelStyle htmlFor="myInput" className="label">
-              <span className="label-title">인증 번호</span>
-              <input
-                id="myInput"
-                className="input"
-                value={emailVrfCode}
-                onChange={(e) => setEmailVrfCode(e.target.value)}
-                placeholder="인증번호를 입력해주세요"
-                type="type"
-              />
-            </LabelStyle>
-            <SendBtn>인증 확인</SendBtn>
-          </EmailForm>
+
           <LabelStyle htmlFor="myInput" className="label">
             <span className="label-title">비밀번호</span>
             <input
@@ -100,15 +165,30 @@ export default function Signup(this: any) {
           <MyDict className="mydict">
             <div>
               <GenderLabel>
-                <GenderInput type="radio" name="radio" />
+                <GenderInput
+                  type="radio"
+                  name="radio"
+                  value="Women"
+                  onChange={handleOptionChange}
+                />
                 <span className="Women">Women</span>
               </GenderLabel>
               <GenderLabel>
-                <GenderInput type="radio" name="radio" />
+                <GenderInput
+                  type="radio"
+                  name="radio"
+                  value="Men"
+                  onChange={handleOptionChange}
+                />
                 <span className="Men">Men</span>
               </GenderLabel>
               <GenderLabel>
-                <GenderInput type="radio" name="radio" />
+                <GenderInput
+                  type="radio"
+                  name="radio"
+                  value="Divided"
+                  onChange={handleOptionChange}
+                />
                 <span className="Divided">Divided</span>
               </GenderLabel>
             </div>
@@ -121,7 +201,7 @@ export default function Signup(this: any) {
               onChange={(e) => setMbti(e.target.value)}
             >
               {mbtilist.map((mbtis) => (
-                <option key={mbtis.id} value={mbtis.mbti}>
+                <option key={mbtis.mbti} value={mbtis.mbti}>
                   {mbtis.mbti}
                 </option>
               ))}
@@ -131,16 +211,28 @@ export default function Signup(this: any) {
             <span className="label-title">소속 학부</span>
             <select
               className="input"
-              value={department}
+              value={departmentNum}
+              defaultValue={skhuDepartmentList[0].id}
               onChange={(e) => {
-                setDepartment(e.target.value);
-                setDepartmentNum(Number(e.target.value));
-                const defaultMajors = [skhuMajor[0][0].majors,skhuMajor[0][0].majors];
-                setMajors(defaultMajors)}
-              }
+                const selectedValue = Number(e.target.value);
+                const defaultDepartment = skhuDepartmentList[0].department;
+                const selectedDepartment: string =
+                  selectedValue === 0
+                    ? defaultDepartment
+                    : skhuDepartmentList.find(
+                        (dept: DepartmentType) => dept.id === selectedValue
+                      )?.department || defaultDepartment;
+                const selectedMajors: string[] = [
+                  majors[0] || skhuMajor[selectedValue][0].majors,
+                  majors[1] || skhuMajor[selectedValue][0].majors,
+                ];
+                setDepartment(selectedDepartment);
+                setDepartmentNum(Number(selectedValue));
+                setMajors(selectedMajors);
+              }}
             >
               {skhuDepartmentList.map((departments) => (
-                <option key={departments.id} value={departments.id}>
+                <option key={departments.department} value={departments.id}>
                   {departments.department}
                 </option>
               ))}
@@ -150,7 +242,7 @@ export default function Signup(this: any) {
             <span className="label-title">소속 학과 1</span>
             <select
               className="input"
-              value={majors[0] || ""}
+              value={majors[0]}
               defaultValue={majors[0] || skhuMajor[departmentNum][0].majors}
               onChange={(e) => {
                 const selectedMajor = e.target.value;
@@ -169,7 +261,7 @@ export default function Signup(this: any) {
             <span className="label-title">소속 학과 2</span>
             <select
               className="input"
-              value={majors[1] || ""}
+              value={majors[1]}
               defaultValue={majors[1] || skhuMajor[departmentNum][0].majors}
               onChange={(e) => {
                 const selectedMajor = e.target.value;
@@ -178,8 +270,8 @@ export default function Signup(this: any) {
                 setMajors(updatedMajors);
               }}
             >
-              {skhuMajor[departmentNum].map((major) => (
-                <option key={major?.id}>{major?.majors}</option>
+              {skhuMajors.map((major) => (
+                <option key={major?.majors}>{major?.majors}</option>
               ))}
             </select>
           </SelectStyle>
@@ -408,7 +500,7 @@ const SendBtn = styled.button`
   background-color: rgb(164, 179, 255);
   border-radius: 0.3em;
   font-size: 1em;
-  width: auto;
+  width: -webkit-fill-available;
   height: fit-content;
   display: flex;
   justify-content: center;
