@@ -4,10 +4,10 @@ import { BiLockAlt } from "react-icons/bi";
 import Link from "next/link";
 import BubbleGround from "@/components/BubbleGround";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function MainLogin() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -34,7 +34,7 @@ export default function MainLogin() {
       });
       if (response.status === 200) {
         // 로그인 성공 후 MainLogin 페이지로 이동
-        history.push("/main-login");
+        navigate("/MainLogin");
       } else {
         // 응답이 실패한 경우 처리
         console.error("로그인에 실패했습니다.");

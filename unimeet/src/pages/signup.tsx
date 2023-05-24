@@ -9,6 +9,12 @@ import { useState } from "react";
 interface DepartmentType {
   id: number;
   department: string;
+  requestText: string;
+}
+interface MajorsType {
+  id: number;
+  majors: string;
+  requestText: string;
 }
 
 export default function Signup(this: any) {
@@ -27,9 +33,11 @@ export default function Signup(this: any) {
     setGender(event.target.value);
   };
 
-  const skhuMajors: { id: number; majors: string }[] = (
-    [] as { id: number; majors: string }[]
-  ).concat(...skhuMajor);
+  const skhuMajors: MajorsType[] = skhuMajor.flat().map((major) => ({
+    id: major.id,
+    majors: major.majors,
+    requestText: major.requestText,
+  }));
 
   async function authenticationRequest(e: any) {
     e.preventDefault();
@@ -92,6 +100,7 @@ export default function Signup(this: any) {
       } else {
         // 요청이 실패한 경우 처리
         console.error("회원가입 실패!");
+        console.log(data);
       }
     } catch (error) {
       console.error("오류가 발생했습니다.", error);
@@ -168,7 +177,7 @@ export default function Signup(this: any) {
                 <GenderInput
                   type="radio"
                   name="radio"
-                  value="Women"
+                  value="FEMALE"
                   onChange={handleOptionChange}
                 />
                 <span className="Women">Women</span>
@@ -177,7 +186,7 @@ export default function Signup(this: any) {
                 <GenderInput
                   type="radio"
                   name="radio"
-                  value="Men"
+                  value="MALE"
                   onChange={handleOptionChange}
                 />
                 <span className="Men">Men</span>
@@ -186,7 +195,7 @@ export default function Signup(this: any) {
                 <GenderInput
                   type="radio"
                   name="radio"
-                  value="Divided"
+                  value="NONE"
                   onChange={handleOptionChange}
                 />
                 <span className="Divided">Divided</span>
@@ -198,6 +207,7 @@ export default function Signup(this: any) {
             <select
               className="input"
               value={mbti}
+              defaultValue={mbtilist[0].mbti}
               onChange={(e) => setMbti(e.target.value)}
             >
               {mbtilist.map((mbtis) => (
@@ -215,13 +225,13 @@ export default function Signup(this: any) {
               defaultValue={skhuDepartmentList[0].id}
               onChange={(e) => {
                 const selectedValue = Number(e.target.value);
-                const defaultDepartment = skhuDepartmentList[0].department;
+                const defaultDepartment = skhuDepartmentList[0].requestText;
                 const selectedDepartment: string =
                   selectedValue === 0
                     ? defaultDepartment
                     : skhuDepartmentList.find(
                         (dept: DepartmentType) => dept.id === selectedValue
-                      )?.department || defaultDepartment;
+                      )?.requestText || defaultDepartment;
                 const selectedMajors: string[] = [
                   majors[0] || skhuMajor[selectedValue][0].majors,
                   majors[1] || skhuMajor[selectedValue][0].majors,
@@ -243,7 +253,9 @@ export default function Signup(this: any) {
             <select
               className="input"
               value={majors[0]}
-              defaultValue={majors[0] || skhuMajor[departmentNum][0].majors}
+              defaultValue={
+                majors[0] || skhuMajor[departmentNum][0].requestText
+              }
               onChange={(e) => {
                 const selectedMajor = e.target.value;
                 const updatedMajors = [...majors];
@@ -252,7 +264,9 @@ export default function Signup(this: any) {
               }}
             >
               {skhuMajor[departmentNum].map((major) => (
-                <option key={major.id}>{major.majors}</option>
+                <option key={major.id} value={major.requestText}>
+                  {major.majors}
+                </option>
               ))}
             </select>
           </SelectStyle>
@@ -271,7 +285,9 @@ export default function Signup(this: any) {
               }}
             >
               {skhuMajors.map((major) => (
-                <option key={major?.majors}>{major?.majors}</option>
+                <option key={major?.majors} value={major.requestText}>
+                  {major?.majors}
+                </option>
               ))}
             </select>
           </SelectStyle>
