@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 
 interface InputBoxProps {
   value: string;
@@ -34,10 +34,10 @@ const InputBox: React.FC<InputBoxProps> = ({
 
 const InputDiv = styled.input`
   font-family: monospace;
-  max-width: 190px;
+  width: 24vw;
   outline: none;
   border: none;
-  border-bottom: 2px solid #674ff4;
+  border-bottom: 1px solid #674ff4;
   padding: 5px;
   background-color: #faebd700;
   transition: 0.3s;

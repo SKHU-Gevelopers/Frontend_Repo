@@ -1,4 +1,5 @@
 import InputBox from "@/components/InputBox";
+import MypageInfoBox from "@/components/MypageInfoBox";
 import Image from "next/image";
 import { useState } from "react";
 import styled, { keyframes } from "styled-components";
@@ -12,6 +13,7 @@ const LockMypage: React.FC = () => {
   const [age, setAge] = useState("");
   const [email, setEmail] = useState("");
   const [majors, setMajors] = useState("");
+  const [information, setInformation] = useState("");
 
   return (
     <>
@@ -66,10 +68,16 @@ const LockMypage: React.FC = () => {
         </label>
         <FixBtn>수정하기</FixBtn>
       </InfoBox>
+      <InfoBox>
+        <MypageInfoBox
+          value={information}
+          defaultValue={information}
+        />
+      </InfoBox>
     </>
   );
 };
-const FixBtn = styled.button`
+export const FixBtn = styled.button`
   padding: 7px 20px;
   border-radius: 50px;
   border: none;
@@ -92,7 +100,7 @@ const FixBtn = styled.button`
 const InfoBox = styled.div`
   background-color: #ffffff66;
   box-shadow: 0px 0px 10px #ffffff66;
-  border-radius: 17px;
+  border-radius: 10px;
   width: 30vw;
   min-width: fit-content;
   height: fit-content;
@@ -109,8 +117,9 @@ const InfoBox = styled.div`
     justify-content: center;
     align-items: center;
     & > span {
-      margin: 0px 5px;
+      margin: 0px 10px;
       width: 45px;
+      font-size: 120%;
     }
   }
 `;
