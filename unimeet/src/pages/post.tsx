@@ -33,6 +33,7 @@ export default function Post() {
         </ContentBox>
       </Details>
       <AddImage></AddImage>
+      <Apply>신청하기</Apply>
     </Main>
   );
 }
@@ -145,3 +146,19 @@ const Detail = styled.div`
 `;
 
 const AddImage = styled.div``;
+
+const Apply = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 2vh;
+
+  width: 90%;
+  height: 5vh;
+
+  background-color: rgba(103, 79, 244);
+  color: white;
+
+  font-size: 1.5rem;
+`;
