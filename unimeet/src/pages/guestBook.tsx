@@ -1,106 +1,66 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-// interface Review {
-//   guestImage: string;
-//   reviewComment: string;
-// }
-
-// const review: Review[] = [
-//   { guestImage: "/..", reviewComment: "이분 완전 분위기 메이커 ㅋㅋㅋ" },
-//   { guestImage: "/..", reviewComment: "거의 말술.. 술 왜이렇게 잘 마셔요?" },
-//   { guestImage: "/..", reviewComment: "술 강요 안하는 모습 구웃" },
-//   { guestImage: "/..", reviewComment: "이분 완전 재밌음 ㅋㅋㅋㅋㅋㅋ" },
-// ];
-
-// interface Hashtag {
-//   hashtagComment: string;
-// }
-
-// const hashtag: Hashtag[] = [
-//   { hashtagComment: "23년 분위기 메이커" },
-//   { hashtagComment: "알코올 파괴자" },
-// ];
-
-interface User {
-  nickname: string;
-  age: number;
-  gender: string;
-  mbti: string;
-  introduction: string;
-  profileImageUrl: string;
-  majors: [{ major: string }];
+interface Review {
+  guestImage: string;
+  reviewComment: string;
 }
 
+const review: Review[] = [
+  { guestImage: "/..", reviewComment: "이분 완전 분위기 메이커 ㅋㅋㅋ" },
+  { guestImage: "/..", reviewComment: "거의 말술.. 술 왜이렇게 잘 마셔요?" },
+  { guestImage: "/..", reviewComment: "술 강요 안하는 모습 구웃" },
+  { guestImage: "/..", reviewComment: "이분 완전 재밌음 ㅋㅋㅋㅋㅋㅋ" },
+];
+
+interface Hashtag {
+  hashtagComment: string;
+}
+
+const hashtag: Hashtag[] = [
+  { hashtagComment: "23년 분위기 메이커" },
+  { hashtagComment: "알코올 파괴자" },
+];
+
 export default function GestBook() {
-  const [user, setUser] = useState<User | null>(null);
-  // const [token, setToken] = useState<string>(''); // 테스트용이 아니면 사용할 것
-
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const accessToken = "YOUR_ACCESS_TOKEN"; // 아직 로그인 구현이 안 끝난 것 같아, token 예시 원래 없을 문임
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        };
-        const response = await axios.get(
-          "https://unimeet.duckdns.org/users/my-page",
-          config
-        );
-        setUser(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getUserData();
-  }, []);
-
   return (
     <MainBox>
       <DmButton src="/dmButton.png" alt="dmButton" />
       <ProfileBox>
         <ProfileImageWrap>
-          <ProfileImage
-            src="{user?.profileImageUrl}"
-            alt="profileImage"
-          ></ProfileImage>
+          <ProfileImage></ProfileImage>
         </ProfileImageWrap>
-        <Name>{user?.nickname}</Name>
+        <Name>멍멍이</Name>
         <InformationBox>
-          {user?.majors.map((each, index) => (
-            <Department key={index}>
-              <p>{each.major}</p>
-            </Department>
-          ))}
+          <Department>
+            <p>소프트웨어공학</p>
+          </Department>
+          <Department>
+            <p>컴퓨터공학</p>
+          </Department>
         </InformationBox>
         <MBTI>
-          <p>{user?.mbti}</p>
+          <p>CUTE</p>
         </MBTI>
-        <Introduce>{user?.introduction}</Introduce>
-      </ProfileBox> 
-      <ReviewBox> 
-        {/* <HashtagBox>
+        <Introduce></Introduce>
+      </ProfileBox>
+      <ReviewBox>
+        <HashtagBox>
           {hashtag.map((each, index) => {
             return (
               <EachHashtag key={index}>#{each.hashtagComment}</EachHashtag>
-            ); 
+            );
           })}
-        </HashtagBox> */}
-        {/* {review.map((each, index) => {
+        </HashtagBox>
+        {review.map((each, index) => {
           return (
             <EachReview key={index}>
               <GuestImageWrap>{each.guestImage}</GuestImageWrap>
               <GuestComment>{each.reviewComment}</GuestComment>
             </EachReview>
           );
-        })} */} 
-      </ReviewBox> 
-    </MainBox> 
+        })}
+      </ReviewBox>
+    </MainBox>
   );
 }
 
@@ -221,7 +181,7 @@ const ReviewBox = styled.div`
   padding-bottom: 2vh;
 
   width: 100%;
-  height: 50vh;
+  height: 55vh;
 `;
 
 const HashtagBox = styled.div`
