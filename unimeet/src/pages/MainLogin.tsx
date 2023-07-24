@@ -4,51 +4,34 @@ import { BiLockAlt } from "react-icons/bi";
 import Link from "next/link";
 import BubbleGround from "@/components/BubbleGround";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Provider, useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function MainLogin() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function loginSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const router = useRouter();
 
-    if (!email || !password) {
-      console.error("이메일과 비밀번호를 입력해주세요.");
-      return;
-    }
-
-    const data = {
-      email: email,
-      password: password,
-    };
-
-    try {
-      const response = await fetch("https://unimeet.duckdns.org/auth/sign-in", {
-        method: "post",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.status === 200) {
-        // 로그인 성공 후 MainLogin 페이지로 이동
-        navigate("/MainLogin");
-      } else {
-        // 응답이 실패한 경우 처리
-        console.error("로그인에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error("오류가 발생했습니다.", error);
-    }
+  function loginSubmit(email: string, password: string) {
+    axios
+      .post("https://unimeet.duckdns.org/auth/sign-in", {
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        res.status === 200 && router.push("/main");
+        console.log(res);
+      })
+      .catch((err) => err.code === 401 && alert("아이디 또는 비밀번호가 틀렸습니다."));
   }
 
   return (
     <Main>
       <BubbleGround />
       <LoginBox>
-        <form onSubmit={loginSubmit}>
+        <form onSubmit={()=>loginSubmit}>
           <TextBox>
             <AiOutlineUser color="gray" />
             <input
