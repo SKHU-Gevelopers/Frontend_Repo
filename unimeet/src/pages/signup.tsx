@@ -5,6 +5,8 @@ import { LoginBox } from "./MainLogin";
 import BubbleGround from "@/components/BubbleGround";
 import { keyframes } from "@emotion/react";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import {authenticationRequest} from "@/util/signUtil";
 
 interface DepartmentType {
   id: number;
@@ -39,34 +41,7 @@ export default function Signup(this: any) {
     requestText: major.requestText,
   }));
 
-  async function authenticationRequest(e: any) {
-    e.preventDefault();
-    const form = e.target;
-    const data = {
-      emailPrefix: email,
-    };
 
-    try {
-      const response = await fetch("https://unimeet.duckdns.org/auth/email", {
-        method: "post",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log(result);
-        // 성공한 경우 추가로직 처리
-      } else {
-        // 응답이 실패한 경우 처리
-        console.error("응답이 실패했습니다.");
-      }
-    } catch (error) {
-      console.error("오류가 발생했습니다.", error);
-    }
-  }
 
   async function SignupSubmit(e: any) {
     e.preventDefault();
@@ -111,7 +86,7 @@ export default function Signup(this: any) {
     <MainBox>
       <BubbleGround />
       <SignupBox>
-        <EmailForm onSubmit={authenticationRequest}>
+        <EmailForm onSubmit={()=>authenticationRequest}>
           <LabelStyle htmlFor="myInput" className="label">
             <span className="label-title">이메일</span>
             <input
