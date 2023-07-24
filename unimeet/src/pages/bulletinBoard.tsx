@@ -1,70 +1,96 @@
+// api 연결 해야 함
 import Heart from "@/components/HeartCount";
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
-// 데이터라 가정
 interface Post {
-  profileImage: string;
-  name: string;
-  picture: string;
+  id: number; // id 가 nickname은 아니죠?
   title: string;
-  text: string;
+  content: string;
+  imageUrl: string; // 프로필 이미지가 아니죠?
+  state: string;
+  maxPeople: number;
+  gender: string;
+  likes: number;
 }
 
-const post: Post[] = [
-  {
-    profileImage: "",
-    name: "콩떡이",
-    picture: "../",
-    title: "제목을 적어요~",
-    text: "글 어쩌구 저쩌구 어쩌구 저쩌구구",
-  },
-  {
-    profileImage: "",
-    name: "배달원",
-    picture: "../",
-    title: "제목을 적어요~",
-    text: "글만 적은 게시글 사진 없이",
-  },
-  {
-    profileImage: "",
-    name: "콩떡이",
-    picture: "../",
-    title: "제목을",
-    text: "글 어쩌구 저쩌구",
-  },
-  {
-    profileImage: "",
-    name: "콩떡이",
-    picture: "../",
-    title: "제목을",
-    text: "글 어쩌구 저쩌구",
-  },
-];
+interface PostsData {
+  posts: Post[];
+}
+
+// const post: Post[] = [
+//   {
+//     profileImage: "",
+//     name: "콩떡이",
+//     picture: "../",
+//     title: "제목을 적어요~",
+//     text: "글 어쩌구 저쩌구 어쩌구 저쩌구구",
+//   },
+//   {
+//     profileImage: "",
+//     name: "배달원",
+//     picture: "../",
+//     title: "제목을 적어요~",
+//     text: "글만 적은 게시글 사진 없이",
+//   },
+//   {
+//     profileImage: "",
+//     name: "콩떡이",
+//     picture: "../",
+//     title: "제목을",
+//     text: "글 어쩌구 저쩌구",
+//   },
+//   {
+//     profileImage: "",
+//     name: "콩떡이",
+//     picture: "../",
+//     title: "제목을",
+//     text: "글 어쩌구 저쩌구",
+//   },
+// ];
 export default function BulletinBoard() {
+  const [data, setData] = useState<PostsData>({ posts: [] });
+  const searchUrl = "https://unimeet.duckdns.org/posts";
+
+  // posts 함수를 useCallback 훅으로 감싸서 콜백 함수가 변경되지 않도록 합니다.
+  const posts = useCallback(async () => {
+    try {
+      const response = await axios.get<PostsData>(`${searchUrl}`);
+      setData(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [searchUrl]);
+
+  useEffect(() => {
+    posts();
+  }, [posts]);
+  
   return (
     <MainBox>
       <Article>
-        {post.map((each, index) => {
+        {data.posts.map((each, index) => {
           return (
             <Post key={index}>
               <Writer>
                 <ProfileImageWrap>
-                  <ProfileImage
-                    src={each.profileImage}
+                  {/* <ProfileImage
+                    src={each.imageUrl}
                     alt="작성자 이미지 사진"
-                  ></ProfileImage>
+                  ></ProfileImage> */} 
                 </ProfileImageWrap>
-                <Name>{each.name}</Name>
+                <Name>{each.id}</Name>
               </Writer>
               <PictureWrap>
                 <PictureImage
-                  src={each.picture}
+                  src={each.imageUrl}
                   alt="게시글 첨부 사진"
                 ></PictureImage>
               </PictureWrap>
               <WritingBox>
                 <Title>{each.title}</Title>
-                <Text>{each.text}</Text>
+                <Text>{each.content}</Text>
               </WritingBox>
               <ReactionBox>
                 <Heart />
