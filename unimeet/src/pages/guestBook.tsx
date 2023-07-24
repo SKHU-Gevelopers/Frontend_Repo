@@ -1,65 +1,113 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-interface Review {
-  guestImage: string;
-  reviewComment: string;
+// interface Review {
+//   guestImage: string;
+//   reviewComment: string;
+// }
+
+// const review: Review[] = [
+//   { guestImage: "/..", reviewComment: "이분 완전 분위기 메이커 ㅋㅋㅋ" },
+//   { guestImage: "/..", reviewComment: "거의 말술.. 술 왜이렇게 잘 마셔요?" },
+//   { guestImage: "/..", reviewComment: "술 강요 안하는 모습 구웃" },
+//   { guestImage: "/..", reviewComment: "이분 완전 재밌음 ㅋㅋㅋㅋㅋㅋ" },
+// ];
+
+// interface Hashtag {
+//   hashtagComment: string;
+// }
+
+// const hashtag: Hashtag[] = [
+//   { hashtagComment: "23년 분위기 메이커" },
+//   { hashtagComment: "알코올 파괴자" },
+// ];
+
+interface StudentData {
+  profileImageUrl: string;
+  nickname: string;
+  department: string;
+  mbti: string;
 }
 
-const review: Review[] = [
-  { guestImage: "/..", reviewComment: "이분 완전 분위기 메이커 ㅋㅋㅋ" },
-  { guestImage: "/..", reviewComment: "거의 말술.. 술 왜이렇게 잘 마셔요?" },
-  { guestImage: "/..", reviewComment: "술 강요 안하는 모습 구웃" },
-  { guestImage: "/..", reviewComment: "이분 완전 재밌음 ㅋㅋㅋㅋㅋㅋ" },
-];
-
-interface Hashtag {
-  hashtagComment: string;
+interface GuestBookData {
+  writerId: number;
+  profileImageUrl: string;
+  content: string;
 }
 
-const hashtag: Hashtag[] = [
-  { hashtagComment: "23년 분위기 메이커" },
-  { hashtagComment: "알코올 파괴자" },
-];
+interface UserData {
+  user: StudentData;
+  guestBooks: GuestBookData[];
+}
 
 export default function GestBook() {
+  const [userData, setUserData] = useState<UserData>();
+  // const [token, setToken] = useState<string>(''); // 테스트용이 아니면 사용할 것
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const accessToken = "YOUR_ACCESS_TOKEN"; // 아직 로그인 구현이 안 끝난 것 같아, token 예시 원래 없을 문임
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        };
+        const response = await axios.get<UserData>(
+          "https://unimeet.duckdns.org/users/1/my-page", // 1에 실제로는 특정 사용자의 유저 아이디로 대체되어야 함
+          config
+        );
+        setUserData(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getUserData();
+  }, []);
+
   return (
     <MainBox>
       <DmButton src="/dmButton.png" alt="dmButton" />
       <ProfileBox>
         <ProfileImageWrap>
-          <ProfileImage></ProfileImage>
+          <ProfileImage
+            src={userData?.user.profileImageUrl}
+            alt="profileImage"
+          ></ProfileImage>
         </ProfileImageWrap>
-        <Name>멍멍이</Name>
+        <Name>{userData?.user.nickname}</Name>
         <InformationBox>
-          <Department>
-            <p>소프트웨어공학</p>
-          </Department>
-          <Department>
-            <p>컴퓨터공학</p>
-          </Department>
+          {/* {user?.majors.map((each, index) => (
+            <Department key={index}>
+              <p>{each.major}</p> */}
+          <Department>{userData?.user.department}</Department>
+          {/* ))} */}
         </InformationBox>
         <MBTI>
-          <p>CUTE</p>
+          <p>{userData?.user.mbti}</p>
         </MBTI>
-        <Introduce></Introduce>
+        {/* <Introduce>{user?.introduction}</Introduce> */}
       </ProfileBox>
-      <ReviewBox>
-        <HashtagBox>
+      <GuestBooks>
+        {/* <HashtagBox>
           {hashtag.map((each, index) => {
             return (
               <EachHashtag key={index}>#{each.hashtagComment}</EachHashtag>
-            );
+            ); 
           })}
-        </HashtagBox>
-        {review.map((each, index) => {
+        </HashtagBox> */}
+        {userData?.guestBooks.map((each, Id) => {
           return (
-            <EachReview key={index}>
-              <GuestImageWrap>{each.guestImage}</GuestImageWrap>
-              <GuestComment>{each.reviewComment}</GuestComment>
+            <EachReview key={`writer${Id}`}>
+              <GuestImageWrap>{each.profileImageUrl}</GuestImageWrap>
+              <GuestComment>{each.content}</GuestComment>
             </EachReview>
           );
         })}
-      </ReviewBox>
+      </GuestBooks>
     </MainBox>
   );
 }
@@ -172,7 +220,7 @@ const Introduce = styled.div`
   font-weight: 600;
 `;
 
-const ReviewBox = styled.div`
+const GuestBooks = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -181,7 +229,7 @@ const ReviewBox = styled.div`
   padding-bottom: 2vh;
 
   width: 100%;
-  height: 55vh;
+  height: 50vh;
 `;
 
 const HashtagBox = styled.div`
