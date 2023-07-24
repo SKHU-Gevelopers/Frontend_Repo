@@ -23,18 +23,26 @@ import styled from "styled-components";
 //   { hashtagComment: "알코올 파괴자" },
 // ];
 
-interface User {
-  nickname: string;
-  age: number;
-  gender: string;
-  mbti: string;
-  introduction: string;
+interface StudentData {
   profileImageUrl: string;
-  majors: [{ major: string }];
+  nickname: string;
+  department: string;
+  mbti: string;
+}
+
+interface GuestBookData {
+  writerId: number;
+  profileImageUrl: string;
+  content: string;
+}
+
+interface UserData {
+  user: StudentData;
+  guestBooks: GuestBookData[];
 }
 
 export default function GestBook() {
-  const [user, setUser] = useState<User | null>(null);
+  const [userData, setUserData] = useState<UserData>();
   // const [token, setToken] = useState<string>(''); // 테스트용이 아니면 사용할 것
 
   useEffect(() => {
@@ -47,12 +55,11 @@ export default function GestBook() {
             Authorization: `Bearer ${accessToken}`,
           },
         };
-        const response = await axios.get(
-          // "https://unimeet.duckdns.org/users/{writerId}/my-page"
-          "https://unimeet.duckdns.org/users/1/my-page",
+        const response = await axios.get<UserData>(
+          "https://unimeet.duckdns.org/users/1/my-page", // 1에 실제로는 특정 사용자의 유저 아이디로 대체되어야 함
           config
         );
-        setUser(response.data);
+        setUserData(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -67,20 +74,20 @@ export default function GestBook() {
       <ProfileBox>
         <ProfileImageWrap>
           <ProfileImage
-            src={user.student.profileImageUrl}
+            src={userData?.user.profileImageUrl}
             alt="profileImage"
           ></ProfileImage>
         </ProfileImageWrap>
-        <Name>{user.student.nickname}</Name>
+        <Name>{userData?.user.nickname}</Name>
         <InformationBox>
           {/* {user?.majors.map((each, index) => (
             <Department key={index}>
               <p>{each.major}</p> */}
-          <Department>{user.student.department}</Department>
+          <Department>{userData?.user.department}</Department>
           {/* ))} */}
         </InformationBox>
         <MBTI>
-          <p>{user.student.mbti}</p>
+          <p>{userData?.user.mbti}</p>
         </MBTI>
         {/* <Introduce>{user?.introduction}</Introduce> */}
       </ProfileBox>
@@ -92,11 +99,11 @@ export default function GestBook() {
             ); 
           })}
         </HashtagBox> */}
-        {user.guestBooks.map((each, Id) => {
+        {userData?.guestBooks.map((each, Id) => {
           return (
             <EachReview key={`writer${Id}`}>
-              <GuestImageWrap>{each.guestImage}</GuestImageWrap>
-              <GuestComment>{each.reviewComment}</GuestComment>
+              <GuestImageWrap>{each.profileImageUrl}</GuestImageWrap>
+              <GuestComment>{each.content}</GuestComment>
             </EachReview>
           );
         })}
