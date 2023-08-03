@@ -34,7 +34,7 @@ const InputBox: React.FC<InputBoxProps> = ({
 
 const InputDiv = styled.input`
   font-family: monospace;
-  width: 24vw;
+  width: 100%;
   outline: none;
   border: none;
   border-bottom: 1px solid #674ff4;

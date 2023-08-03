@@ -4,7 +4,6 @@ import { BiLockAlt } from "react-icons/bi";
 import Link from "next/link";
 import BubbleGround from "@/components/BubbleGround";
 import { useState } from "react";
-import { Provider, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import axios from "axios";
 
@@ -14,24 +13,37 @@ export default function MainLogin() {
 
   const router = useRouter();
 
-  function loginSubmit(email: string, password: string) {
+  function loginSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     axios
-      .post("https://unimeet.duckdns.org/auth/sign-in", {
-        email: email,
-        password: password,
-      })
+      .post(
+        "https://unimeet.duckdns.org/auth/sign-in",
+        {
+          email,
+          password,
+        },
+        {
+          headers: {
+            Authorization: "Bearer {accessToken}",
+          },
+        }
+      )
       .then((res) => {
-        res.status === 200 && router.push("/main");
+        res.status === 200 && router.push("/bulletinBoard");
+        const token = res.data.data.accessToken;
+        localStorage.setItem('login-token',token);
         console.log(res);
       })
-      .catch((err) => err.code === 401 && alert("아이디 또는 비밀번호가 틀렸습니다."));
+      .catch(
+        (err) => err.code === 401 && alert("아이디 또는 비밀번호가 틀렸습니다.")
+      );
   }
 
   return (
     <Main>
       <BubbleGround />
       <LoginBox>
-        <form onSubmit={()=>loginSubmit}>
+        <form onSubmit={loginSubmit}>
           <TextBox>
             <AiOutlineUser color="gray" />
             <input
@@ -50,9 +62,9 @@ export default function MainLogin() {
             />
           </TextBox>
           <ButtonDiv>
-            <Button type="submit">login</Button>
+            <ButtonStyle type="submit">login</ButtonStyle>
             <Link href="/signup">
-              <Button>signup</Button>
+              <ButtonStyle>signup</ButtonStyle>
             </Link>
           </ButtonDiv>
         </form>
@@ -79,7 +91,7 @@ const ButtonDiv = styled.div`
   justify-content: space-around;
   align-items: center;
 `;
-const Button = styled.button`
+export const ButtonStyle = styled.button`
   border: none;
   color: #fff;
   background-image: linear-gradient(30deg, #a600ff, #4ce3f7);

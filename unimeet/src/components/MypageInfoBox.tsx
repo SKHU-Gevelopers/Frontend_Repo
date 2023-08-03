@@ -41,19 +41,36 @@ const MypageInfoBox: React.FC<InfoBoxProps> = ({ value, defaultValue }) => {
 const FormBox = styled.form`
   display: flex;
   flex-direction: column;
-  &>div{
+  & > div {
     display: flex;
     justify-content: flex-end;
   }
 `;
-const ButtonStyle = styled(FixBtn)`
+export const ButtonStyle = styled.button`
   width: fit-content;
-  margin:10px 0 0 10px;
+  margin: 10px 0 0 10px;
+  padding: 7px 20px;
+  border-radius: 50px;
+  border: none;
+  background-color: #674ff4;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  transition: all 0.5s ease;
+  color: #fff9ed;
+
+  &:hover {
+    box-shadow: 0px 3px 10px #312576;
+    transform: translateY(-3px);
+    transition: all 1s;
+  }
 `;
 
 const InputDiv = styled.textarea`
+  font-size: 1.3em;
   font-family: monospace;
-  width: 31vw;
+  width: 100%;
   height: 20vh;
   outline: none;
   border: 1px solid #674ff4;

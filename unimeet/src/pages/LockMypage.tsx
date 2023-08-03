@@ -1,14 +1,21 @@
 import InputBox from "@/components/InputBox";
-import MypageInfoBox from "@/components/MypageInfoBox";
+import MypageInfoBox, { ButtonStyle } from "@/components/MypageInfoBox";
 import Image from "next/image";
 import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 
 const LockMypage: React.FC = () => {
   const imageStyle = {
-    borderRadius: "100px",
-    border: "1px solid #fff",
+    borderRadius: "100%",
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: "#ffffff",
+    width: "60%",
+    height: "60%",
   };
+  const filedisplay = {
+    display: "none",
+  }
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [email, setEmail] = useState("");
@@ -27,27 +34,10 @@ const LockMypage: React.FC = () => {
             style={imageStyle}
           />
         </ImageCoordinate>
-        <FindImage className="button">
-          <svg
-            className="svg-icon"
-            width="24"
-            viewBox="0 0 24 24"
-            height="24"
-            fill="none"
-          >
-            <g
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke="#f9ebffcf"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-            >
-              <path d="m3 7h17c.5523 0 1 .44772 1 1v11c0 .5523-.4477 1-1 1h-16c-.55228 0-1-.4477-1-1z"></path>
-              <path d="m3 4.5c0-.27614.22386-.5.5-.5h6.29289c.13261 0 .25981.05268.35351.14645l2.8536 2.85355h-10z"></path>
-            </g>
-          </svg>
-          <span className="lable">프로필 선택</span>
-        </FindImage>
+        <label htmlFor="file">
+          <FindImage className="btn-upload">파일 업로드하기</FindImage>
+        </label>
+        <input style={filedisplay} type="file" name="file" id="file" />
       </ImageBox>
       <InfoBox>
         <label>
@@ -69,43 +59,23 @@ const LockMypage: React.FC = () => {
         <FixBtn>수정하기</FixBtn>
       </InfoBox>
       <InfoBox>
-        <MypageInfoBox
-          value={information}
-          defaultValue={information}
-        />
+        <MypageInfoBox value={information} defaultValue={information} />
       </InfoBox>
     </>
   );
 };
-export const FixBtn = styled.button`
-  padding: 7px 20px;
-  border-radius: 50px;
-  border: none;
-  background-color: #674ff4;
-  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-size: 15px;
-  transition: all 0.5s ease;
-  margin: 0.7em 0;
-  color: #fff9ed;
-
-  &:hover {
-    box-shadow: 0px 3px 10px #312576;
-    transform: translateY(-3px);
-    transition: all 1s;
-  }
+export const FixBtn = styled(ButtonStyle)`
+  margin: 0.3em 0;
 `;
 
 const InfoBox = styled.div`
   background-color: #ffffff66;
   box-shadow: 0px 0px 10px #ffffff66;
   border-radius: 10px;
-  width: 30vw;
   min-width: fit-content;
   height: fit-content;
-  margin: 1rem auto;
-  padding: 1rem;
+  margin: 0.5rem 1rem;
+  padding: 0.7rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -118,7 +88,7 @@ const InfoBox = styled.div`
     align-items: center;
     & > span {
       margin: 0px 10px;
-      width: 45px;
+      width: 4em;
       font-size: 120%;
     }
   }
@@ -134,7 +104,6 @@ const ImageCoordinate = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
   margin: 1rem;
 `;
 const spin = keyframes`
@@ -158,35 +127,23 @@ const spin = keyframes`
     transform: rotate(0deg);
   }
 `;
-const FindImage = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 12px 8px 16px;
-  gap: 8px;
+const FindImage = styled.div`
+  width: 150px;
+  height: 30px;
+  background: #674ff4;
+  color: #fff;
   border: none;
-  background-color: #674ff4;
-  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
-  border-radius: 20px;
+  border-radius: 30px;
+  font-weight: 500;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &:hover {
-    background: #674ff4;
-    box-shadow: 0px 3px 10px #312576;
-    transform: translateY(-3px);
-    transition: all 1s;
-    & > .svg-icon {
-      animation: ${spin} 1s linear infinite;
-    }
-  }
-  & > .lable {
-    margin-top: 1px;
-    font-size: 19px;
-    line-height: 22px;
-    color: #e4e4e4;
-    font-family: sans-serif;
-    letter-spacing: 1px;
+    background: rgb(77, 77, 77);
+    color: #fff;
   }
 `;
 
-export default LockMypage;
 
+export default LockMypage;

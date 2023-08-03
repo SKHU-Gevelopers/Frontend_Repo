@@ -4,9 +4,10 @@ import styled from "styled-components";
 import { LoginBox } from "./MainLogin";
 import BubbleGround from "@/components/BubbleGround";
 import { keyframes } from "@emotion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import {authenticationRequest} from "@/util/signUtil";
+import { authenticationRequest } from "@/util/signUtil";
+import axios from "axios";
 
 interface DepartmentType {
   id: number;
@@ -23,6 +24,7 @@ export default function Signup(this: any) {
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [emailVrfCode, setEmailVrfCode] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
@@ -41,7 +43,27 @@ export default function Signup(this: any) {
     requestText: major.requestText,
   }));
 
+  useEffect(() => {
+    console.log(email),console.log(username)
+  }, [email]);
+  
+  const emailFix = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const email = event.target.value;
+    setEmail(email);
+    const username = email.match(/^(.+)@[^@]+$/i)?.[1];
+    setUsername(username || "");
+  };
 
+  const handleSendBtnClick = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // 기본 동작 막기
+    authenticationRequest(email, username)
+      .then((res) => {
+        alert("인증번호가 전송되었습니다.");
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
 
   async function SignupSubmit(e: any) {
     e.preventDefault();
@@ -86,19 +108,19 @@ export default function Signup(this: any) {
     <MainBox>
       <BubbleGround />
       <SignupBox>
-        <EmailForm onSubmit={()=>authenticationRequest}>
+        <EmailForm onSubmit={handleSendBtnClick} >
           <LabelStyle htmlFor="myInput" className="label">
             <span className="label-title">이메일</span>
             <input
               id="myInput"
               className="input"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="인증 받았던 이메일을 입력해주세요"
+              onChange={emailFix}
+              placeholder="이메일을 입력해주세요"
               type="text"
             />
           </LabelStyle>
-          <SendBtn>인증 요청</SendBtn>
+          <SendBtn onClick={()=>handleSendBtnClick}>인증 요청</SendBtn>
         </EmailForm>
         <form method="post" onSubmit={SignupSubmit}>
           <LabelStyle htmlFor="myInput" className="label">
@@ -286,62 +308,7 @@ const glowing = keyframes`
     background-position: 0 0;
   }
 `;
-const BtnDiv = styled.div`
-  display: flex;
-  justify-content: center;
-`;
 
-const SubmitBtn = styled.button`
-  width: 80%;
-  height: 100%;
-  padding: 1rem;
-  margin: 1rem;
-  border: none;
-  outline: none;
-  color: #fff;
-  background: rgb(164, 179, 255);
-  cursor: pointer;
-  position: relative;
-  z-index: 0;
-  border-radius: 10px;
-  font-weight: 600;
-  &::before {
-    content: "";
-    background: linear-gradient(45deg, #002bff, #7a00ff, #ff00c8, #ff0000);
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    background-size: 400%;
-    z-index: -1;
-    filter: blur(5px);
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    animation: ${glowing} 20s linear infinite;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-    border-radius: 10px;
-  }
-  &:active {
-    color: #000;
-  }
-  &:active::after {
-    background: transparent;
-  }
-  &:hover::before {
-    opacity: 1;
-  }
-  &::after {
-    z-index: -1;
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: none;
-    left: 0;
-    top: 0;
-    border-radius: 10px;
-  }
-`;
 const LabelStyle = styled.label`
   --border: rgb(66 66 66 / 0%);
   --bgLabel: rgb(120 120 120 / 0%);
