@@ -4,7 +4,6 @@ import { BiLockAlt } from "react-icons/bi";
 import Link from "next/link";
 import BubbleGround from "@/components/BubbleGround";
 import { useState } from "react";
-import { Provider, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import axios from "axios";
 
@@ -63,9 +62,9 @@ export default function MainLogin() {
             />
           </TextBox>
           <ButtonDiv>
-            <Button type="submit">login</Button>
+            <ButtonStyle type="submit">login</ButtonStyle>
             <Link href="/signup">
-              <Button>signup</Button>
+              <ButtonStyle>signup</ButtonStyle>
             </Link>
           </ButtonDiv>
         </form>
@@ -92,7 +91,7 @@ const ButtonDiv = styled.div`
   justify-content: space-around;
   align-items: center;
 `;
-const Button = styled.button`
+export const ButtonStyle = styled.button`
   border: none;
   color: #fff;
   background-image: linear-gradient(30deg, #a600ff, #4ce3f7);
