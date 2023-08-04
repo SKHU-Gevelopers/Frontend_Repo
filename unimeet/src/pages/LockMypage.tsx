@@ -3,7 +3,8 @@ import MypageInfoBox, { ButtonStyle } from "@/components/MypageInfoBox";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { MypageRequest } from "@/util/myPagae";
+import { MypageRequest } from "@/util/myPage";
+import { css } from "@emotion/css";
 
 const LockMypage: React.FC = () => {
   const imageStyle = {
@@ -17,27 +18,34 @@ const LockMypage: React.FC = () => {
   const filedisplay = {
     display: "none",
   };
+  const [data, setData] = useState({});
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
   const [mbti, setMbti] = useState("");
   const [majors, setMajors] = useState([]);
   const [gender, setGender] = useState("");
   const [information, setInformation] = useState("");
   const [token, setToken] = useState("");
 
+
   useEffect(() => {
     const token = localStorage.getItem("login-token");
     setToken(token || " ");
-    
   }, []);
-    useEffect(() => {
+  useEffect(() => {
     if (token) {
       MypageRequest(token).then((res) => {
-        console.log(res);
+        setData(res.data.data);
+        // setName(data.nickname);
+        // setMbti(data.mbti);
+        // setMajors(data.majors);
+        // setGender(data.gender);
+        // setImage(data.profileImageUrl);
+        // setInformation(data.introduction);
       });
     }
   }, [token]);
-
+  console.log(data);
+  
   const [image, setImage] = useState("/dogImage.png");
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files?.[0];
@@ -46,19 +54,18 @@ const LockMypage: React.FC = () => {
       alert("파일이 없습니다.");
       return;
     }
-
-    // 2. 임시 URL생성 -> 진짜 URL생성, 다른 브라우저에서도 접근 가능
     const fileReader = new FileReader();
     fileReader.readAsDataURL(image);
     fileReader.onload = (data) => {
-      // 파일리더의 결과값이 string이 아닐수도 있으니 string일때만 실행되도록
       if (typeof data.target?.result === "string") {
         setImage(data.target?.result);
       }
     };
   };
 
-
+  const handleName = (value: string) => {
+    setInformation(value);
+  };
   return (
     <>
       <ImageBox>
@@ -85,19 +92,50 @@ const LockMypage: React.FC = () => {
       <InfoBox>
         <label>
           <span>별명:</span>
-          <InputBox value={name} onChange={setName} defaultValue={name} />
+          <InputStyle
+            value={name}
+            defaultValue={name}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value;
+              value !== "" && setName(data.nickname);
+            }}
+          />
         </label>
-        <label>
+        {/* <label>
           <span>나이:</span>
-          <InputBox value={age} onChange={setAge} defaultValue={age} />
-        </label>
+          <InputStyle
+            value={age}
+            defaultValue={age}
+            onChange={() => {
+              (e: React.ChangeEvent<HTMLInputElement>) => {
+                setAge(e.target.value);
+              };
+            }}
+          />
+        </label> */}
         <label>
           <span>성별:</span>
-          <InputBox value={gender} onChange={setGender} defaultValue={gender} />
+          <InputStyle
+            value={gender}
+            defaultValue={gender}
+            onChange={() => {
+              (e: React.ChangeEvent<HTMLInputElement>) => {
+                setGender(e.target.value);
+              };
+            }}
+          />
         </label>
         <label>
           <span>mbti:</span>
-          <InputBox value={mbti} onChange={setMbti} defaultValue={mbti} />
+          <InputStyle
+            value={mbti}
+            defaultValue={mbti}
+            onChange={() => {
+              (e: React.ChangeEvent<HTMLInputElement>) => {
+                setMbti(e.target.value);
+              };
+            }}
+          />
         </label>
         <FixBtn>수정하기</FixBtn>
       </InfoBox>
@@ -143,6 +181,23 @@ const ImageBox = styled.div`
   align-items: center;
 `;
 
+const InputStyle = styled.input`
+  font-family: monospace;
+  width: 100%;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #674ff4;
+  padding: 5px;
+  background-color: #faebd700;
+  transition: 0.3s;
+  color: #5b5b5b;
+  &:focus {
+    box-shadow: 0 2px 4px #312576;
+    background-color: #c0b5ff42;
+    transform: translateY(-1px);
+    transition: all 1s;
+  }
+`;
 const ImageCoordinate = styled.div`
   display: flex;
   justify-content: center;

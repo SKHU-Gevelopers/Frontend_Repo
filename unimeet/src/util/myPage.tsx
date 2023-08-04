@@ -9,3 +9,4 @@ export const MypageRequest = (token: string): Promise<any> => {
     }
   });
 }
+
