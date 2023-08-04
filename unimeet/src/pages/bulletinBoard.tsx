@@ -51,32 +51,29 @@ interface PostsData {
 // ];
 export default function BulletinBoard() {
   const [data, setData] = useState<PostsData>({ posts: [] });
-  const [token, setToken] =useState("");
+  const [token, setToken] = useState("");
   const searchUrl = "https://unimeet.duckdns.org/posts";
-  useEffect(()=>{localStorage.getItem("login-token");
-    setToken(token|| " ")
-
-  },[]);
 
   useEffect(() => {
-    const posts = async () => {
+    (async () => {
       try {
-        if (token !== null) {
+        const token = localStorage.getItem("login-token");
+        setToken(token || " ");
+        if (token) {
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          };
           const response = await axios.get<PostsData>(`${searchUrl}`, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer "+token,
-            },
+            headers,
           });
           setData(response.data);
         }
       } catch (error) {
         console.log(error);
       }
-    };
-
-    posts();
-  }, [token]);
+    })();
+  }, []);
 
   // useEffect(() => {
   //   const getUserData = async () => {
