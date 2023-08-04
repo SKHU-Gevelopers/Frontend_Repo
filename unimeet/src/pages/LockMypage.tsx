@@ -1,8 +1,9 @@
 import InputBox from "@/components/InputBox";
 import MypageInfoBox, { ButtonStyle } from "@/components/MypageInfoBox";
 import Image from "next/image";
-import { useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
+import { MypageRequest } from "@/util/myPagae";
 
 const LockMypage: React.FC = () => {
   const imageStyle = {
@@ -10,24 +11,60 @@ const LockMypage: React.FC = () => {
     borderWidth: "1px",
     borderStyle: "solid",
     borderColor: "#ffffff",
-    width: "60%",
-    height: "60%",
+    width: "7em",
+    height: "7em",
   };
   const filedisplay = {
     display: "none",
-  }
+  };
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
-  const [email, setEmail] = useState("");
-  const [majors, setMajors] = useState("");
+  const [mbti, setMbti] = useState("");
+  const [majors, setMajors] = useState([]);
+  const [gender, setGender] = useState("");
   const [information, setInformation] = useState("");
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("login-token");
+    setToken(token || " ");
+    
+  }, []);
+    useEffect(() => {
+    if (token) {
+      MypageRequest(token).then((res) => {
+        console.log(res);
+      });
+    }
+  }, [token]);
+
+  const [image, setImage] = useState("/dogImage.png");
+  const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const image = event.target.files?.[0];
+    console.log(image);
+    if (!image) {
+      alert("파일이 없습니다.");
+      return;
+    }
+
+    // 2. 임시 URL생성 -> 진짜 URL생성, 다른 브라우저에서도 접근 가능
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(image);
+    fileReader.onload = (data) => {
+      // 파일리더의 결과값이 string이 아닐수도 있으니 string일때만 실행되도록
+      if (typeof data.target?.result === "string") {
+        setImage(data.target?.result);
+      }
+    };
+  };
+
 
   return (
     <>
       <ImageBox>
         <ImageCoordinate>
           <Image
-            src="/dogImage.png"
+            src={image}
             width={150}
             height={150}
             alt="Picture of the author"
@@ -37,11 +74,17 @@ const LockMypage: React.FC = () => {
         <label htmlFor="file">
           <FindImage className="btn-upload">파일 업로드하기</FindImage>
         </label>
-        <input style={filedisplay} type="file" name="file" id="file" />
+        <input
+          style={filedisplay}
+          onChange={onChangeFile}
+          type="file"
+          name="file"
+          id="file"
+        />
       </ImageBox>
       <InfoBox>
         <label>
-          <span>이름:</span>
+          <span>별명:</span>
           <InputBox value={name} onChange={setName} defaultValue={name} />
         </label>
         <label>
@@ -49,12 +92,12 @@ const LockMypage: React.FC = () => {
           <InputBox value={age} onChange={setAge} defaultValue={age} />
         </label>
         <label>
-          <span>email:</span>
-          <InputBox value={email} onChange={setEmail} defaultValue={email} />
+          <span>성별:</span>
+          <InputBox value={gender} onChange={setGender} defaultValue={gender} />
         </label>
         <label>
           <span>mbti:</span>
-          <InputBox value={majors} onChange={setMajors} defaultValue={majors} />
+          <InputBox value={mbti} onChange={setMbti} defaultValue={mbti} />
         </label>
         <FixBtn>수정하기</FixBtn>
       </InfoBox>
@@ -144,6 +187,5 @@ const FindImage = styled.div`
     color: #fff;
   }
 `;
-
 
 export default LockMypage;
