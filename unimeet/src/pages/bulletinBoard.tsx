@@ -51,22 +51,55 @@ interface PostsData {
 // ];
 export default function BulletinBoard() {
   const [data, setData] = useState<PostsData>({ posts: [] });
+  const [token, setToken] =useState("");
   const searchUrl = "https://unimeet.duckdns.org/posts";
+  useEffect(()=>{localStorage.getItem("login-token");
+    setToken(token|| " ")
 
-  // posts 함수를 useCallback 훅으로 감싸서 콜백 함수가 변경되지 않도록 합니다.
-  const posts = useCallback(async () => {
-    try {
-      const response = await axios.get<PostsData>(`${searchUrl}`);
-      setData(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [searchUrl]);
+  },[]);
 
   useEffect(() => {
+    const posts = async () => {
+      try {
+        if (token !== null) {
+          const response = await axios.get<PostsData>(`${searchUrl}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer "+token,
+            },
+          });
+          setData(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     posts();
-  }, [posts]);
-  
+  }, [token]);
+
+  // useEffect(() => {
+  //   const getUserData = async () => {
+  //     try {
+  //       const config = {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       };
+  //       const response = await axios.get<UserData>(
+  //         "https://unimeet.duckdns.org/users/1/my-page", // 1에 실제로는 특정 사용자의 유저 아이디로 대체되어야 함
+  //         config
+  //       );
+  //       setUserData(response.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   getUserData();
+  // }, []);
+
   return (
     <MainBox>
       <Article>
@@ -78,7 +111,7 @@ export default function BulletinBoard() {
                   {/* <ProfileImage
                     src={each.imageUrl}
                     alt="작성자 이미지 사진"
-                  ></ProfileImage> */} 
+                  ></ProfileImage> */}
                 </ProfileImageWrap>
                 <Name>{each.id}</Name>
               </Writer>
