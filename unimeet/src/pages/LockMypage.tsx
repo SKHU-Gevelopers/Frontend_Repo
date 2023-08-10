@@ -1,10 +1,11 @@
-import InputBox from "@/components/InputBox";
 import MypageInfoBox, { ButtonStyle } from "@/components/MypageInfoBox";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { MypageRequest } from "@/util/myPage";
-import { css } from "@emotion/css";
+import { skhuDepartmentList, skhuMajor } from "@/constants/department";
+import { mbtilist } from "@/constants/mbtilist";
+import { SelectStyle } from "./signup";
 
 const LockMypage: React.FC = () => {
   const imageStyle = {
@@ -21,11 +22,12 @@ const LockMypage: React.FC = () => {
   const [data, setData] = useState({});
   const [name, setName] = useState("");
   const [mbti, setMbti] = useState("");
-  const [majors, setMajors] = useState([]);
+  const [majors, setMajors] = useState(["",""]);
   const [gender, setGender] = useState("");
   const [information, setInformation] = useState("");
   const [token, setToken] = useState("");
 
+  const [departmentNum, setDepartmentNum] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("login-token");
@@ -97,7 +99,7 @@ const LockMypage: React.FC = () => {
             defaultValue={name}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
-              value !== "" && setName(data.nickname);
+              // value !== "" && setName(data.nickname);
             }}
           />
         </label>
@@ -136,6 +138,30 @@ const LockMypage: React.FC = () => {
               };
             }}
           />
+        </label>
+        <label>
+        <SelectStyle>
+            <span className="label-title">소속 학과 1</span>
+            <select
+              className="input"
+              value={majors[0]}
+              defaultValue={
+                majors[0] || skhuMajor[departmentNum][0].requestText
+              }
+              onChange={(e) => {
+                const selectedMajor = e.target.value;
+                const updatedMajors = [...majors];
+                updatedMajors[0] = selectedMajor;
+                setMajors(updatedMajors);
+              }}
+            >
+              {skhuMajor[departmentNum].map((major) => (
+                <option key={major.id} value={major.requestText}>
+                  {major.majors}
+                </option>
+              ))}
+            </select>
+          </SelectStyle>
         </label>
         <FixBtn>수정하기</FixBtn>
       </InfoBox>

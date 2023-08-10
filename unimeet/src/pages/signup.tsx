@@ -5,9 +5,7 @@ import { LoginBox } from "./MainLogin";
 import BubbleGround from "@/components/BubbleGround";
 import { keyframes } from "@emotion/react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { authenticationRequest } from "@/util/signUtil";
-import axios from "axios";
 
 interface DepartmentType {
   id: number;
@@ -57,11 +55,12 @@ export default function Signup(this: any) {
   const handleSendBtnClick = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 기본 동작 막기
     authenticationRequest(email, username)
-      .then((res) => {
+      .then(() => {
         alert("인증번호가 전송되었습니다.");
       })
       .catch((err) => {
         alert(err.message);
+        console.log(email, username); 
       });
   };
 
@@ -451,7 +450,7 @@ const GenderLabel = styled.label`
     }
   }
 `;
-const SelectStyle = styled(LabelStyle)``;
+export const SelectStyle = styled(LabelStyle)``;
 
 const SendBtn = styled.button`
   border: none;
