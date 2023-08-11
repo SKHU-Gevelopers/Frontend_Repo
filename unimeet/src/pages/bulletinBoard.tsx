@@ -1,7 +1,7 @@
 // api 연결 해야 함
 import Heart from "@/components/HeartCount";
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface Post {
@@ -15,9 +15,9 @@ interface Post {
   likes: number;
 }
 
-interface PostsData {
-  posts: Post[];
-}
+// interface PostsData {
+//   posts: Post[];
+// }
 
 // const post: Post[] = [
 //   {
@@ -50,30 +50,32 @@ interface PostsData {
 //   },
 // ];
 export default function BulletinBoard() {
-  const [data, setData] = useState<PostsData>({ posts: [] });
+  const [data, setData] = useState<Post[]>([]);
   const [token, setToken] = useState("");
   const searchUrl = "https://unimeet.duckdns.org/posts";
 
   useEffect(() => {
-    (async () => {
+    const getPostsData = async () => {
       try {
-        const token = localStorage.getItem("login-token");
-        setToken(token || " ");
+        setToken(localStorage.getItem("login-token") || " ");
         if (token) {
           const headers = {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           };
-          const response = await axios.get<PostsData>(`${searchUrl}`, {
+          const response = await axios.get(`${searchUrl}`, {
             headers,
           });
-          setData(response.data);
+          setData(response.data.data.posts);
         }
+        console.log(data);
       } catch (error) {
         console.log(error);
       }
-    })();
-  }, []);
+    };
+    getPostsData();
+  }, [token]);
+
 
   // useEffect(() => {
   //   const getUserData = async () => {
@@ -100,37 +102,38 @@ export default function BulletinBoard() {
   return (
     <MainBox>
       <Article>
-        {data.posts.map((each, index) => {
-          return (
-            <Post key={index}>
-              <Writer>
-                <ProfileImageWrap>
-                  {/* <ProfileImage
+        {data&&
+          data.map((each, index) => {
+            return (
+              <Post key={index}>
+                <Writer>
+                  <ProfileImageWrap>
+                    {/* <ProfileImage
                     src={each.imageUrl}
                     alt="작성자 이미지 사진"
                   ></ProfileImage> */}
-                </ProfileImageWrap>
-                <Name>{each.id}</Name>
-              </Writer>
-              <PictureWrap>
-                <PictureImage
-                  src={each.imageUrl}
-                  alt="게시글 첨부 사진"
-                ></PictureImage>
-              </PictureWrap>
-              <WritingBox>
-                <Title>{each.title}</Title>
-                <Text>{each.content}</Text>
-              </WritingBox>
-              <ReactionBox>
-                <Heart />
-                <CommentWrap>
-                  <Comment src="/comment.png" alt="댓글" />
-                </CommentWrap>
-              </ReactionBox>
-            </Post>
-          );
-        })}
+                  </ProfileImageWrap>
+                  <Name>{each.id}</Name>
+                </Writer>
+                <PictureWrap>
+                  <PictureImage
+                    src={each.imageUrl}
+                    alt="게시글 첨부 사진"
+                  ></PictureImage>
+                </PictureWrap>
+                <WritingBox>
+                  <Title>{each.title}</Title>
+                  <Text>{each.content}</Text>
+                </WritingBox>
+                <ReactionBox>
+                  <Heart />
+                  <CommentWrap>
+                    <Comment src="/comment.png" alt="댓글" />
+                  </CommentWrap>
+                </ReactionBox>
+              </Post>
+            );
+          })}
       </Article>
     </MainBox>
   );
