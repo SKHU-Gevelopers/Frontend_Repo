@@ -1,5 +1,15 @@
 import styled from "styled-components";
 
+interface Post {
+  title: string;
+  content: string;
+  imageUrls: [];
+  state: string;
+  maxPeople: number;
+  gender: string;
+  likes: number;
+}
+
 export default function Post() {
   return (
     <Main>
@@ -9,7 +19,7 @@ export default function Post() {
         </ProfileImageWrap>
         <Name>작성자</Name>
       </Writer>
-      <Title></Title>
+      <Title>임시 제목</Title>
       <Details>
         <WriterOfDetailsBox>
           <Detail>작성자</Detail>
@@ -88,6 +98,9 @@ const Name = styled.div`
 const Title = styled.div`
   width: 90%;
   height: 5vh;
+
+  font-size: 1.7rem;
+  font-weight: 800;
 `;
 
 const Details = styled.div`
@@ -96,6 +109,7 @@ const Details = styled.div`
 
   background-color: white;
 
+  border-radius: 0.3rem;
   border: solid 1px rgba(103, 79, 244, 0.8);
 `;
 
@@ -155,10 +169,12 @@ const Apply = styled.div`
   margin-top: 2vh;
 
   width: 90%;
-  height: 5vh;
+  height: 6vh;
 
   background-color: rgba(103, 79, 244);
   color: white;
 
   font-size: 1.5rem;
+
+  border-radius: 0.3rem;
 `;
