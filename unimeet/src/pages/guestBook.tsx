@@ -2,71 +2,51 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-// interface Review {
-//   guestImage: string;
-//   reviewComment: string;
-// }
-
-// const review: Review[] = [
-//   { guestImage: "/..", reviewComment: "이분 완전 분위기 메이커 ㅋㅋㅋ" },
-//   { guestImage: "/..", reviewComment: "거의 말술.. 술 왜이렇게 잘 마셔요?" },
-//   { guestImage: "/..", reviewComment: "술 강요 안하는 모습 구웃" },
-//   { guestImage: "/..", reviewComment: "이분 완전 재밌음 ㅋㅋㅋㅋㅋㅋ" },
-// ];
-
-// interface Hashtag {
-//   hashtagComment: string;
-// }
-
-// const hashtag: Hashtag[] = [
-//   { hashtagComment: "23년 분위기 메이커" },
-//   { hashtagComment: "알코올 파괴자" },
-// ];
-
-interface StudentData {
+interface Student {
   profileImageUrl: string;
   nickname: string;
   department: string;
   mbti: string;
 }
 
-interface GuestBookData {
+interface GuestBook {
   writerId: number;
   profileImageUrl: string;
   content: string;
 }
 
-interface UserData {
-  user: StudentData;
-  guestBooks: GuestBookData[];
-}
-
 export default function GestBook() {
-  const [userData, setUserData] = useState<UserData>();
-  // const [token, setToken] = useState<string>(''); // 테스트용이 아니면 사용할 것
+  const [studentData, setStudentData] = useState<Student>();
+  const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
+  const [token, setToken] = useState<string>("");
 
   useEffect(() => {
-    const getUserData = async () => {
+    const getGuestBookUserData = async () => {
       try {
-        const accessToken = "YOUR_ACCESS_TOKEN"; // 아직 로그인 구현이 안 끝난 것 같아, token 예시 원래 없을 문임
-        const config = {
-          headers: {
+        setToken(localStorage.getItem("login-token") || " ");
+        if (token) {
+          const headers = {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        };
-        const response = await axios.get<UserData>(
-          "https://unimeet.duckdns.org/users/1/my-page", // 1에 실제로는 특정 사용자의 유저 아이디로 대체되어야 함
-          config
-        );
-        setUserData(response.data);
+            Authorization: `Bearer ${token}`,
+          };
+          const response = await axios.get(
+            "https://unimeet.duckdns.org/users/1/my-page",
+            {
+              headers,
+            }
+          );
+          setStudentData(response.data.data.student);
+          setGuestBookData(response.data.data.guestBooks);
+        }
+        console.log(guestBookData);
+        console.log(studentData);
+        console.log(token);
       } catch (error) {
         console.log(error);
       }
     };
-
-    getUserData();
-  }, []);
+    getGuestBookUserData();
+  }, [token]);
 
   return (
     <MainBox>
@@ -74,35 +54,33 @@ export default function GestBook() {
       <ProfileBox>
         <ProfileImageWrap>
           <ProfileImage
-            src={userData?.user.profileImageUrl}
+            src={studentData?.profileImageUrl}
             alt="profileImage"
           ></ProfileImage>
         </ProfileImageWrap>
-        <Name>{userData?.user.nickname}</Name>
+        <Name>{studentData?.nickname}</Name>
         <InformationBox>
           {/* {user?.majors.map((each, index) => (
             <Department key={index}>
               <p>{each.major}</p> */}
-          <Department>{userData?.user.department}</Department>
+          <Department>{studentData?.department}</Department>
           {/* ))} */}
         </InformationBox>
         <MBTI>
-          <p>{userData?.user.mbti}</p>
+          <p>{studentData?.mbti}</p>
         </MBTI>
         {/* <Introduce>{user?.introduction}</Introduce> */}
       </ProfileBox>
       <GuestBooks>
-        {/* <HashtagBox>
-          {hashtag.map((each, index) => {
-            return (
-              <EachHashtag key={index}>#{each.hashtagComment}</EachHashtag>
-            ); 
-          })}
-        </HashtagBox> */}
-        {userData?.guestBooks.map((each, Id) => {
+        {guestBookData?.map((each, Id) => {
           return (
             <EachReview key={`writer${Id}`}>
-              <GuestImageWrap>{each.profileImageUrl}</GuestImageWrap>
+              <GuestImageWrap>
+                <GuestImage
+                  src={each.profileImageUrl}
+                  alt="profileImage"
+                ></GuestImage>
+              </GuestImageWrap>
               <GuestComment>{each.content}</GuestComment>
             </EachReview>
           );
@@ -148,10 +126,10 @@ const ProfileImageWrap = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  /* width: 40%;
-  height: 18vh;
+  width: 100%;
+  height: 100%;
 
-  border-radius: 50%; */
+  border-radius: 50%;
 `;
 
 const Name = styled.div`
@@ -230,20 +208,16 @@ const GuestBooks = styled.div`
 
   width: 100%;
   height: 50vh;
+
+  border-radius: 50%;
 `;
 
-const HashtagBox = styled.div`
-  display: flex;
-  gap: 3%;
+const GuestImage = styled.img`
+  width: 100%;
+  height: 100%;
 
-  margin-bottom: 3%;
-
-  width: 90%;
-
-  font-weight: 600;
+  border-radius: 50%;
 `;
-
-const EachHashtag = styled.div``;
 
 const EachReview = styled.div`
   display: flex;
