@@ -2,10 +2,16 @@ import MypageInfoBox, { ButtonStyle } from "@/components/MypageInfoBox";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { MypageRequest } from "@/util/myPage";
+import { MypageRequest, MypageCorrection } from "@/util/myPage";
 import { skhuDepartmentList, skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
-import { SelectStyle } from "./signup";
+import { InputDiv } from "@/styles/mypageStyle";
+
+interface MajorsType {
+  id: number;
+  majors: string;
+  requestText: string;
+}
 
 const LockMypage: React.FC = () => {
   const imageStyle = {
@@ -13,21 +19,26 @@ const LockMypage: React.FC = () => {
     borderWidth: "1px",
     borderStyle: "solid",
     borderColor: "#ffffff",
-    width: "7em",
-    height: "7em",
+    width: "5.5em",
+    height: "5.5em",
   };
   const filedisplay = {
     display: "none",
   };
-  const [data, setData] = useState({});
+
   const [name, setName] = useState("");
   const [mbti, setMbti] = useState("");
-  const [majors, setMajors] = useState(["",""]);
+  const [major1, setMajor1] = useState("");
+  const [major2, setMajor2] = useState("");
   const [gender, setGender] = useState("");
   const [information, setInformation] = useState("");
   const [token, setToken] = useState("");
 
-  const [departmentNum, setDepartmentNum] = useState(0);
+  const skhuMajors: MajorsType[] = skhuMajor.flat().map((major) => ({
+    id: major.id,
+    majors: major.majors,
+    requestText: major.requestText,
+  }));
 
   useEffect(() => {
     const token = localStorage.getItem("login-token");
@@ -36,18 +47,18 @@ const LockMypage: React.FC = () => {
   useEffect(() => {
     if (token) {
       MypageRequest(token).then((res) => {
-        setData(res.data.data);
-        // setName(data.nickname);
-        // setMbti(data.mbti);
-        // setMajors(data.majors);
-        // setGender(data.gender);
-        // setImage(data.profileImageUrl);
-        // setInformation(data.introduction);
+        console.log(res.data.data);
+        setName(res.data.data.nickname);
+        setMbti(res.data.data.mbti);
+        setMajor1(res.data.data.majors[0]);
+        setMajor2(res.data.data.majors[1]);
+        setGender(res.data.data.gender);
+        setInformation(res.data.data.introduction);
+        setImage(res.data.data.profileImageUrl);
       });
     }
   }, [token]);
-  console.log(data);
-  
+
   const [image, setImage] = useState("/dogImage.png");
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files?.[0];
@@ -65,17 +76,25 @@ const LockMypage: React.FC = () => {
     };
   };
 
-  const handleName = (value: string) => {
-    setInformation(value);
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    MypageCorrection(token)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
   return (
     <>
       <ImageBox>
         <ImageCoordinate>
           <Image
             src={image}
-            width={150}
-            height={150}
+            width={100}
+            height={100}
             alt="Picture of the author"
             style={imageStyle}
           />
@@ -103,70 +122,82 @@ const LockMypage: React.FC = () => {
             }}
           />
         </label>
-        {/* <label>
-          <span>나이:</span>
-          <InputStyle
-            value={age}
-            defaultValue={age}
-            onChange={() => {
-              (e: React.ChangeEvent<HTMLInputElement>) => {
-                setAge(e.target.value);
-              };
-            }}
-          />
-        </label> */}
         <label>
           <span>성별:</span>
-          <InputStyle
-            value={gender}
-            defaultValue={gender}
-            onChange={() => {
-              (e: React.ChangeEvent<HTMLInputElement>) => {
-                setGender(e.target.value);
-              };
-            }}
-          />
-        </label>
-        <label>
-          <span>mbti:</span>
-          <InputStyle
+          <SelectStyle
+            className="input"
             value={mbti}
-            defaultValue={mbti}
-            onChange={() => {
-              (e: React.ChangeEvent<HTMLInputElement>) => {
-                setMbti(e.target.value);
-              };
-            }}
-          />
-        </label>
-        <label>
-        <SelectStyle>
-            <span className="label-title">소속 학과 1</span>
-            <select
-              className="input"
-              value={majors[0]}
-              defaultValue={
-                majors[0] || skhuMajor[departmentNum][0].requestText
-              }
-              onChange={(e) => {
-                const selectedMajor = e.target.value;
-                const updatedMajors = [...majors];
-                updatedMajors[0] = selectedMajor;
-                setMajors(updatedMajors);
-              }}
-            >
-              {skhuMajor[departmentNum].map((major) => (
-                <option key={major.id} value={major.requestText}>
-                  {major.majors}
-                </option>
-              ))}
-            </select>
+            defaultValue={mbtilist[0].mbti}
+            onChange={(e) => setGender(e.target.value)}
+          >
+            <option key={0} value="남성">
+              {"남성"}
+            </option>
+            <option key={1} value={"여성"}>
+              {"여성"}
+            </option>
           </SelectStyle>
         </label>
-        <FixBtn>수정하기</FixBtn>
-      </InfoBox>
-      <InfoBox>
-        <MypageInfoBox value={information} defaultValue={information} />
+        <label>
+          <span className="label-title">mbti: </span>
+          <SelectStyle
+            className="input"
+            value={mbti}
+            onChange={(e) => setMbti(e.target.value)}
+          >
+            {mbtilist.map((mbtis) => (
+              <option key={mbtis.mbti} value={mbtis.mbti}>
+                {mbtis.mbti}
+              </option>
+            ))}
+          </SelectStyle>
+        </label>
+        <label>
+          <span>소속 학과 1:</span>
+          <SelectStyle
+            className="class1"
+            value={major1}
+            onChange={(e) => {
+              setMajor1(e.target.value);
+            }}
+          >
+            {skhuMajors.map((major) => (
+              <option key={major.requestText} value={major.majors}>
+                {major.majors}
+              </option>
+            ))}
+          </SelectStyle>
+        </label>
+        <label>
+          <span>소속 학과 2:</span>
+          <SelectStyle
+            className="input"
+            value={major2}
+            defaultValue={major2}
+            onChange={(e) => {
+              setMajor2(e.target.value);
+            }}
+          >
+            {skhuMajors.map((major) => (
+              <option key={major.requestText} value={major.majors}>
+                {major.majors}
+              </option>
+            ))}
+          </SelectStyle>
+        </label>
+        <InputDiv
+          value={information}
+          onChange={(e) => setInformation(e.target.value)}
+          name="infoBox"
+          rows={4}
+          cols={40}
+        />
+        <div>
+          <ButtonStyle type="reset">초기화</ButtonStyle>
+          <ButtonStyle onClick={handleSubmit} type="submit">
+            수정하기
+          </ButtonStyle>
+        </div>
       </InfoBox>
     </>
   );
@@ -182,7 +213,7 @@ const InfoBox = styled.div`
   min-width: fit-content;
   height: fit-content;
   margin: 0.5rem 1rem;
-  padding: 0.7rem;
+  padding: 0.4rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -195,7 +226,7 @@ const InfoBox = styled.div`
     align-items: center;
     & > span {
       margin: 0px 10px;
-      width: 4em;
+      width: 5em;
       font-size: 120%;
     }
   }
@@ -209,14 +240,14 @@ const ImageBox = styled.div`
 
 const InputStyle = styled.input`
   font-family: monospace;
-  width: 100%;
+  width: 10rem;
   outline: none;
   border: none;
   border-bottom: 1px solid #674ff4;
   padding: 5px;
   background-color: #faebd700;
   transition: 0.3s;
-  color: #5b5b5b;
+  color: #000000;
   &:focus {
     box-shadow: 0 2px 4px #312576;
     background-color: #c0b5ff42;
@@ -224,11 +255,23 @@ const InputStyle = styled.input`
     transition: all 1s;
   }
 `;
+
 const ImageCoordinate = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 1rem;
+`;
+const SelectStyle = styled.select`
+  font-family: monospace;
+  width: 10rem;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #674ff4;
+  padding: 5px;
+  background-color: #faebd700;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
 `;
 const spin = keyframes`
 0% {
