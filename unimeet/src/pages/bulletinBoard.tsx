@@ -5,50 +5,16 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface Post {
-  id: number; // id 가 nickname은 아니죠?
+  id: number;
   title: string;
   content: string;
-  imageUrl: string; // 프로필 이미지가 아니죠?
+  imageUrl: string;
   state: string;
   maxPeople: number;
   gender: string;
   likes: number;
 }
 
-// interface PostsData {
-//   posts: Post[];
-// }
-
-// const post: Post[] = [
-//   {
-//     profileImage: "",
-//     name: "콩떡이",
-//     picture: "../",
-//     title: "제목을 적어요~",
-//     text: "글 어쩌구 저쩌구 어쩌구 저쩌구구",
-//   },
-//   {
-//     profileImage: "",
-//     name: "배달원",
-//     picture: "../",
-//     title: "제목을 적어요~",
-//     text: "글만 적은 게시글 사진 없이",
-//   },
-//   {
-//     profileImage: "",
-//     name: "콩떡이",
-//     picture: "../",
-//     title: "제목을",
-//     text: "글 어쩌구 저쩌구",
-//   },
-//   {
-//     profileImage: "",
-//     name: "콩떡이",
-//     picture: "../",
-//     title: "제목을",
-//     text: "글 어쩌구 저쩌구",
-//   },
-// ];
 export default function BulletinBoard() {
   const [data, setData] = useState<Post[]>([]);
   const [token, setToken] = useState("");
@@ -76,33 +42,10 @@ export default function BulletinBoard() {
     getPostsData();
   }, [token]);
 
-
-  // useEffect(() => {
-  //   const getUserData = async () => {
-  //     try {
-  //       const config = {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       };
-  //       const response = await axios.get<UserData>(
-  //         "https://unimeet.duckdns.org/users/1/my-page", // 1에 실제로는 특정 사용자의 유저 아이디로 대체되어야 함
-  //         config
-  //       );
-  //       setUserData(response.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   getUserData();
-  // }, []);
-
   return (
     <MainBox>
       <Article>
-        {data&&
+        {data &&
           data.map((each, index) => {
             return (
               <Post key={index}>
