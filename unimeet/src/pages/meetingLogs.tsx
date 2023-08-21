@@ -49,7 +49,7 @@ const ReceivedRequestsBtn = styled.div`
   align-items: center;
   justify-content: center;
 
-  width: 50%;
+  width: 49%;
   height: 5vh;
 
   border-radius: 1.1rem 1.1rem 0 0;
@@ -67,7 +67,7 @@ const SentRequestsBtn = styled.div`
   align-items: center;
   justify-content: center;
 
-  width: 50%;
+  width: 49%;
   height: 5vh;
 
   border-radius: 1.1rem 1.1rem 0 0;
@@ -125,5 +125,5 @@ const Article = styled.div`
 `;
 
 const Div = styled.div`
-  font-size: 100px;
+  font-size: 2rem;
 `;
