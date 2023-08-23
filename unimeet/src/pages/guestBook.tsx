@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface Student {
@@ -19,7 +19,7 @@ export default function GestBook() {
   const [studentData, setStudentData] = useState<Student>();
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
   const [token, setToken] = useState<string>("");
-  // const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
+  const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
 
   // 공개 프로필 조회: 학생 정보와 학생의 방명록 불러오기
   useEffect(() => {
@@ -47,6 +47,35 @@ export default function GestBook() {
     getGuestBookUserData();
   }, [token]);
 
+  // 방명록 작성 input 내용 저장
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPostGuestBookComment(e.target.value);
+  };
+
+  // 방명록 작성해서 보내기
+  const postGuestBook = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setToken(localStorage.getItem("login-token") || " ");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const postData = {
+          content: postGuestBookComment,
+        };
+        await axios.post(
+          "https://unimeet.duckdns.org/users/1/guestbooks", // 프로필 클릭시 users부분이 해당 학생 id로 바뀌게 수정 필요
+          postData,
+          { headers }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <MainBox>
       <DmButton src="/dmButton.png" alt="dmButton" />
@@ -71,7 +100,12 @@ export default function GestBook() {
         {/* <Introduce>{user?.introduction}</Introduce> */}
       </ProfileBox>
       <GuestBooks>
-        <PostGuestBookCommentInputBox></PostGuestBookCommentInputBox>
+        <GuestBookForm onSubmit={postGuestBook}>
+          <PostGuestBookCommentInputBox
+          placeholder="방명록을 남겨보세요."
+            onChange={onChange}
+          ></PostGuestBookCommentInputBox>
+        </GuestBookForm>
         {guestBookData?.map((each, Id) => {
           return (
             <EachReview key={`writer${Id}`}>
@@ -214,16 +248,28 @@ const GuestBooks = styled.div`
   border-radius: 50%;
 `;
 
-const PostGuestBookCommentInputBox = styled.input`
+const GuestBookForm = styled.form`
   margin-bottom: 2vh;
 
   width: 90%;
   height: 20vh;
+`;
+
+const PostGuestBookCommentInputBox = styled.input`
+  padding-left: 3%;
+
+  width: 100%;
+  height: 100%;
 
   border-radius: 1rem;
+  border: none;
+  outline: none;
 
   background-color: white;
   opacity: 0.7;
+
+  font-size: 1rem;
+  font-weight: 600;
 `;
 
 const GuestImage = styled.img`
