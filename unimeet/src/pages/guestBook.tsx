@@ -19,7 +19,9 @@ export default function GestBook() {
   const [studentData, setStudentData] = useState<Student>();
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
   const [token, setToken] = useState<string>("");
+  // const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
 
+  // 공개 프로필 조회: 학생 정보와 학생의 방명록 불러오기
   useEffect(() => {
     const getGuestBookUserData = async () => {
       try {
@@ -30,7 +32,7 @@ export default function GestBook() {
             Authorization: `Bearer ${token}`,
           };
           const response = await axios.get(
-            "https://unimeet.duckdns.org/users/1/my-page",
+            "https://unimeet.duckdns.org/users/1/my-page?page=2", // 프로필 클릭시 users부분이 해당 학생 id로 바뀌게 수정 필요
             {
               headers,
             }
@@ -38,9 +40,6 @@ export default function GestBook() {
           setStudentData(response.data.data.student);
           setGuestBookData(response.data.data.guestBooks);
         }
-        console.log(guestBookData);
-        console.log(studentData);
-        console.log(token);
       } catch (error) {
         console.log(error);
       }
@@ -72,6 +71,7 @@ export default function GestBook() {
         {/* <Introduce>{user?.introduction}</Introduce> */}
       </ProfileBox>
       <GuestBooks>
+        <PostGuestBookCommentInputBox></PostGuestBookCommentInputBox>
         {guestBookData?.map((each, Id) => {
           return (
             <EachReview key={`writer${Id}`}>
@@ -95,15 +95,18 @@ const MainBox = styled.div`
   flex-direction: column;
   align-content: center;
 
-  margin-top: 2vh;
   padding-bottom: 2vh;
 
   width: 100%;
   height: 100vh;
+
+  overflow: auto;
 `;
 
 const DmButton = styled.img`
+  margin-top: 2vh;
   margin-left: 85%;
+
   width: 8%;
   height: 4vh;
 `;
@@ -204,12 +207,23 @@ const GuestBooks = styled.div`
   align-items: center;
 
   padding-top: 2vh;
-  padding-bottom: 2vh;
 
   width: 100%;
-  height: 50vh;
+  height: 70vh;
 
   border-radius: 50%;
+`;
+
+const PostGuestBookCommentInputBox = styled.input`
+  margin-bottom: 2vh;
+
+  width: 90%;
+  height: 20vh;
+
+  border-radius: 1rem;
+
+  background-color: white;
+  opacity: 0.7;
 `;
 
 const GuestImage = styled.img`
