@@ -1,72 +1,80 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 
-// interface Review {
-//   guestImage: string;
-//   reviewComment: string;
-// }
-
-// const review: Review[] = [
-//   { guestImage: "/..", reviewComment: "이분 완전 분위기 메이커 ㅋㅋㅋ" },
-//   { guestImage: "/..", reviewComment: "거의 말술.. 술 왜이렇게 잘 마셔요?" },
-//   { guestImage: "/..", reviewComment: "술 강요 안하는 모습 구웃" },
-//   { guestImage: "/..", reviewComment: "이분 완전 재밌음 ㅋㅋㅋㅋㅋㅋ" },
-// ];
-
-// interface Hashtag {
-//   hashtagComment: string;
-// }
-
-// const hashtag: Hashtag[] = [
-//   { hashtagComment: "23년 분위기 메이커" },
-//   { hashtagComment: "알코올 파괴자" },
-// ];
-
-interface StudentData {
+interface Student {
   profileImageUrl: string;
   nickname: string;
   department: string;
   mbti: string;
 }
 
-interface GuestBookData {
+interface GuestBook {
   writerId: number;
   profileImageUrl: string;
   content: string;
 }
 
-interface UserData {
-  user: StudentData;
-  guestBooks: GuestBookData[];
-}
-
 export default function GestBook() {
-  const [userData, setUserData] = useState<UserData>();
-  // const [token, setToken] = useState<string>(''); // 테스트용이 아니면 사용할 것
+  const [studentData, setStudentData] = useState<Student>();
+  const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
+  const [token, setToken] = useState<string>("");
+  const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
 
+  // 공개 프로필 조회: 학생 정보와 학생의 방명록 불러오기
   useEffect(() => {
-    const getUserData = async () => {
+    const getGuestBookUserData = async () => {
       try {
-        const accessToken = "YOUR_ACCESS_TOKEN"; // 아직 로그인 구현이 안 끝난 것 같아, token 예시 원래 없을 문임
-        const config = {
-          headers: {
+        setToken(localStorage.getItem("login-token") || " ");
+        if (token) {
+          const headers = {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        };
-        const response = await axios.get<UserData>(
-          "https://unimeet.duckdns.org/users/1/my-page", // 1에 실제로는 특정 사용자의 유저 아이디로 대체되어야 함
-          config
-        );
-        setUserData(response.data);
+            Authorization: `Bearer ${token}`,
+          };
+          const response = await axios.get(
+            "https://unimeet.duckdns.org/users/1/my-page?page=2", // 프로필 클릭시 users부분이 해당 학생 id로 바뀌게 수정 필요
+            {
+              headers,
+            }
+          );
+          setStudentData(response.data.data.student);
+          setGuestBookData(response.data.data.guestBooks);
+        }
       } catch (error) {
         console.log(error);
       }
     };
+    getGuestBookUserData();
+  }, [token]);
 
-    getUserData();
-  }, []);
+  // 방명록 작성 input 내용 저장
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPostGuestBookComment(e.target.value);
+  };
+
+  // 방명록 작성해서 보내기
+  const postGuestBook = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setToken(localStorage.getItem("login-token") || " ");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const postData = {
+          content: postGuestBookComment,
+        };
+        await axios.post(
+          "https://unimeet.duckdns.org/users/1/guestbooks", // 프로필 클릭시 users부분이 해당 학생 id로 바뀌게 수정 필요
+          postData,
+          { headers }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <MainBox>
@@ -74,35 +82,39 @@ export default function GestBook() {
       <ProfileBox>
         <ProfileImageWrap>
           <ProfileImage
-            src={userData?.user.profileImageUrl}
+            src={studentData?.profileImageUrl}
             alt="profileImage"
           ></ProfileImage>
         </ProfileImageWrap>
-        <Name>{userData?.user.nickname}</Name>
+        <Name>{studentData?.nickname}</Name>
         <InformationBox>
           {/* {user?.majors.map((each, index) => (
             <Department key={index}>
               <p>{each.major}</p> */}
-          <Department>{userData?.user.department}</Department>
+          <Department>{studentData?.department}</Department>
           {/* ))} */}
         </InformationBox>
         <MBTI>
-          <p>{userData?.user.mbti}</p>
+          <p>{studentData?.mbti}</p>
         </MBTI>
         {/* <Introduce>{user?.introduction}</Introduce> */}
       </ProfileBox>
       <GuestBooks>
-        {/* <HashtagBox>
-          {hashtag.map((each, index) => {
-            return (
-              <EachHashtag key={index}>#{each.hashtagComment}</EachHashtag>
-            ); 
-          })}
-        </HashtagBox> */}
-        {userData?.guestBooks.map((each, Id) => {
+        <GuestBookForm onSubmit={postGuestBook}>
+          <PostGuestBookCommentInputBox
+          placeholder="방명록을 남겨보세요."
+            onChange={onChange}
+          ></PostGuestBookCommentInputBox>
+        </GuestBookForm>
+        {guestBookData?.map((each, Id) => {
           return (
             <EachReview key={`writer${Id}`}>
-              <GuestImageWrap>{each.profileImageUrl}</GuestImageWrap>
+              <GuestImageWrap>
+                <GuestImage
+                  src={each.profileImageUrl}
+                  alt="profileImage"
+                ></GuestImage>
+              </GuestImageWrap>
               <GuestComment>{each.content}</GuestComment>
             </EachReview>
           );
@@ -117,15 +129,18 @@ const MainBox = styled.div`
   flex-direction: column;
   align-content: center;
 
-  margin-top: 2vh;
   padding-bottom: 2vh;
 
   width: 100%;
   height: 100vh;
+
+  overflow: auto;
 `;
 
 const DmButton = styled.img`
+  margin-top: 2vh;
   margin-left: 85%;
+
   width: 8%;
   height: 4vh;
 `;
@@ -148,10 +163,10 @@ const ProfileImageWrap = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  /* width: 40%;
-  height: 18vh;
+  width: 100%;
+  height: 100%;
 
-  border-radius: 50%; */
+  border-radius: 50%;
 `;
 
 const Name = styled.div`
@@ -226,24 +241,43 @@ const GuestBooks = styled.div`
   align-items: center;
 
   padding-top: 2vh;
-  padding-bottom: 2vh;
 
   width: 100%;
-  height: 50vh;
+  height: 70vh;
+
+  border-radius: 50%;
 `;
 
-const HashtagBox = styled.div`
-  display: flex;
-  gap: 3%;
-
-  margin-bottom: 3%;
+const GuestBookForm = styled.form`
+  margin-bottom: 2vh;
 
   width: 90%;
+  height: 20vh;
+`;
 
+const PostGuestBookCommentInputBox = styled.input`
+  padding-left: 3%;
+
+  width: 100%;
+  height: 100%;
+
+  border-radius: 1rem;
+  border: none;
+  outline: none;
+
+  background-color: white;
+  opacity: 0.7;
+
+  font-size: 1rem;
   font-weight: 600;
 `;
 
-const EachHashtag = styled.div``;
+const GuestImage = styled.img`
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
+`;
 
 const EachReview = styled.div`
   display: flex;

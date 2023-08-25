@@ -1,136 +1,82 @@
 // api 연결 해야 함
 import Heart from "@/components/HeartCount";
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface Post {
-  id: number; // id 가 nickname은 아니죠?
+  id: number;
   title: string;
   content: string;
-  imageUrl: string; // 프로필 이미지가 아니죠?
+  imageUrl: string;
   state: string;
   maxPeople: number;
   gender: string;
   likes: number;
 }
 
-interface PostsData {
-  posts: Post[];
-}
-
-// const post: Post[] = [
-//   {
-//     profileImage: "",
-//     name: "콩떡이",
-//     picture: "../",
-//     title: "제목을 적어요~",
-//     text: "글 어쩌구 저쩌구 어쩌구 저쩌구구",
-//   },
-//   {
-//     profileImage: "",
-//     name: "배달원",
-//     picture: "../",
-//     title: "제목을 적어요~",
-//     text: "글만 적은 게시글 사진 없이",
-//   },
-//   {
-//     profileImage: "",
-//     name: "콩떡이",
-//     picture: "../",
-//     title: "제목을",
-//     text: "글 어쩌구 저쩌구",
-//   },
-//   {
-//     profileImage: "",
-//     name: "콩떡이",
-//     picture: "../",
-//     title: "제목을",
-//     text: "글 어쩌구 저쩌구",
-//   },
-// ];
 export default function BulletinBoard() {
-  const [data, setData] = useState<PostsData>({ posts: [] });
+  const [data, setData] = useState<Post[]>([]);
   const [token, setToken] = useState("");
   const searchUrl = "https://unimeet.duckdns.org/posts";
 
   useEffect(() => {
-    (async () => {
+    const getPostsData = async () => {
       try {
-        const token = localStorage.getItem("login-token");
-        setToken(token || " ");
+        setToken(localStorage.getItem("login-token") || " ");
         if (token) {
           const headers = {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           };
-          const response = await axios.get<PostsData>(`${searchUrl}`, {
+          const response = await axios.get(`${searchUrl}`, {
             headers,
           });
-          setData(response.data);
+          setData(response.data.data.posts);
         }
+        console.log(data);
       } catch (error) {
         console.log(error);
       }
-    })();
-  }, []);
-
-  // useEffect(() => {
-  //   const getUserData = async () => {
-  //     try {
-  //       const config = {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       };
-  //       const response = await axios.get<UserData>(
-  //         "https://unimeet.duckdns.org/users/1/my-page", // 1에 실제로는 특정 사용자의 유저 아이디로 대체되어야 함
-  //         config
-  //       );
-  //       setUserData(response.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   getUserData();
-  // }, []);
+    };
+    getPostsData();
+  }, [token]);
 
   return (
     <MainBox>
       <Article>
-        {data.posts.map((each, index) => {
-          return (
-            <Post key={index}>
-              <Writer>
-                <ProfileImageWrap>
-                  {/* <ProfileImage
+        {data &&
+          data.map((each, index) => {
+            return (
+              <Post key={index}>
+                <Writer>
+                  <ProfileImageWrap>
+                    {/* <ProfileImage
                     src={each.imageUrl}
                     alt="작성자 이미지 사진"
                   ></ProfileImage> */}
-                </ProfileImageWrap>
-                <Name>{each.id}</Name>
-              </Writer>
-              <PictureWrap>
-                <PictureImage
-                  src={each.imageUrl}
-                  alt="게시글 첨부 사진"
-                ></PictureImage>
-              </PictureWrap>
-              <WritingBox>
-                <Title>{each.title}</Title>
-                <Text>{each.content}</Text>
-              </WritingBox>
-              <ReactionBox>
-                <Heart />
-                <CommentWrap>
-                  <Comment src="/comment.png" alt="댓글" />
-                </CommentWrap>
-              </ReactionBox>
-            </Post>
-          );
-        })}
+                  </ProfileImageWrap>
+                  <Name>{each.id}</Name>
+                </Writer>
+                <PictureWrap>
+                  <PictureImage
+                    src={each.imageUrl}
+                    alt="게시글 첨부 사진"
+                  ></PictureImage>
+                </PictureWrap>
+                <WritingBox>
+                  <Title>{each.title}</Title>
+                  <Text>{each.content}</Text>
+                </WritingBox>
+                <ReactionBox>
+                  <Heart />
+                  <CommentWrap>
+                    <Comment src="/comment.png" alt="댓글" />
+                  </CommentWrap>
+                </ReactionBox>
+              </Post>
+            );
+          })}
       </Article>
     </MainBox>
   );

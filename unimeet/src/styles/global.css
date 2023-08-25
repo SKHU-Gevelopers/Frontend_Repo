@@ -6,9 +6,9 @@
 html,
 body {
   width: 100%;
-  height: 100vh;
+  height: auto;
 }
 
 body {
-  background: linear-gradient(220deg, #3246ff , #e3ceff, #ff46d1);
+  background: linear-gradient(220deg, #3246ff, #e3ceff, #ff46d1);
 }
