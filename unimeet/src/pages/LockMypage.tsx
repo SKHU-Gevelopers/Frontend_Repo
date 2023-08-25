@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { MypageRequest, MypageCorrection } from "@/util/myPage";
+import { MypageRequest, handleSubmit } from "@/util/myPage";
 import { skhuDepartmentList, skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import { ButtonStyle, InputDiv } from "@/styles/mypageStyle";
@@ -75,14 +75,15 @@ const LockMypage: React.FC = () => {
     };
   };
 
-  const handleSubmit = (e: any) => {
+  const submitOn = (e: any) => {
     e.preventDefault();
-    MypageCorrection(token)
+    handleSubmit(token, name, mbti, image, information, major1, major2)
       .then((res) => {
         console.log(res);
       })
       .catch((err) => {
         console.log(err);
+        console.log(token, name, mbti, image, information, major1, major2);
       });
   };
 
@@ -193,7 +194,7 @@ const LockMypage: React.FC = () => {
         />
         <div>
           <ButtonStyle type="reset">초기화</ButtonStyle>
-          <ButtonStyle onClick={handleSubmit} type="submit">
+          <ButtonStyle onClick={submitOn} type="submit">
             수정하기
           </ButtonStyle>
         </div>
