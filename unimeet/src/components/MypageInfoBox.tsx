@@ -1,4 +1,4 @@
-import { FixBtn } from "@/pages/LockMypage";
+import { FixBtn } from "@/pages/lockMypage";
 import React, { useState } from "react";
 import styled from "styled-components";
 

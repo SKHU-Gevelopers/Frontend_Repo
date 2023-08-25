@@ -1,7 +1,7 @@
 import { mbtilist } from "@/constants/mbtilist";
 import { skhuDepartmentList, skhuMajor } from "@/constants/department";
 import styled from "styled-components";
-import { LoginBox } from "./MainLogin";
+import { LoginBox } from "./mainLogin";
 import BubbleGround from "@/components/BubbleGround";
 import { keyframes } from "@emotion/react";
 import { useEffect, useState } from "react";
