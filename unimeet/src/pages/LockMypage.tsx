@@ -1,11 +1,10 @@
-import MypageInfoBox, { ButtonStyle } from "@/components/MypageInfoBox";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { MypageRequest, MypageCorrection } from "@/util/myPage";
 import { skhuDepartmentList, skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
-import { InputDiv } from "@/styles/mypageStyle";
+import { ButtonStyle, InputDiv } from "@/styles/mypageStyle";
 
 interface MajorsType {
   id: number;
