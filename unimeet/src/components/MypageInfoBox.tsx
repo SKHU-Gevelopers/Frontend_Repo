@@ -1,4 +1,4 @@
-import { FixBtn } from "@/pages/LockMypage";
+import { FixBtn } from "@/pages/lockMypage";
 import React, { useState } from "react";
 import styled from "styled-components";
 
@@ -41,6 +41,7 @@ const MypageInfoBox: React.FC<InfoBoxProps> = ({ value, defaultValue }) => {
 const FormBox = styled.form`
   display: flex;
   flex-direction: column;
+  width: 100%;
   & > div {
     display: flex;
     justify-content: flex-end;

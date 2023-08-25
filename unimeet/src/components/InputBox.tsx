@@ -38,7 +38,7 @@ const InputDiv = styled.input`
   outline: none;
   border: none;
   border-bottom: 1px solid #674ff4;
-  padding: 5px;
+  padding: 10px;
   background-color: #faebd700;
   transition: 0.3s;
   color: #5b5b5b;
