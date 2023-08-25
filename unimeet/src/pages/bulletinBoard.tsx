@@ -39,7 +39,7 @@ export default function BulletinBoard() {
     getPostsData();
   }, [token]);
 
-  const postClickLike = async (
+  const ClickLike = async (
     e: React.MouseEvent<HTMLButtonElement>,
     postId: number
   ) => {
@@ -52,11 +52,14 @@ export default function BulletinBoard() {
           Authorization: `Bearer ${token}`,
         };
         await axios.put(
-          `https://unimeet.duckdns.org/posts/${postId}/like`, 
+          `https://unimeet.duckdns.org/posts/${postId}/like`,
           "게시글 좋아요",
           { headers }
         );
-        console.log(postId);
+        const updatedResponse = await axios.get(`${searchUrl}`, {
+          headers,
+        });
+        setData(updatedResponse.data.data.posts);
       }
     } catch (error) {
       console.log(error);
@@ -90,7 +93,7 @@ export default function BulletinBoard() {
                   <Text>{each.content}</Text>
                 </WritingBox>
                 <ReactionBox>
-                  <HeartWrap onClick={(e) => postClickLike(e, each.id)}>
+                  <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
                     <HeartImg src="/heart.png" alt="빈 하트 사진"></HeartImg>
                   </HeartWrap>
                   <div>{each.likes}</div>
