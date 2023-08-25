@@ -3,11 +3,11 @@ import styled from "styled-components";
 export const MainBox = styled.div`
   display: flex;
   justify-content: center;
-  background-color: #ffffff66;
+  background-color: #fef7ff;
   width: 100%;
   height: 4rem;
-  position: absolute;
-  bottom: 0px;
+  position: fixed;
+  bottom: 0;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
   box-shadow: 0px 8px 15px gray;

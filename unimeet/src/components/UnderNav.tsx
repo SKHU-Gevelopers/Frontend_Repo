@@ -14,7 +14,7 @@ const UnderNav = () => {
       <MainBox>
         <MainUl>
           <li>
-            <MainLink href="/mainLogin">
+            <MainLink href="/lockMypage">
               <FaDog size={30} />
               <span>내정보</span>
             </MainLink>
