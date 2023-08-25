@@ -1,5 +1,3 @@
-// api 연결 해야 함
-import Heart from "@/components/HeartCount";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -34,13 +32,39 @@ export default function BulletinBoard() {
           });
           setData(response.data.data.posts);
         }
-        console.log(data);
       } catch (error) {
         console.log(error);
       }
     };
     getPostsData();
   }, [token]);
+
+  const ClickLike = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    postId: number
+  ) => {
+    e.preventDefault();
+    try {
+      setToken(localStorage.getItem("login-token") || " ");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        await axios.put(
+          `https://unimeet.duckdns.org/posts/${postId}/like`,
+          "게시글 좋아요",
+          { headers }
+        );
+        const updatedResponse = await axios.get(`${searchUrl}`, {
+          headers,
+        });
+        setData(updatedResponse.data.data.posts);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <MainBox>
@@ -69,7 +93,10 @@ export default function BulletinBoard() {
                   <Text>{each.content}</Text>
                 </WritingBox>
                 <ReactionBox>
-                  <Heart />
+                  <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
+                    <HeartImg src="/heart.png" alt="빈 하트 사진"></HeartImg>
+                  </HeartWrap>
+                  <div>{each.likes}</div>
                   <CommentWrap>
                     <Comment src="/comment.png" alt="댓글" />
                   </CommentWrap>
@@ -185,6 +212,20 @@ const ReactionBox = styled.div`
 
   width: 100%;
   height: 7vh;
+`;
+
+const HeartWrap = styled.button`
+  margin-left: 3%;
+
+  width: 7%;
+  height: 4vh;
+`;
+
+const HeartImg = styled.img`
+  margin-left: 3%;
+
+  width: 100%;
+  height: 100%;
 `;
 
 const CommentWrap = styled.div`
