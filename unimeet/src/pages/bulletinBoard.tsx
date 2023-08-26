@@ -10,6 +10,8 @@ interface Post {
   state: string;
   maxPeople: number;
   gender: string;
+  profileImageUrl: string;
+  nickname: string;
   likes: number;
 }
 
@@ -75,19 +77,19 @@ export default function BulletinBoard() {
               <Post key={index}>
                 <Writer>
                   <ProfileImageWrap>
-                    {/* <ProfileImage
-                    src={each.imageUrl}
-                    alt="작성자 이미지 사진"
-                  ></ProfileImage> */}
+                    <ProfileImage
+                      src={each.profileImageUrl}
+                      alt="작성자 이미지 사진"
+                    ></ProfileImage>
                   </ProfileImageWrap>
-                  <Name>{each.id}</Name>
+                  <Name>{each.nickname}</Name>
                 </Writer>
-                <PictureWrap>
+                {/* <PictureWrap>
                   <PictureImage
                     src={each.imageUrl}
                     alt="게시글 첨부 사진"
                   ></PictureImage>
-                </PictureWrap>
+                </PictureWrap> */}
                 <WritingBox>
                   <Title>{each.title}</Title>
                   <Text>{each.content}</Text>
@@ -162,6 +164,8 @@ const ProfileImageWrap = styled.div`
 const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
+
+  border-radius: 50%;
 `;
 
 const Name = styled.div`
