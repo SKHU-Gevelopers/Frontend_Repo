@@ -101,9 +101,9 @@ export default function BulletinBoard() {
                     <HeartImg src="/heart.png" alt="빈 하트 사진"></HeartImg>
                   </HeartWrap>
                   <div>{each.likes}</div>
-                  <CommentWrap>
+                  {/* <CommentWrap>
                     <Comment src="/comment.png" alt="댓글" />
-                  </CommentWrap>
+                  </CommentWrap> */}
                 </ReactionBox>
               </Post>
             );
@@ -236,14 +236,14 @@ const HeartImg = styled.img`
   height: 100%;
 `;
 
-const CommentWrap = styled.div`
-  margin-left: 3%;
+// const CommentWrap = styled.div`
+//   margin-left: 3%;
 
-  width: 7%;
-  height: 3.5vh;
-`;
+//   width: 7%;
+//   height: 3.5vh;
+// `;
 
-const Comment = styled.img`
-  width: 100%;
-  height: 100%;
-`;
+// const Comment = styled.img`
+//   width: 100%;
+//   height: 100%;
+// `;
