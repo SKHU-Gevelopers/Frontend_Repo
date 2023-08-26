@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { AiOutlineHeart } from "react-icons/ai";
+import { AiFillHeart } from "react-icons/ai";
 
 interface Post {
   id: number;
@@ -10,6 +12,8 @@ interface Post {
   state: string;
   maxPeople: number;
   gender: string;
+  profileImageUrl: string;
+  nickname: string;
   likes: number;
 }
 
@@ -75,35 +79,39 @@ export default function BulletinBoard() {
               <Post key={index}>
                 <Writer>
                   <ProfileImageWrap>
-                    {/* <ProfileImage
-                    src={each.imageUrl}
-                    alt="작성자 이미지 사진"
-                  ></ProfileImage> */}
+                    <ProfileImage
+                      src={each.profileImageUrl}
+                      alt="작성자 이미지 사진"
+                    ></ProfileImage>
                   </ProfileImageWrap>
-                  <Name>{each.id}</Name>
+                  <Name>{each.nickname}</Name>
                 </Writer>
-                <PictureWrap>
-                  <PictureImage
-                    src={each.imageUrl}
-                    alt="게시글 첨부 사진"
-                  ></PictureImage>
-                </PictureWrap>
+                {each.imageUrl !== "" && (
+                  <PictureWrap>
+                    <PictureImage
+                      src={each.imageUrl}
+                      alt="게시글 첨부 사진"
+                    ></PictureImage>
+                  </PictureWrap>
+                )}
                 <WritingBox>
                   <Title>{each.title}</Title>
                   <Text>{each.content}</Text>
                 </WritingBox>
                 <ReactionBox>
                   <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
-                    <HeartImg src="/heart.png" alt="빈 하트 사진"></HeartImg>
+                    <StyledHeartIcon />
+                    <LikesCount>{each.likes}</LikesCount>
                   </HeartWrap>
-                  <div>{each.likes}</div>
-                  <CommentWrap>
+
+                  {/* <CommentWrap>
                     <Comment src="/comment.png" alt="댓글" />
-                  </CommentWrap>
+                  </CommentWrap> */}
                 </ReactionBox>
               </Post>
             );
           })}
+        <AiOutlineHeart />
       </Article>
     </MainBox>
   );
@@ -119,7 +127,6 @@ const MainBox = styled.div`
   height: auto;
 
   background-color: #efe3ff;
-  opacity: 0.97;
 `;
 
 const Article = styled.div`
@@ -144,7 +151,7 @@ const Writer = styled.div`
   align-items: center;
 
   padding-top: 2vh;
-  padding-bottom: 1vh;
+  padding-bottom: 1%;
   padding-left: 3%;
 
   width: 100%;
@@ -162,6 +169,8 @@ const ProfileImageWrap = styled.div`
 const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
+
+  border-radius: 50%;
 `;
 
 const Name = styled.div`
@@ -172,15 +181,18 @@ const Name = styled.div`
 `;
 
 const PictureWrap = styled.div`
+  margin-left: 3%;
   display: flex;
   justify-content: center;
 
-  width: 100%;
-  height: 20vh;
+  width: 93.5%;
+  height: 18vh;
+
+  background-color: #ebedfa;
 `;
 
 const PictureImage = styled.img`
-  width: 93.5%;
+  width: 50%;
   height: 100%;
 
   border-radius: 5px;
@@ -189,8 +201,8 @@ const PictureImage = styled.img`
 `;
 
 const WritingBox = styled.div`
-  padding-top: 2vh;
-  padding-bottom: 2vh;
+  padding-top: 1%;
+  padding-bottom: 1vh;
 
   padding-left: 3%;
   padding-right: 3%;
@@ -202,40 +214,49 @@ const Title = styled.div`
 `;
 
 const Text = styled.div`
+  font-size: 1.1rem;
   margin-top: 0.5vh;
 `;
 
 const ReactionBox = styled.div`
   display: flex;
 
-  padding-bottom: 3%;
+  padding-bottom: 2vh;
 
   width: 100%;
-  height: 7vh;
+  height: 6vh;
 `;
 
 const HeartWrap = styled.button`
+  display: flex;
+  align-items: center;
+
   margin-left: 3%;
 
-  width: 7%;
-  height: 4vh;
+  width: 11%;
+  height: 3.8vh;
+
+  background-color: #efe3ff;
+  border: none;
 `;
 
-const HeartImg = styled.img`
-  margin-left: 3%;
-
-  width: 100%;
-  height: 100%;
+const StyledHeartIcon = styled(AiOutlineHeart)`
+  font-size: 2.5rem;
 `;
 
-const CommentWrap = styled.div`
-  margin-left: 3%;
-
-  width: 7%;
-  height: 3.5vh;
+const LikesCount = styled.div`
+  margin-left: 0.5%;
+  font-size: 1rem;
 `;
 
-const Comment = styled.img`
-  width: 100%;
-  height: 100%;
-`;
+// const CommentWrap = styled.div`
+//   margin-left: 3%;
+
+//   width: 7%;
+//   height: 3.5vh;
+// `;
+
+// const Comment = styled.img`
+//   width: 100%;
+//   height: 100%;
+// `;
