@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { AiOutlineHeart } from "react-icons/ai";
+import { AiFillHeart } from "react-icons/ai";
 
 interface Post {
   id: number;
@@ -98,9 +100,10 @@ export default function BulletinBoard() {
                 </WritingBox>
                 <ReactionBox>
                   <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
-                    <HeartImg src="/heart.png" alt="빈 하트 사진"></HeartImg>
+                    <StyledHeartIcon />
+                    <LikesCount>{each.likes}</LikesCount>
                   </HeartWrap>
-                  <div>{each.likes}</div>
+
                   {/* <CommentWrap>
                     <Comment src="/comment.png" alt="댓글" />
                   </CommentWrap> */}
@@ -108,6 +111,7 @@ export default function BulletinBoard() {
               </Post>
             );
           })}
+        <AiOutlineHeart />
       </Article>
     </MainBox>
   );
@@ -198,7 +202,7 @@ const PictureImage = styled.img`
 
 const WritingBox = styled.div`
   padding-top: 1%;
-  padding-bottom: 2vh;
+  padding-bottom: 1vh;
 
   padding-left: 3%;
   padding-right: 3%;
@@ -210,30 +214,39 @@ const Title = styled.div`
 `;
 
 const Text = styled.div`
+  font-size: 1.1rem;
   margin-top: 0.5vh;
 `;
 
 const ReactionBox = styled.div`
   display: flex;
 
-  padding-bottom: 3%;
+  padding-bottom: 2vh;
 
   width: 100%;
-  height: 7vh;
+  height: 6vh;
 `;
 
 const HeartWrap = styled.button`
+  display: flex;
+  align-items: center;
+
   margin-left: 3%;
 
-  width: 7%;
-  height: 4vh;
+  width: 11%;
+  height: 3.8vh;
+
+  background-color: #efe3ff;
+  border: none;
 `;
 
-const HeartImg = styled.img`
-  margin-left: 3%;
+const StyledHeartIcon = styled(AiOutlineHeart)`
+  font-size: 2.5rem;
+`;
 
-  width: 100%;
-  height: 100%;
+const LikesCount = styled.div`
+  margin-left: 0.5%;
+  font-size: 1rem;
 `;
 
 // const CommentWrap = styled.div`
