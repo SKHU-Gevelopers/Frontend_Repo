@@ -84,12 +84,14 @@ export default function BulletinBoard() {
                   </ProfileImageWrap>
                   <Name>{each.nickname}</Name>
                 </Writer>
-                {/* <PictureWrap>
-                  <PictureImage
-                    src={each.imageUrl}
-                    alt="게시글 첨부 사진"
-                  ></PictureImage>
-                </PictureWrap> */}
+                {each.imageUrl !== "" && (
+                  <PictureWrap>
+                    <PictureImage
+                      src={each.imageUrl}
+                      alt="게시글 첨부 사진"
+                    ></PictureImage>
+                  </PictureWrap>
+                )}
                 <WritingBox>
                   <Title>{each.title}</Title>
                   <Text>{each.content}</Text>
@@ -121,7 +123,6 @@ const MainBox = styled.div`
   height: auto;
 
   background-color: #efe3ff;
-  opacity: 0.97;
 `;
 
 const Article = styled.div`
@@ -146,7 +147,7 @@ const Writer = styled.div`
   align-items: center;
 
   padding-top: 2vh;
-  padding-bottom: 1vh;
+  padding-bottom: 1%;
   padding-left: 3%;
 
   width: 100%;
@@ -176,15 +177,18 @@ const Name = styled.div`
 `;
 
 const PictureWrap = styled.div`
+  margin-left: 3%;
   display: flex;
   justify-content: center;
 
-  width: 100%;
-  height: 20vh;
+  width: 93.5%;
+  height: 18vh;
+
+  background-color: #ebedfa;
 `;
 
 const PictureImage = styled.img`
-  width: 93.5%;
+  width: 50%;
   height: 100%;
 
   border-radius: 5px;
@@ -193,7 +197,7 @@ const PictureImage = styled.img`
 `;
 
 const WritingBox = styled.div`
-  padding-top: 2vh;
+  padding-top: 1%;
   padding-bottom: 2vh;
 
   padding-left: 3%;
