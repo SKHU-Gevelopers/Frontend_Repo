@@ -1,8 +1,9 @@
 import React from "react";
-import { MainBox, MainUl, MainLink } from "@/styles/UnderNavbarStyle";
+import { MainBox, MainUl, MainLink, MainImg } from "@/styles/UnderNavbarStyle";
 import { FaDog } from "react-icons/fa";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 
 const UnderNav = () => {
   const router = useRouter();
@@ -15,31 +16,31 @@ const UnderNav = () => {
         <MainUl>
           <li>
             <MainLink href="/lockMypage">
-              <FaDog size={30} />
+              <MainImg src="/user.png" width="25" height="25" alt={""} />
               <span>내정보</span>
             </MainLink>
           </li>
           <li>
             <MainLink href="/bulletinBoard">
-              <FaDog size={30} />
+            <MainImg src="/agenda.png" width="25" height="25" alt={""} />
               <span>방명록</span>
             </MainLink>
           </li>
           <li>
             <MainLink href="/meetingRoom">
-            <FaDog size={30} />
+            <MainImg src="/network.png" width="25" height="25" alt={""} />
             <span>미팅룸</span>
             </MainLink>
           </li>
           <li>
             <MainLink href="/chat">
-            <FaDog size={30} />
+            <MainImg src="/chat.png" width="25" height="25" alt={""} />
             <span>쪽지함</span>
             </MainLink>
           </li>
           <li>
             <MainLink href="/feed">
-            <FaDog size={30} />
+            <MainImg src="/image.png" width="25" height="25" alt={""} />
             <span>피드</span>
             </MainLink>
           </li>

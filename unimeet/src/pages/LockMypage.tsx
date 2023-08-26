@@ -231,7 +231,7 @@ const InfoBox = styled.div`
     }
   }
 `;
-const ImageBox = styled.div`
+export const ImageBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -256,7 +256,7 @@ const InputStyle = styled.input`
   }
 `;
 
-const ImageCoordinate = styled.div`
+export const ImageCoordinate = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -294,7 +294,7 @@ const spin = keyframes`
     transform: rotate(0deg);
   }
 `;
-const FindImage = styled.div`
+export const FindImage = styled.div`
   width: 150px;
   height: 30px;
   background: #674ff4;
