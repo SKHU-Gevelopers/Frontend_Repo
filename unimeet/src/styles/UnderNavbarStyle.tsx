@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Image from "next/image";
 
 export const MainBox = styled.div`
   display: flex;
@@ -31,5 +32,8 @@ export const MainLink = styled.a`
   outline: none;
   color: #000000;
   text-decoration: none;
+`;
 
+export const MainImg = styled(Image)`
+  margin-bottom: 0.3rem;
 `;
