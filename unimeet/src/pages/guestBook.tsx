@@ -155,7 +155,7 @@ const ProfileBox = styled.div`
 `;
 
 const ProfileImageWrap = styled.div`
-  width: 40%;
+  width: 10rem;
   height: 18vh;
 
   border-radius: 50%;

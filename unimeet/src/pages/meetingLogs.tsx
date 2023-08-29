@@ -1,4 +1,5 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 // 조건부 렌더링
@@ -80,24 +81,65 @@ const SentRequestsBtn = styled.div`
   font-weight: 700;
 `;
 
-// 보낸 신청함
-function SentRequests() {
+interface Application {
+  id: number;
+  title: string;
+  sender: { id: number; nickname: string };
+}
+
+// 받은 신청함
+function ReceivedRequests() {
+  const [data, setData] = useState<Application[]>([]);
+  const [token, setToken] = useState("");
+  const searchUrl = "https://unimeet.duckdns.org/meet-ups";
+
+  useEffect(() => {
+    const getRecivedApplication = async () => {
+      try {
+        setToken(localStorage.getItem("login-token") || " ");
+        if (token) {
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          };
+
+          const response = await axios.get(`${searchUrl}`, {
+            headers,
+          });
+          setData(response.data.data.meetUps);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getRecivedApplication();
+  }, [token]);
+
   return (
     <MainBox>
       <Article>
-        <Div>SentRequests</Div>
+        {data &&
+          data.map((each, index) => {
+            return (
+              <Application key={index}>
+                <Title>{each.title}</Title>
+                <Nickname>{each.sender.nickname}</Nickname>
+                <Button>
+                  <ViewDetails>상세보기</ViewDetails>
+                </Button>
+              </Application>
+            );
+          })}
       </Article>
     </MainBox>
   );
 }
 
-// 받은 신청함
-function ReceivedRequests() {
+// 보낸 신청함
+function SentRequests() {
   return (
     <MainBox>
-      <Article>
-        <Div>ReceivedRequests</Div>
-      </Article>
+      <Article></Article>
     </MainBox>
   );
 }
@@ -108,7 +150,7 @@ const MainBox = styled.div`
   align-content: center;
 
   width: 100%;
-  height: auto;
+  height: 77vh;
 
   background-color: #efe3ff;
   opacity: 0.97;
@@ -120,10 +162,20 @@ const Article = styled.div`
   align-items: center;
 
   width: 100%;
-  min-height: 78vh;
-  // 0.몇으로 하면 자동적으로 길이가 길어짐에 따라(100vh를 넘었을 때) 색의 경계선이 보임
 `;
 
-const Div = styled.div`
+const Application = styled.div`
+  width: 100%;
+  height: auto;
+
+  border-bottom: solid 1px #bb8dfb;
   font-size: 2rem;
 `;
+
+const Title = styled.div``;
+
+const Nickname = styled.div``;
+
+const Button = styled.div``;
+
+const ViewDetails = styled.div``;
