@@ -11,7 +11,7 @@ export default function MeetingLogs() {
   };
 
   return (
-    <>
+    <Main>
       <SwitchDiv>
         <ReceivedRequestsBtn onClick={() => switchiBtn("received")}>
           받은 신청함
@@ -27,9 +27,16 @@ export default function MeetingLogs() {
       ) : (
         <ReceivedRequests />
       )}
-    </>
+    </Main>
   );
 }
+
+const Main = styled.div`
+  width: 100%;
+  max-height: 100%;
+
+  overflow: hidden;
+`;
 
 const SwitchDiv = styled.div`
   display: flex;
@@ -154,6 +161,9 @@ const MainBox = styled.div`
 
   background-color: #efe3ff;
   opacity: 0.97;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 const Article = styled.div`
@@ -165,17 +175,39 @@ const Article = styled.div`
 `;
 
 const Application = styled.div`
-  width: 100%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  width: 90%;
   height: auto;
 
   border-bottom: solid 1px #bb8dfb;
+`;
+
+const Title = styled.div`
   font-size: 2rem;
 `;
 
-const Title = styled.div``;
+const Nickname = styled.div`
+  font-size: 1.3rem;
+`;
 
-const Nickname = styled.div``;
+const Button = styled.div`
+  display: flex;
+  justify-content: right;
+`;
 
-const Button = styled.div``;
+const ViewDetails = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-const ViewDetails = styled.div``;
+  margin-top: 0.5rem;
+
+  width: 5rem;
+  height: 1.7rem;
+
+  background-color: #bb8dfb;
+
+  border-radius: 5px;
+`;
