@@ -129,6 +129,8 @@ function ReceivedRequests() {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  // const getRecivedApplicationDetailVersion
+
   return (
     <MainBox>
       <Article>
@@ -145,7 +147,16 @@ function ReceivedRequests() {
                   {isOpen && (
                     <ModalWrap>
                       <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-                        <></>
+                        <ModalContent>
+                          <DetailTitle>미팅신청서</DetailTitle>
+                          <DetailContent>만남내용</DetailContent>
+                          {/* <div>이미지 사진</div> */}
+                          <SenderNickname>
+                            <DetailCategory>신청자</DetailCategory>
+                            hi
+                          </SenderNickname>
+                        </ModalContent>
+                        <AcceptButton>수락하기</AcceptButton>
                       </Modal>
                     </ModalWrap>
                   )}
@@ -241,4 +252,75 @@ const ModalWrap = styled.div`
 
   width: 90%;
   height: 77vh;
+`;
+
+const ModalContent = styled.div`
+  width: 100%;
+  height: 60vh;
+
+  display: flex;
+  flex-direction: column;
+
+  padding-left: 6%;
+`;
+
+const DetailTitle = styled.div`
+  padding-left: 25%;
+
+  font-size: 2rem;
+  font-weight: 800;
+`;
+
+const DetailContent = styled.div`
+  margin-top: 3vh;
+  padding: 0.4rem;
+
+  width: 94%;
+  height: 15vh;
+
+  border: 0.2rem solid #bb8dfb;
+
+  font-size: 1.2rem;
+  font-weight: 700;
+`;
+
+const DetailCategory = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 4.4rem;
+  height: 4vh;
+
+  background-color: #bb8dfb;
+  border-radius: 3px;
+`;
+
+const SenderNickname = styled.div`
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+  margin-top: 2vh;
+
+  font-size: 1.2rem;
+  font-weight: 700;
+`;
+
+const AcceptButton = styled.div`
+  margin-left: 5%;
+  margin-left: 5%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 90%;
+  height: 5vh;
+
+  background-color: #bb8dfb;
+  border-radius: 3px;
+
+  font-size: 1.5rem;
+  font-weight: 700;
 `;
