@@ -1,3 +1,4 @@
+import UnderNav from "@/components/UnderNav";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled from "styled-components";
@@ -32,7 +33,7 @@ export default function GestBook() {
             Authorization: `Bearer ${token}`,
           };
           const response = await axios.get(
-            "https://unimeet.duckdns.org/users/1/my-page?page=2", // 프로필 클릭시 users부분이 해당 학생 id로 바뀌게 수정 필요
+            "https://unimeet.duckdns.org/users/1/my-page?page=1", // 프로필 클릭시 users부분이 해당 학생 id로 바뀌게 수정 필요
             {
               headers,
             }
@@ -77,50 +78,53 @@ export default function GestBook() {
   };
 
   return (
-    <MainBox>
-      <DmButton src="/dmButton.png" alt="dmButton" />
-      <ProfileBox>
-        <ProfileImageWrap>
-          <ProfileImage
-            src={studentData?.profileImageUrl}
-            alt="profileImage"
-          ></ProfileImage>
-        </ProfileImageWrap>
-        <Name>{studentData?.nickname}</Name>
-        <InformationBox>
-          {/* {user?.majors.map((each, index) => (
+    <>
+      <MainBox>
+        <DmButton src="/dmButton.png" alt="dmButton" />
+        <ProfileBox>
+          <ProfileImageWrap>
+            <ProfileImage
+              src={studentData?.profileImageUrl}
+              alt="profileImage"
+            ></ProfileImage>
+          </ProfileImageWrap>
+          <Name>{studentData?.nickname}</Name>
+          <InformationBox>
+            {/* {user?.majors.map((each, index) => (
             <Department key={index}>
               <p>{each.major}</p> */}
-          <Department>{studentData?.department}</Department>
-          {/* ))} */}
-        </InformationBox>
-        <MBTI>
-          <p>{studentData?.mbti}</p>
-        </MBTI>
-        {/* <Introduce>{user?.introduction}</Introduce> */}
-      </ProfileBox>
-      <GuestBooks>
-        <GuestBookForm onSubmit={postGuestBook}>
-          <PostGuestBookCommentInputBox
-          placeholder="방명록을 남겨보세요."
-            onChange={onChange}
-          ></PostGuestBookCommentInputBox>
-        </GuestBookForm>
-        {guestBookData?.map((each, Id) => {
-          return (
-            <EachReview key={`writer${Id}`}>
-              <GuestImageWrap>
-                <GuestImage
-                  src={each.profileImageUrl}
-                  alt="profileImage"
-                ></GuestImage>
-              </GuestImageWrap>
-              <GuestComment>{each.content}</GuestComment>
-            </EachReview>
-          );
-        })}
-      </GuestBooks>
-    </MainBox>
+            <Department>{studentData?.department}</Department>
+            {/* ))} */}
+          </InformationBox>
+          <MBTI>
+            <p>{studentData?.mbti}</p>
+          </MBTI>
+          {/* <Introduce>{user?.introduction}</Introduce> */}
+        </ProfileBox>
+        <GuestBooks>
+          <GuestBookForm onSubmit={postGuestBook}>
+            <PostGuestBookCommentInputBox
+              placeholder="방명록을 남겨보세요."
+              onChange={onChange}
+            ></PostGuestBookCommentInputBox>
+          </GuestBookForm>
+          {guestBookData?.map((each, Id) => {
+            return (
+              <EachReview key={`writer${Id}`}>
+                <GuestImageWrap>
+                  <GuestImage
+                    src={each.profileImageUrl}
+                    alt="profileImage"
+                  ></GuestImage>
+                </GuestImageWrap>
+                <GuestComment>{each.content}</GuestComment>
+              </EachReview>
+            );
+          })}
+        </GuestBooks>
+      </MainBox>
+      <UnderNav />
+    </>
   );
 }
 

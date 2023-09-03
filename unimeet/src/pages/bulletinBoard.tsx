@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
+import UnderNav from "@/components/UnderNav";
 
 interface Post {
   id: number;
@@ -43,6 +44,8 @@ export default function BulletinBoard() {
     getPostsData();
   }, [token]);
 
+  const [likedPosts, setLikedPosts] = useState<number[]>([]);
+
   const ClickLike = async (
     e: React.MouseEvent<HTMLButtonElement>,
     postId: number
@@ -60,6 +63,14 @@ export default function BulletinBoard() {
           "게시글 좋아요",
           { headers }
         );
+
+        // 좋아요한 포스트의 ID를 관리하는 상태 업데이트
+        if (likedPosts.includes(postId)) {
+          setLikedPosts(likedPosts.filter((id) => id !== postId));
+        } else {
+          setLikedPosts([...likedPosts, postId]);
+        }
+
         const updatedResponse = await axios.get(`${searchUrl}`, {
           headers,
         });
@@ -71,49 +82,54 @@ export default function BulletinBoard() {
   };
 
   return (
-    <MainBox>
-      <Article>
-        {data &&
-          data.map((each, index) => {
-            return (
-              <Post key={index}>
-                <Writer>
-                  <ProfileImageWrap>
-                    <ProfileImage
-                      src={each.profileImageUrl}
-                      alt="작성자 이미지 사진"
-                    ></ProfileImage>
-                  </ProfileImageWrap>
-                  <Name>{each.nickname}</Name>
-                </Writer>
-                {each.imageUrl !== "" && (
-                  <PictureWrap>
-                    <PictureImage
-                      src={each.imageUrl}
-                      alt="게시글 첨부 사진"
-                    ></PictureImage>
-                  </PictureWrap>
-                )}
-                <WritingBox>
-                  <Title>{each.title}</Title>
-                  <Text>{each.content}</Text>
-                </WritingBox>
-                <ReactionBox>
-                  <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
-                    <StyledHeartIcon />
-                    <LikesCount>{each.likes}</LikesCount>
-                  </HeartWrap>
-
-                  {/* <CommentWrap>
+    <>
+      <MainBox>
+        <Article>
+          {data &&
+            data.map((each, index) => {
+              return (
+                <Post key={index}>
+                  <Writer>
+                    <ProfileImageWrap>
+                      <ProfileImage
+                        src={each.profileImageUrl}
+                        alt="작성자 이미지 사진"
+                      ></ProfileImage>
+                    </ProfileImageWrap>
+                    <Name>{each.nickname}</Name>
+                  </Writer>
+                  {each.imageUrl !== "" && (
+                    <PictureWrap>
+                      <PictureImage
+                        src={each.imageUrl}
+                        alt="게시글 첨부 사진"
+                      ></PictureImage>
+                    </PictureWrap>
+                  )}
+                  <WritingBox>
+                    <Title>{each.title}</Title>
+                    <Text>{each.content}</Text>
+                  </WritingBox>
+                  <ReactionBox>
+                    <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
+                      {likedPosts.includes(each.id) ? (
+                        <StyledLikedHeartIcon />
+                      ) : (
+                        <StyledHeartIcon />
+                      )}
+                      <LikesCount>{each.likes}</LikesCount>
+                    </HeartWrap>
+                    {/* <CommentWrap>
                     <Comment src="/comment.png" alt="댓글" />
                   </CommentWrap> */}
-                </ReactionBox>
-              </Post>
-            );
-          })}
-        <AiOutlineHeart />
-      </Article>
-    </MainBox>
+                  </ReactionBox>
+                </Post>
+              );
+            })}
+        </Article>
+      </MainBox>
+      <UnderNav />
+    </>
   );
 }
 
@@ -143,7 +159,7 @@ const Post = styled.div`
   width: 100%;
   height: auto;
 
-  border-top: solid 1px #bb8dfb;
+  border-bottom: solid 1px #bb8dfb;
 `;
 
 const Writer = styled.div`
@@ -241,6 +257,10 @@ const HeartWrap = styled.button`
 `;
 
 const StyledHeartIcon = styled(AiOutlineHeart)`
+  font-size: 2.5rem;
+`;
+
+const StyledLikedHeartIcon = styled(AiFillHeart)`
   font-size: 2.5rem;
 `;
 
