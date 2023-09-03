@@ -15,7 +15,7 @@ const Modal = ({ isOpen, setIsOpen, children }: ModalProps) => {
   return (
     <ModalBox className="modal">
       <div className="modal -content">{children}</div>
-      <button onClick={() => setIsOpen(false)}>닫기</button>
+      <DeleteModal onClick={() => setIsOpen(false)}>닫기</DeleteModal>
     </ModalBox>
   );
 };
@@ -24,7 +24,16 @@ export default Modal;
 
 const ModalBox = styled.div`
   width: 100%;
-  height: 100%;
-  
-  background-color: red;
+  height: 98%;
+
+  background-color: #feeffe;
+  border: 0.2rem solid #bb8dfb;
+`;
+
+const DeleteModal = styled.div`
+  padding-top: 2vh;
+  padding-left: 84%;
+
+  font-weight: 800;
+  font-size: 1.3rem;
 `;
