@@ -134,6 +134,17 @@ export default function Signup(this: any) {
             />
           </LabelStyle>
           <LabelStyle htmlFor="myInput" className="label">
+            <span className="label-title">카카오톡 아이디</span>
+            <input
+              id="myInput"
+              className="input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="이름을 입력하세요"
+              type="text"
+            />
+          </LabelStyle>
+          <LabelStyle htmlFor="myInput" className="label">
             <span className="label-title">이름</span>
             <input
               id="myInput"
@@ -318,7 +329,7 @@ const LabelStyle = styled.label`
   grid-template-columns: 1fr 1fr;
   grid-template-rows: min-content min-content;
   background: var(--bgLabel);
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   border-radius: 30px;
   font-size: 0.65rem;
   width: 70vw;
@@ -387,6 +398,7 @@ const SignupBox = styled(LoginBox)`
   background: #fdfdfd97;
   align-items: center;
   justify-content: center;
+  border-radius: 20px;
 `;
 const MainBox = styled.div`
   display: flex;
@@ -463,7 +475,7 @@ const SendBtn = styled.button`
   justify-content: center;
   align-items: center;
   padding: 6px;
-  margin: 3%;
+  margin: 2%;
   color: #fff;
   font-weight: 500;
   transition: all ease-in-out 0.2s;

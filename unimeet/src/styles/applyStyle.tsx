@@ -15,10 +15,9 @@ export const Box = styled.div`
   align-items: flex-start;
   flex-direction: column;
   width: 100%;
-  height: 92%;
+  height: 94%;
   list-style: none;
   background-color: #ffffff79;
-  margin-top: 1rem;
   padding: 1rem;
 `;
 export const Main = styled.div`
