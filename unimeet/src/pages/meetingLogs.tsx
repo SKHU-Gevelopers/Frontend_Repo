@@ -1,3 +1,4 @@
+import UnderNav from "@/components/UnderNav";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -11,23 +12,26 @@ export default function MeetingLogs() {
   };
 
   return (
-    <Main>
-      <SwitchDiv>
-        <ReceivedRequestsBtn onClick={() => switchiBtn("received")}>
-          받은 신청함
-        </ReceivedRequestsBtn>
-        <SentRequestsBtn onClick={() => switchiBtn("sent")}>
-          보낸 신청함
-        </SentRequestsBtn>
-      </SwitchDiv>
-      {selectedBtn === "received" ? (
-        <ReceivedRequests />
-      ) : selectedBtn === "sent" ? (
-        <SentRequests />
-      ) : (
-        <ReceivedRequests />
-      )}
-    </Main>
+    <>
+      <Main>
+        <SwitchDiv>
+          <ReceivedRequestsBtn onClick={() => switchiBtn("received")}>
+            받은 신청함
+          </ReceivedRequestsBtn>
+          <SentRequestsBtn onClick={() => switchiBtn("sent")}>
+            보낸 신청함
+          </SentRequestsBtn>
+        </SwitchDiv>
+        {selectedBtn === "received" ? (
+          <ReceivedRequests />
+        ) : selectedBtn === "sent" ? (
+          <SentRequests />
+        ) : (
+          <ReceivedRequests />
+        )}
+      </Main>
+      <UnderNav />
+    </>
   );
 }
 
