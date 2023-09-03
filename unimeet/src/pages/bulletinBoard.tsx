@@ -43,6 +43,8 @@ export default function BulletinBoard() {
     getPostsData();
   }, [token]);
 
+  const [likedPosts, setLikedPosts] = useState<number[]>([]);
+
   const ClickLike = async (
     e: React.MouseEvent<HTMLButtonElement>,
     postId: number
@@ -60,6 +62,14 @@ export default function BulletinBoard() {
           "게시글 좋아요",
           { headers }
         );
+
+        // 좋아요한 포스트의 ID를 관리하는 상태 업데이트
+        if (likedPosts.includes(postId)) {
+          setLikedPosts(likedPosts.filter((id) => id !== postId));
+        } else {
+          setLikedPosts([...likedPosts, postId]);
+        }
+
         const updatedResponse = await axios.get(`${searchUrl}`, {
           headers,
         });
@@ -100,10 +110,13 @@ export default function BulletinBoard() {
                 </WritingBox>
                 <ReactionBox>
                   <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
-                    <StyledHeartIcon />
+                    {likedPosts.includes(each.id) ? (
+                      <StyledLikedHeartIcon />
+                    ) : (
+                      <StyledHeartIcon />
+                    )}
                     <LikesCount>{each.likes}</LikesCount>
                   </HeartWrap>
-
                   {/* <CommentWrap>
                     <Comment src="/comment.png" alt="댓글" />
                   </CommentWrap> */}
@@ -111,7 +124,6 @@ export default function BulletinBoard() {
               </Post>
             );
           })}
-        <AiOutlineHeart />
       </Article>
     </MainBox>
   );
@@ -143,7 +155,7 @@ const Post = styled.div`
   width: 100%;
   height: auto;
 
-  border-top: solid 1px #bb8dfb;
+  border-bottom: solid 1px #bb8dfb;
 `;
 
 const Writer = styled.div`
@@ -241,6 +253,10 @@ const HeartWrap = styled.button`
 `;
 
 const StyledHeartIcon = styled(AiOutlineHeart)`
+  font-size: 2.5rem;
+`;
+
+const StyledLikedHeartIcon = styled(AiFillHeart)`
   font-size: 2.5rem;
 `;
 
