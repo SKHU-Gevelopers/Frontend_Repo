@@ -1,3 +1,4 @@
+import Modal from "@/components/Modal";
 import UnderNav from "@/components/UnderNav";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -126,6 +127,8 @@ function ReceivedRequests() {
     getRecivedApplication();
   }, [token]);
 
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <MainBox>
       <Article>
@@ -136,7 +139,16 @@ function ReceivedRequests() {
                 <Title>{each.title}</Title>
                 <Nickname>{each.sender.nickname}</Nickname>
                 <Button>
-                  <ViewDetails>상세보기</ViewDetails>
+                  <ViewDetails onClick={() => setIsOpen(true)}>
+                    상세보기
+                  </ViewDetails>
+                  {isOpen && (
+                    <ModalWrap>
+                      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+                        <></>
+                      </Modal>
+                    </ModalWrap>
+                  )}
                 </Button>
               </Application>
             );
@@ -157,6 +169,8 @@ function SentRequests() {
 
 // SentRequests, ReceivedRequests 함수 공동 부분 CSS
 const MainBox = styled.div`
+  position: relative;
+
   display: flex;
   align-content: center;
 
@@ -214,4 +228,13 @@ const ViewDetails = styled.div`
   background-color: #bb8dfb;
 
   border-radius: 5px;
+`;
+
+const ModalWrap = styled.div`
+  position: absolute;
+
+  top: -0vh;
+
+  width: 90%;
+  height: 77vh;
 `;

@@ -1,4 +1,5 @@
 import { Dispatch, ReactNode } from "react";
+import styled from "styled-components";
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,11 +13,18 @@ const Modal = ({ isOpen, setIsOpen, children }: ModalProps) => {
   }
 
   return (
-    <div className="modal">
+    <ModalBox className="modal">
       <div className="modal -content">{children}</div>
       <button onClick={() => setIsOpen(false)}>닫기</button>
-    </div>
+    </ModalBox>
   );
 };
 
 export default Modal;
+
+const ModalBox = styled.div`
+  width: 100%;
+  height: 100%;
+  
+  background-color: red;
+`;
