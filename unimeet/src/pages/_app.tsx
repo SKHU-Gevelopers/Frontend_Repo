@@ -9,8 +9,6 @@ export default function App({ Component, pageProps }: AppProps) {
     const token = localStorage.getItem("login-token");
     if (!token) {
       router.push("/mainLogin");
-    }else{
-      router.push("/bulletinBoard");
     }
 
   }, []);
