@@ -14,8 +14,8 @@ const Modal = ({ isOpen, setIsOpen, children }: ModalProps) => {
 
   return (
     <ModalBox className="modal">
-      <div className="modal -content">{children}</div>
       <DeleteModal onClick={() => setIsOpen(false)}>닫기</DeleteModal>
+      <div className="modal -content">{children}</div>
     </ModalBox>
   );
 };

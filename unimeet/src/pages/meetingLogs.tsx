@@ -127,9 +127,44 @@ function ReceivedRequests() {
     getRecivedApplication();
   }, [token]);
 
-  const [isOpen, setIsOpen] = useState(false);
+  interface ApplicationDetail {
+    title: string;
+    content: string;
+    meetUpImages: [];
+    sender: {
+      id: number;
+      nickname: string;
+    };
+    targetPostId: number;
+  }
 
-  // const getRecivedApplicationDetailVersion
+  const [isOpen, setIsOpen] = useState(false);
+  const [detailData, setDetailData] = useState<ApplicationDetail>();
+  const [applicationId, setApplicationId] = useState<number>(0);
+
+  const getRecivedApplicationDetailVersion = async (applicationId: number) => {
+    try {
+      setToken(localStorage.getItem("login-token") || "");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.get(
+          `https://unimeet.duckdns.org/meet-ups/${applicationId}`,
+          { headers }
+        );
+        setDetailData(response.data.data.meetUp);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getRecivedApplicationDetailVersion(applicationId);
+  }, [token]);
 
   return (
     <MainBox>
@@ -141,23 +176,30 @@ function ReceivedRequests() {
                 <Title>{each.title}</Title>
                 <Nickname>{each.sender.nickname}</Nickname>
                 <Button>
-                  <ViewDetails onClick={() => setIsOpen(true)}>
+                  <ViewDetails
+                    onClick={() => {
+                      setIsOpen(true);
+                      getRecivedApplicationDetailVersion(each.id);
+                    }}
+                  >
                     상세보기
                   </ViewDetails>
                   {isOpen && (
                     <ModalWrap>
-                      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-                        <ModalContent>
-                          <DetailTitle>미팅신청서</DetailTitle>
-                          <DetailContent>만남내용</DetailContent>
-                          {/* <div>이미지 사진</div> */}
-                          <SenderNickname>
-                            <DetailCategory>신청자</DetailCategory>
-                            hi
-                          </SenderNickname>
-                        </ModalContent>
-                        <AcceptButton>수락하기</AcceptButton>
-                      </Modal>
+                      {data && (
+                        <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+                          <ModalContent>
+                            <DetailTitle>{detailData?.title}</DetailTitle>
+                            <DetailContent>{detailData?.content}</DetailContent>
+                            {/* <div>이미지 사진</div> */}
+                            <SenderNickname>
+                              <DetailCategory>신청자</DetailCategory>
+                              {detailData?.sender?.nickname}
+                            </SenderNickname>
+                          </ModalContent>
+                          <AcceptButton>수락하기</AcceptButton>
+                        </Modal>
+                      )}
                     </ModalWrap>
                   )}
                 </Button>
