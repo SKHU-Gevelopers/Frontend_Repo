@@ -1,3 +1,4 @@
+import Modal from "@/components/Modal";
 import UnderNav from "@/components/UnderNav";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -126,6 +127,10 @@ function ReceivedRequests() {
     getRecivedApplication();
   }, [token]);
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  // const getRecivedApplicationDetailVersion
+
   return (
     <MainBox>
       <Article>
@@ -136,7 +141,25 @@ function ReceivedRequests() {
                 <Title>{each.title}</Title>
                 <Nickname>{each.sender.nickname}</Nickname>
                 <Button>
-                  <ViewDetails>상세보기</ViewDetails>
+                  <ViewDetails onClick={() => setIsOpen(true)}>
+                    상세보기
+                  </ViewDetails>
+                  {isOpen && (
+                    <ModalWrap>
+                      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+                        <ModalContent>
+                          <DetailTitle>미팅신청서</DetailTitle>
+                          <DetailContent>만남내용</DetailContent>
+                          {/* <div>이미지 사진</div> */}
+                          <SenderNickname>
+                            <DetailCategory>신청자</DetailCategory>
+                            hi
+                          </SenderNickname>
+                        </ModalContent>
+                        <AcceptButton>수락하기</AcceptButton>
+                      </Modal>
+                    </ModalWrap>
+                  )}
                 </Button>
               </Application>
             );
@@ -157,6 +180,8 @@ function SentRequests() {
 
 // SentRequests, ReceivedRequests 함수 공동 부분 CSS
 const MainBox = styled.div`
+  position: relative;
+
   display: flex;
   align-content: center;
 
@@ -214,4 +239,88 @@ const ViewDetails = styled.div`
   background-color: #bb8dfb;
 
   border-radius: 5px;
+`;
+
+const ModalWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+
+  top: -0vh;
+
+  width: 90%;
+  height: 77vh;
+`;
+
+const ModalContent = styled.div`
+  width: 100%;
+  height: 60vh;
+
+  display: flex;
+  flex-direction: column;
+
+  padding-left: 6%;
+`;
+
+const DetailTitle = styled.div`
+  padding-left: 25%;
+
+  font-size: 2rem;
+  font-weight: 800;
+`;
+
+const DetailContent = styled.div`
+  margin-top: 3vh;
+  padding: 0.4rem;
+
+  width: 94%;
+  height: 15vh;
+
+  border: 0.2rem solid #bb8dfb;
+
+  font-size: 1.2rem;
+  font-weight: 700;
+`;
+
+const DetailCategory = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 4.4rem;
+  height: 4vh;
+
+  background-color: #bb8dfb;
+  border-radius: 3px;
+`;
+
+const SenderNickname = styled.div`
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+  margin-top: 2vh;
+
+  font-size: 1.2rem;
+  font-weight: 700;
+`;
+
+const AcceptButton = styled.div`
+  margin-left: 5%;
+  margin-left: 5%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 90%;
+  height: 5vh;
+
+  background-color: #bb8dfb;
+  border-radius: 3px;
+
+  font-size: 1.5rem;
+  font-weight: 700;
 `;
