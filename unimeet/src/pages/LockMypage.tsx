@@ -4,6 +4,7 @@ import styled, { keyframes } from "styled-components";
 import { MypageRequest, handleSubmit } from "@/util/myPage";
 import { skhuDepartmentList, skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
+import UnderNav from "@/components/UnderNav";
 import { ButtonStyle, InputDiv } from "@/styles/mypageStyle";
 
 interface MajorsType {
@@ -89,12 +90,13 @@ const LockMypage: React.FC = () => {
 
   return (
     <>
+      <UnderNav />
       <ImageBox>
         <ImageCoordinate>
           <Image
             src={image}
-            width={100}
-            height={100}
+            width={50}
+            height={50}
             alt="Picture of the author"
             style={imageStyle}
           />
@@ -260,7 +262,7 @@ export const ImageCoordinate = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 1rem;
+  margin: 0.5rem;
 `;
 const SelectStyle = styled.select`
   font-family: monospace;

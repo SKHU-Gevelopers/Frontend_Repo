@@ -21,7 +21,7 @@ const UnderNav = () => {
             </MainLink>
           </li>
           <li>
-            <MainLink href="/meetingApply">
+            <MainLink href="/guestBook">
             <MainImg src="/agenda.png" width="25" height="25" alt={""} />
               <span>방명록</span>
             </MainLink>
@@ -39,7 +39,7 @@ const UnderNav = () => {
             </MainLink>
           </li>
           <li>
-            <MainLink href="/feed">
+            <MainLink href="/meetingLogs">
             <MainImg src="/image.png" width="25" height="25" alt={""} />
             <span>신청함</span>
             </MainLink>
