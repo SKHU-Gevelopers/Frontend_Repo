@@ -1,13 +1,19 @@
 import {
   BacktoBoard,
   DetailBtn,
+  DetailBtnBox,
   DetailMain,
+  DetailMainDiv,
+  DetailTable,
+  InputTitle,
   ProfileImage,
+  ProfileImageBox,
   ProfileImageWrap,
 } from "@/styles/detailBoardStyle";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useState } from "react";
 import Image from "next/image";
+import UnderNav from "@/components/UnderNav";
 export default function DetailBoard() {
   const [imageSrc, setImageSrc] = useState("/dogImage.png");
   const [nickname, setNickname] = useState("배달원");
@@ -19,20 +25,31 @@ export default function DetailBoard() {
   ];
 
   return (
+    <>
+    <UnderNav />
     <DetailMain>
       <BacktoBoard href="/bulletinBoard">
         <IoIosArrowRoundBack size={40} />
         뒤로가기
       </BacktoBoard>
       <ProfileImageWrap className="profileDiv">
-        <ProfileImage src={imageSrc} alt="profileImg" width={40} height={40} />
-        <span>{nickname}</span>
-        <DetailBtn>쪽지하기</DetailBtn>
-        <DetailBtn>신청하기</DetailBtn>
+        <ProfileImageBox>
+          <ProfileImage
+            src={imageSrc}
+            alt="profileImg"
+            width={40}
+            height={40}
+          />
+          <span>{nickname}</span>
+        </ProfileImageBox>
+        <DetailBtnBox>
+          <DetailBtn>쪽지하기</DetailBtn>
+          <DetailBtn>신청하기</DetailBtn>
+        </DetailBtnBox>
       </ProfileImageWrap>
-      <div>
-        <div>글쓴이의 제목 부분</div>
-        <table>
+      <DetailMainDiv>
+        <InputTitle>글쓴이의 제목 부분</InputTitle>
+        <DetailTable>
           <tbody>
             {tableTitle.map((item, index) => {
               return (
@@ -43,9 +60,10 @@ export default function DetailBoard() {
               );
             })}
           </tbody>
-        </table>
+        </DetailTable>
         <Image src={imageSrc} alt="profileImg" width={300} height={200}></Image>
-      </div>
+      </DetailMainDiv>
     </DetailMain>
+    </>
   );
 }

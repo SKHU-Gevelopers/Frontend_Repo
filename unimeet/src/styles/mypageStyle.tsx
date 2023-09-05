@@ -29,7 +29,7 @@ export const InputDiv = styled.textarea`
   outline: none;
   border: 1px solid #674ff4;
   padding: 12px;
-  margin: 20px 4px;
+  margin: 20px 4px 0px 4px;
   background-color: #faebd700;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
