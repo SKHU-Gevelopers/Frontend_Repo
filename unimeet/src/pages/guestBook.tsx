@@ -94,6 +94,7 @@ export default function GestBook() {
             <Department key={index}>
               <p>{each.major}</p> */}
             <Department>{studentData?.department}</Department>
+            <Department></Department>
             {/* ))} */}
           </InformationBox>
           <MBTI>
@@ -245,9 +246,10 @@ const GuestBooks = styled.div`
   align-items: center;
 
   padding-top: 2vh;
+  padding-bottom: 7vh;
 
   width: 100%;
-  height: 70vh;
+  height: 85vh;
 
   border-radius: 50%;
 `;
@@ -256,7 +258,7 @@ const GuestBookForm = styled.form`
   margin-bottom: 2vh;
 
   width: 90%;
-  height: 20vh;
+  height: 13vh;
 `;
 
 const PostGuestBookCommentInputBox = styled.input`
