@@ -1,5 +1,7 @@
+import UnderNav from "@/components/UnderNav";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 
 interface DmData {
   title: string;
@@ -7,7 +9,7 @@ interface DmData {
     id: number;
     nickname: string;
   };
-  sentAt: Date;
+  sentAt: string;
 }
 
 export default function Chat() {
@@ -37,5 +39,114 @@ export default function Chat() {
     chatGetData();
   }, [token]);
 
-  return <></>;
+  return (
+    <>
+      <MainBox>
+        <Article>
+          {data &&
+            data.map((each, index) => {
+              return (
+                <EachDm key={index}>
+                  <RightWrap>
+                    <DmAt>{each.sentAt}</DmAt>
+                  </RightWrap>
+                  <DmTitle>{each.title}</DmTitle>
+                  <DmSenderNickname>{each.sender.nickname}</DmSenderNickname>
+                  <RightWrap>
+                    <ReplyDm>답장</ReplyDm>
+                  </RightWrap>
+                </EachDm>
+              );
+            })}
+        </Article>
+      </MainBox>
+      <UnderNav />
+    </>
+  );
 }
+
+const MainBox = styled.div`
+  margin-top: 5vh;
+
+  display: flex;
+  align-content: center;
+
+  width: 100%;
+  height: 95vh;
+`;
+
+const Article = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding-bottom: 5vh;
+
+  width: 100%;
+  max-height: 95vh;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  gap: 2rem;
+
+  width: 100%;
+`;
+
+const EachDm = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+
+  width: 92%;
+  min-height: 16vh;
+  max-height: 16vh;
+
+  background-color: rgba(255, 255, 255, 0.7);
+
+  border-radius: 0.7em;
+`;
+
+const RightWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const DmAt = styled.div`
+  height: 2vh;
+
+  font-weight: 400;
+`;
+
+const DmTitle = styled.div`
+  height: 4vh;
+
+  font-size: 1.2rem;
+  font-weight: bolder;
+`;
+
+const DmSenderNickname = styled.div`
+  height: 3vh;
+
+  font-size: 1rem;
+  font-weight: 800;
+`;
+
+const ReplyDm = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 5rem;
+  height: 3.5vh;
+
+  border-radius: 0.5em;
+
+  background-color: #674ff4;
+
+  font-weight: 700;
+  color: white;
+`;
