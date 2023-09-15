@@ -1,69 +1,89 @@
 import {
   BacktoBoard,
+  DetailBoxTitleBox,
   DetailBtn,
   DetailBtnBox,
   DetailMain,
   DetailMainDiv,
   DetailTable,
+  ImageBox,
   InputTitle,
   ProfileImage,
   ProfileImageBox,
   ProfileImageWrap,
+  TopBox,
 } from "@/styles/detailBoardStyle";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useState } from "react";
-import Image from "next/image";
 import UnderNav from "@/components/UnderNav";
+import Comments from "@/components/Comments";
 export default function DetailBoard() {
   const [imageSrc, setImageSrc] = useState("/dogImage.png");
   const [nickname, setNickname] = useState("배달원");
+
+  const [nowStateBoolean, setNowStateBoolean] = useState(true);
+  const [nowState, setNowState] = useState("모집중");
+  const [recruitNum, setRecruitNum] = useState(0);
+  const [place, setPlace] = useState("만남 장소가 미정입니다.");
+  const [content, setContent] = useState("전달내용이 존재하지 않습니다.");
+
   const tableTitle = [
-    { title: "현재 인원", value: "여자 2명" },
-    { title: "모집 인원", value: "남자 2명" },
-    { title: "민남 장소", value: "역곡역 크라운호프" },
-    { title: "전달 내용", value: "안녕하세요. 왈왈왈왈 개 될 준비 되었나~" },
+    { title: "모집 상태", value: nowState },
+    { title: "모집 인원", value: recruitNum },
+    { title: "민남 장소", value: place },
+    { title: "전달 내용", value: content },
   ];
 
   return (
     <>
-    <UnderNav />
-    <DetailMain>
-      <BacktoBoard href="/bulletinBoard">
-        <IoIosArrowRoundBack size={40} />
-        뒤로가기
-      </BacktoBoard>
-      <ProfileImageWrap className="profileDiv">
-        <ProfileImageBox>
-          <ProfileImage
+      <UnderNav />
+      <DetailMain>
+        <TopBox>
+          <BacktoBoard href="/bulletinBoard">
+            <IoIosArrowRoundBack size={40} />
+            뒤로가기
+          </BacktoBoard>
+          <ProfileImageWrap className="profileDiv">
+            <ProfileImageBox>
+              <ProfileImage
+                src={imageSrc}
+                alt="profileImg"
+                width={40}
+                height={40}
+              />
+              <span>{nickname}</span>
+            </ProfileImageBox>
+          </ProfileImageWrap>
+        </TopBox>
+        <DetailMainDiv>
+          <DetailBoxTitleBox>
+            <InputTitle>글쓴이의 제목 부분</InputTitle>
+            <DetailBtnBox>
+              <DetailBtn>쪽지하기</DetailBtn>
+              <DetailBtn>신청하기</DetailBtn>
+            </DetailBtnBox>
+          </DetailBoxTitleBox>
+          <DetailTable>
+            <tbody>
+              {tableTitle.map((item, index) => {
+                return (
+                  <tr key={index}>
+                    <th>{item.title}</th>
+                    <td>{item.value}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </DetailTable>
+          <ImageBox
             src={imageSrc}
             alt="profileImg"
-            width={40}
-            height={40}
-          />
-          <span>{nickname}</span>
-        </ProfileImageBox>
-        <DetailBtnBox>
-          <DetailBtn>쪽지하기</DetailBtn>
-          <DetailBtn>신청하기</DetailBtn>
-        </DetailBtnBox>
-      </ProfileImageWrap>
-      <DetailMainDiv>
-        <InputTitle>글쓴이의 제목 부분</InputTitle>
-        <DetailTable>
-          <tbody>
-            {tableTitle.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <th>{item.title}</th>
-                  <td>{item.value}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </DetailTable>
-        <Image src={imageSrc} alt="profileImg" width={300} height={200}></Image>
-      </DetailMainDiv>
-    </DetailMain>
+            width={310}
+            height={200}
+          ></ImageBox>
+        </DetailMainDiv>
+        <Comments />
+      </DetailMain>
     </>
   );
 }

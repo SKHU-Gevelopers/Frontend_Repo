@@ -6,7 +6,7 @@ export const MainBox = styled.div`
   justify-content: center;
   background-color: #fef7ff;
   width: 100%;
-  height: 4rem;
+  height: 10vh;
   position: fixed;
   bottom: 0;
   border-top-left-radius: 30px;
