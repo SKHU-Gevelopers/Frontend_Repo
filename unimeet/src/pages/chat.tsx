@@ -2,6 +2,7 @@ import UnderNav from "@/components/UnderNav";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import ModalTest from "./modalTest";
 
 interface DmData {
   title: string;
@@ -39,6 +40,12 @@ export default function Chat() {
     chatGetData();
   }, [token]);
 
+  const [DmModal, setDmModal] = useState(false);
+
+  const openDmModal = () => {
+    setDmModal(true);
+  };
+
   return (
     <>
       <MainBox>
@@ -53,7 +60,8 @@ export default function Chat() {
                   <DmTitle>{each.title}</DmTitle>
                   <DmSenderNickname>{each.sender.nickname}</DmSenderNickname>
                   <RightWrap>
-                    <ReplyDm>답장</ReplyDm>
+                    <ReplyDm onClick={openDmModal}>답장</ReplyDm>
+                    {DmModal && <ModalTest />}
                   </RightWrap>
                 </EachDm>
               );
