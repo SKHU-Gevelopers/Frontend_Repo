@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { MypageRequest, handleSubmit } from "@/util/myPage";
-import { skhuDepartmentList, skhuMajor } from "@/constants/department";
+import { skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import UnderNav from "@/components/UnderNav";
 import { ButtonStyle, InputDiv } from "@/styles/mypageStyle";
@@ -89,7 +89,7 @@ const LockMypage: React.FC = () => {
   };
 
   return (
-    <>
+    <LockMainDiv>
       <UnderNav />
       <ImageBox>
         <ImageCoordinate>
@@ -119,8 +119,7 @@ const LockMypage: React.FC = () => {
             value={name}
             defaultValue={name}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const value = e.target.value;
-              // value !== "" && setName(data.nickname);
+              setName(e.target.value);
             }}
           />
         </label>
@@ -201,19 +200,23 @@ const LockMypage: React.FC = () => {
           </ButtonStyle>
         </div>
       </InfoBox>
-    </>
+    </LockMainDiv>
   );
 };
+
+
 export const FixBtn = styled(ButtonStyle)`
   margin: 0.3em 0;
+`;
+
+const LockMainDiv = styled.div`
+  height: 100vh;
 `;
 
 const InfoBox = styled.div`
   background-color: #ffffff66;
   box-shadow: 0px 0px 10px #ffffff66;
   border-radius: 10px;
-  min-width: fit-content;
-  height: fit-content;
   margin: 0.5rem 1rem;
   padding: 0.4rem;
   display: flex;

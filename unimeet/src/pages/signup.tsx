@@ -28,6 +28,7 @@ export default function Signup(this: any) {
   const [password, setPassword] = useState("");
   const [mbti, setMbti] = useState("");
   const [department, setDepartment] = useState("");
+  const [kakaoId, setKakaoId] = useState("");
   const [departmentNum, setDepartmentNum] = useState(0);
   const [majors, setMajors] = useState(["", ""]);
 
@@ -72,6 +73,7 @@ export default function Signup(this: any) {
       email: email,
       password: password,
       emailVrfCode: emailVrfCode,
+      kakaoId,
       gender: gender,
       mbti: mbti,
       department: department,
@@ -139,8 +141,8 @@ export default function Signup(this: any) {
               id="myInput"
               className="input"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="이름을 입력하세요"
+              onChange={(e) => setKakaoId(e.target.value)}
+              placeholder="카카오 아이디를 입력하세요"
               type="text"
             />
           </LabelStyle>
