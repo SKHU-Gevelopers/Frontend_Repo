@@ -2,7 +2,7 @@ import UnderNav from "@/components/UnderNav";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import ModalTest from "./modalTest";
+import DmModal from "@/components/DmModal";
 
 interface DmData {
   title: string;
@@ -40,10 +40,10 @@ export default function Chat() {
     chatGetData();
   }, [token]);
 
-  const [DmModal, setDmModal] = useState(false);
+  const [isDmModal, setIsDmModal] = useState(false);
 
   const openDmModal = () => {
-    setDmModal(true);
+    setIsDmModal(true);
   };
 
   return (
@@ -61,7 +61,13 @@ export default function Chat() {
                   <DmSenderNickname>{each.sender.nickname}</DmSenderNickname>
                   <RightWrap>
                     <ReplyDm onClick={openDmModal}>답장</ReplyDm>
-                    {DmModal && <ModalTest />}
+                    {isDmModal && (
+                      <DmModal
+                        isOpen={isDmModal}
+                        onClose={() => setIsDmModal(false)}
+                        senderId={each.sender.id}
+                      ></DmModal>
+                    )}
                   </RightWrap>
                 </EachDm>
               );
