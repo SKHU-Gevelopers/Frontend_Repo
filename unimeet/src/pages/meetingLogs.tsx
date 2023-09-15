@@ -226,7 +226,12 @@ function ReceivedRequests() {
                               {detailData?.sender?.nickname}
                             </SenderNickname>
                           </ModalContent>
-                          <AcceptButton onClick={acceptApplication}>
+                          <AcceptButton
+                            onClick={() => {
+                              setIsOpen(false);
+                              acceptApplication();
+                            }}
+                          >
                             수락하기
                           </AcceptButton>
                         </Modal>
@@ -351,7 +356,6 @@ const ModalContent = styled.div`
 `;
 
 const DetailTitle = styled.div`
-
   font-size: 2rem;
   font-weight: 800;
 `;
