@@ -140,22 +140,24 @@ function ReceivedRequests() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [detailData, setDetailData] = useState<ApplicationDetail>();
-  const [applicationId, setApplicationId] = useState<number>(0);
+  const [applicationId, setApplicationId] = useState<number | null>(null);
 
-  const getRecivedApplicationDetailVersion = async (applicationId: number) => {
+  const getRecivedApplicationDetailVersion = async () => {
     try {
-      setToken(localStorage.getItem("login-token") || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
+      if (applicationId !== null) {
+        setToken(localStorage.getItem("login-token") || "");
+        if (token) {
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          };
 
-        const response = await axios.get(
-          `https://unimeet.duckdns.org/meet-ups/${applicationId}`,
-          { headers }
-        );
-        setDetailData(response.data.data.meetUp);
+          const response = await axios.get(
+            `https://unimeet.duckdns.org/meet-ups/${applicationId}`,
+            { headers }
+          );
+          setDetailData(response.data.data.meetUp);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -163,8 +165,32 @@ function ReceivedRequests() {
   };
 
   useEffect(() => {
-    getRecivedApplicationDetailVersion(applicationId);
-  }, [token]);
+    getRecivedApplicationDetailVersion();
+  }, [applicationId]);
+
+  const acceptApplication = async () => {
+    try {
+      setToken(localStorage.getItem("login-token") || "");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await axios.post(
+          `https://unimeet.duckdns.org/meet-ups/${applicationId}/accept`,
+          "수락하기",
+          { headers }
+        );
+        // if (response.status === 200) {
+        //   alert("수락했습니다.");
+        // } else if (response.status === 400) {
+        //   alert("이미 수락된 상태입니다.");
+        // }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <MainBox>
@@ -179,7 +205,7 @@ function ReceivedRequests() {
                   <ViewDetails
                     onClick={() => {
                       setIsOpen(true);
-                      getRecivedApplicationDetailVersion(each.id);
+                      setApplicationId(each.id);
                     }}
                   >
                     상세보기
@@ -187,7 +213,10 @@ function ReceivedRequests() {
                   {isOpen && (
                     <ModalWrap>
                       {data && (
-                        <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+                        <Modal isOpen={isOpen}>
+                          <DeleteModal onClick={() => setIsOpen(false)}>
+                            닫기
+                          </DeleteModal>
                           <ModalContent>
                             <DetailTitle>{detailData?.title}</DetailTitle>
                             <DetailContent>{detailData?.content}</DetailContent>
@@ -197,7 +226,9 @@ function ReceivedRequests() {
                               {detailData?.sender?.nickname}
                             </SenderNickname>
                           </ModalContent>
-                          <AcceptButton>수락하기</AcceptButton>
+                          <AcceptButton onClick={acceptApplication}>
+                            수락하기
+                          </AcceptButton>
                         </Modal>
                       )}
                     </ModalWrap>
@@ -284,21 +315,34 @@ const ViewDetails = styled.div`
 `;
 
 const ModalWrap = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-top: 8vh;
 
-  position: absolute;
+  width: 100%;
+  height: 82vh;
 
-  top: -0vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-  width: 90%;
-  height: 77vh;
+  background-color: #feeffe;
+  border: 0.2rem solid #bb8dfb;
+`;
+
+const DeleteModal = styled.div`
+  padding-top: 2vh;
+  padding-left: 84%;
+
+  font-weight: 800;
+  font-size: 1.3rem;
 `;
 
 const ModalContent = styled.div`
   width: 100%;
   height: 60vh;
+
+  padding-top: 4vh;
 
   display: flex;
   flex-direction: column;
@@ -307,7 +351,6 @@ const ModalContent = styled.div`
 `;
 
 const DetailTitle = styled.div`
-  padding-left: 25%;
 
   font-size: 2rem;
   font-weight: 800;
