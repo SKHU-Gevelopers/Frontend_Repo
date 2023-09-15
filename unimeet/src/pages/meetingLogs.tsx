@@ -213,7 +213,10 @@ function ReceivedRequests() {
                   {isOpen && (
                     <ModalWrap>
                       {data && (
-                        <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+                        <Modal isOpen={isOpen}>
+                          <DeleteModal onClick={() => setIsOpen(false)}>
+                            닫기
+                          </DeleteModal>
                           <ModalContent>
                             <DetailTitle>{detailData?.title}</DetailTitle>
                             <DetailContent>{detailData?.content}</DetailContent>
@@ -312,21 +315,34 @@ const ViewDetails = styled.div`
 `;
 
 const ModalWrap = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-top: 8vh;
 
-  position: absolute;
+  width: 100%;
+  height: 82vh;
 
-  top: -0vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-  width: 90%;
-  height: 77vh;
+  background-color: #feeffe;
+  border: 0.2rem solid #bb8dfb;
+`;
+
+const DeleteModal = styled.div`
+  padding-top: 2vh;
+  padding-left: 84%;
+
+  font-weight: 800;
+  font-size: 1.3rem;
 `;
 
 const ModalContent = styled.div`
   width: 100%;
   height: 60vh;
+
+  padding-top: 4vh;
 
   display: flex;
   flex-direction: column;
@@ -335,7 +351,6 @@ const ModalContent = styled.div`
 `;
 
 const DetailTitle = styled.div`
-  padding-left: 25%;
 
   font-size: 2rem;
   font-weight: 800;
