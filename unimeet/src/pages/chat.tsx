@@ -94,7 +94,7 @@ const Article = styled.div`
   flex-direction: column;
   align-items: center;
 
-  padding-bottom: 5vh;
+  padding-bottom: 15vh;
 
   width: 100%;
   max-height: 95vh;

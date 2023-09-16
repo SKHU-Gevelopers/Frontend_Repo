@@ -36,10 +36,14 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
           Authorization: `Bearer ${token}`,
         };
         const Dmdata = { title, content };
-        await axios.post("https://unimeet.duckdns.org/users/${senderId}/dm", {
-          headers,
+        await axios.post(
+          `https://unimeet.duckdns.org/users/${senderId}/dm`,
           Dmdata,
-        });
+          {
+            headers,
+          }
+        );
+        onClose();
       }
     } catch (error) {
       console.log(error);

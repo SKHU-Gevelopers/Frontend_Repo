@@ -2,8 +2,11 @@ import UnderNav from "@/components/UnderNav";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled from "styled-components";
+import { TbSend } from "react-icons/tb";
+import DmModal from "@/components/DmModal";
 
 interface Student {
+  id: number;
   profileImageUrl: string;
   nickname: string;
   department: string;
@@ -17,7 +20,7 @@ interface GuestBook {
 }
 
 export default function GestBook() {
-  const [studentData, setStudentData] = useState<Student>();
+  const [studentData, setStudentData] = useState<Student | null>(null);
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
   const [token, setToken] = useState<string>("");
   const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
@@ -77,10 +80,25 @@ export default function GestBook() {
     }
   };
 
+  const [isDmModal, setIsDmModal] = useState(false);
+
+  const openDmModal = () => {
+    setIsDmModal(true);
+  };
+
   return (
     <>
       <MainBox>
-        <DmButton src="/dmButton.png" alt="dmButton" />
+        <DmButtonWrap>
+          <DmButton onClick={openDmModal} />
+        </DmButtonWrap>
+        {studentData && isDmModal && (
+          <DmModal
+            isOpen={isDmModal}
+            onClose={() => setIsDmModal(false)}
+            senderId={studentData?.id}
+          ></DmModal>
+        )}
         <ProfileBox>
           <ProfileImageWrap>
             <ProfileImage
@@ -141,13 +159,20 @@ const MainBox = styled.div`
 
   overflow: auto;
 `;
+const DmButtonWrap = styled.div`
+  display: flex;
+  justify-content: end;
 
-const DmButton = styled.img`
-  margin-top: 2vh;
-  margin-left: 85%;
+  margin-top: 5%;
+  padding-right: 3.5vh;
 
-  width: 8%;
-  height: 4vh;
+  width: 100%;
+  height: 2.7em;
+`;
+
+const DmButton = styled(TbSend)`
+  width: 2.7em;
+  height: 100%;
 `;
 
 const ProfileBox = styled.div`
