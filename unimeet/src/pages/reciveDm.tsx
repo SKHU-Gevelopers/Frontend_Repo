@@ -3,6 +3,8 @@ import UnderNav from "../components/UnderNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { IoIosArrowRoundBack } from "react-icons/io";
+import { useRouter } from "next/router";
 
 interface GetDmData {
   title: string;
@@ -12,6 +14,8 @@ interface GetDmData {
 const ReciveDm = () => {
   const [token, setToken] = useState<string>();
   const [DmData, setDmData] = useState<GetDmData>();
+  const router = useRouter();
+  const { dmId } = router.query;
 
   const getDmData = async () => {
     try {
@@ -21,9 +25,12 @@ const ReciveDm = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         };
-        const response = await axios.get("https://unimeet.duckdns.org/dm/1", {
-          headers,
-        });
+        const response = await axios.get(
+          `https://unimeet.duckdns.org/dm/${dmId}`,
+          {
+            headers,
+          }
+        );
         setDmData(response.data.data.dm);
       }
     } catch (error) {
@@ -40,6 +47,7 @@ const ReciveDm = () => {
       <DmWrap>
         <Main>
           <Action>
+            <IoIosArrowRoundBack size={40} />
             <Link href="/chat">이전</Link>
           </Action>
           <DmInputData>

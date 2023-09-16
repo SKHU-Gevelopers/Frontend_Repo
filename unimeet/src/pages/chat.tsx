@@ -6,6 +6,7 @@ import DmModal from "@/components/DmModal";
 import Link from "next/link";
 
 interface DmData {
+  id: number;
   title: string;
   sender: {
     id: number;
@@ -70,7 +71,12 @@ export default function Chat() {
                           senderId={each.sender.id}
                         ></DmModal>
                       )}
-                      <Link href="/reciveDm">
+                      <Link
+                        href={{
+                          pathname: "/reciveDm",
+                          query: { dmId: each.id },
+                        }}
+                      >
                         <Detail>상세보기</Detail>
                       </Link>
                     </Action>
