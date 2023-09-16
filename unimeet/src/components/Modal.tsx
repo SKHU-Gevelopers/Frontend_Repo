@@ -10,7 +10,7 @@ const Modal = ({ isOpen, children }: ModalProps) => {
     return null;
   }
 
-  return <div className="modal -content">{children}</div>;
+  return <div>{children}</div>;
 };
 
 export default Modal;

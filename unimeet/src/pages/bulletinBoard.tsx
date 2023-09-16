@@ -138,7 +138,7 @@ const MainBox = styled.div`
   align-content: center;
 
   margin-top: 5vh;
-  padding-bottom: 5vh;
+  padding-bottom: 10vh;
 
   width: 100%;
   height: auto;
