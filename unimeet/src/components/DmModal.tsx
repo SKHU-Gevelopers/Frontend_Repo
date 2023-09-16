@@ -44,6 +44,7 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
           }
         );
         onClose();
+        alert("전송했습니다.");
       }
     } catch (error) {
       console.log(error);
