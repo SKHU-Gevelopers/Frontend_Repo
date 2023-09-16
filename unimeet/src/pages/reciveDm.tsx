@@ -1,33 +1,23 @@
 import styled from "styled-components";
-import UnderNav from "./UnderNav";
+import UnderNav from "../components/UnderNav";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useState } from "react";
-import { TbSend } from "react-icons/tb";
+import Link from "next/link";
+import { IoIosArrowRoundBack } from "react-icons/io";
+import { useRouter } from "next/router";
 
-interface DmModalProps {
-  isOpen: boolean;
-  onClose: () => void; // 모달을 닫는 함수를 받도록 수정
-  senderId: number;
+interface GetDmData {
+  title: string;
+  content: string;
 }
 
-const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
+const ReciveDm = () => {
   const [token, setToken] = useState<string>();
-  const [title, setTitle] = useState<string>();
-  const [content, setContent] = useState<string>();
+  const [DmData, setDmData] = useState<GetDmData>();
+  const router = useRouter();
+  const { dmId } = router.query;
 
-  if (!isOpen) {
-    return null;
-  }
-
-  const changeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTitle(e.target.value);
-  };
-
-  const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
-  };
-
-  const DmPost = async () => {
+  const getDmData = async () => {
     try {
       setToken(localStorage.getItem("login-token") || "");
       if (token) {
@@ -35,50 +25,43 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         };
-        const Dmdata = { title, content };
-        await axios.post(
-          `https://unimeet.duckdns.org/users/${senderId}/dm`,
-          Dmdata,
+        const response = await axios.get(
+          `https://unimeet.duckdns.org/dm/${dmId}`,
           {
             headers,
           }
         );
-        onClose();
-        alert("전송했습니다.");
+        setDmData(response.data.data.dm);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  useEffect(() => {
+    getDmData();
+  }, [token]);
+
   return (
     <>
-      <DmModalWrap>
+      <DmWrap>
         <Main>
           <Action>
-            <DeleteModal onClick={onClose}>X</DeleteModal>
-            <StyledSend onClick={DmPost}></StyledSend>
+            <IoIosArrowRoundBack size={40} />
+            <Link href="/chat">이전</Link>
           </Action>
           <DmInputData>
-            <TitleInput
-              placeholder="제목을 입력하세요."
-              value={title}
-              onChange={changeTitle}
-            ></TitleInput>
-            <ContentInput
-              placeholder="쪽지 내용을 입력하세요."
-              value={content}
-              onChange={changeContent}
-            ></ContentInput>
+            <Title>{DmData?.title}</Title>
+            <Content>{DmData?.content}</Content>
           </DmInputData>
         </Main>
         <UnderNav></UnderNav>
-      </DmModalWrap>
+      </DmWrap>
     </>
   );
 };
 
-const DmModalWrap = styled.div`
+const DmWrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -104,25 +87,10 @@ const Main = styled.div`
 
 const Action = styled.div`
   display: flex;
-
   align-items: center;
 
-  gap: 65%;
-`;
-
-const DeleteModal = styled.div`
-  padding-top: 2vh;
-  padding-left: 8%;
-
-  font-weight: 900;
-  font-size: 2rem;
-`;
-
-const StyledSend = styled(TbSend)`
-  margin-top: 5%;
-
-  width: 2.7em;
-  height: 2.7em;
+  margin-left: 2vw;
+  margin-top: 2vh;
 `;
 
 const DmInputData = styled.div`
@@ -134,7 +102,7 @@ const DmInputData = styled.div`
   padding-right: 8%;
 `;
 
-const TitleInput = styled.textarea`
+const Title = styled.div`
   width: 100%;
   height: 8vh;
 
@@ -153,7 +121,7 @@ const TitleInput = styled.textarea`
   overflow: hidden;
 `;
 
-const ContentInput = styled.textarea`
+const Content = styled.div`
   margin-top: 1vh;
 
   width: 100%;
@@ -173,4 +141,4 @@ const ContentInput = styled.textarea`
   overflow: hidden;
 `;
 
-export default DmModal;
+export default ReciveDm;

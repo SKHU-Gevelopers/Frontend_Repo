@@ -3,8 +3,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import DmModal from "@/components/DmModal";
+import Link from "next/link";
 
 interface DmData {
+  id: number;
   title: string;
   sender: {
     id: number;
@@ -60,14 +62,24 @@ export default function Chat() {
                   <DmTitle>{each.title}</DmTitle>
                   <DmSenderNickname>{each.sender.nickname}</DmSenderNickname>
                   <RightWrap>
-                    <ReplyDm onClick={openDmModal}>답장</ReplyDm>
-                    {isDmModal && (
-                      <DmModal
-                        isOpen={isDmModal}
-                        onClose={() => setIsDmModal(false)}
-                        senderId={each.sender.id}
-                      ></DmModal>
-                    )}
+                    <Action>
+                      <ReplyDm onClick={openDmModal}>답장</ReplyDm>
+                      {isDmModal && (
+                        <DmModal
+                          isOpen={isDmModal}
+                          onClose={() => setIsDmModal(false)}
+                          senderId={each.sender.id}
+                        ></DmModal>
+                      )}
+                      <Link
+                        href={{
+                          pathname: "/reciveDm",
+                          query: { dmId: each.id },
+                        }}
+                      >
+                        <Detail>상세보기</Detail>
+                      </Link>
+                    </Action>
                   </RightWrap>
                 </EachDm>
               );
@@ -149,6 +161,11 @@ const DmSenderNickname = styled.div`
   font-weight: 800;
 `;
 
+const Action = styled.div`
+  display: flex;
+  gap: 0.3em;
+`;
+
 const ReplyDm = styled.div`
   display: flex;
   align-items: center;
@@ -163,4 +180,23 @@ const ReplyDm = styled.div`
 
   font-weight: 700;
   color: white;
+`;
+
+const Detail = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 5rem;
+  height: 3.5vh;
+
+  border-radius: 0.5em;
+
+  background-color: #674ff4;
+
+  font-weight: 700;
+  color: white;
+
+  text-decoration-line: none;
+  outline: none;
 `;

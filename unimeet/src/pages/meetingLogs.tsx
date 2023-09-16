@@ -181,13 +181,10 @@ function ReceivedRequests() {
           "수락하기",
           { headers }
         );
-        // if (response.status === 200) {
-        //   alert("수락했습니다.");
-        // } else if (response.status === 400) {
-        //   alert("이미 수락된 상태입니다.");
-        // }
+        alert("수락했습니다.");
       }
     } catch (error) {
+      alert("이미 수락된 상태입니다.");
       console.log(error);
     }
   };
