@@ -24,6 +24,7 @@ export default function GestBook() {
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
   const [token, setToken] = useState<string>("");
   const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
+  const [studentId, setStudentId] = useState<number | null>();
 
   // 공개 프로필 조회: 학생 정보와 학생의 방명록 불러오기
   useEffect(() => {
@@ -36,7 +37,7 @@ export default function GestBook() {
             Authorization: `Bearer ${token}`,
           };
           const response = await axios.get(
-            "https://unimeet.duckdns.org/users/1/my-page?page=1", // 프로필 클릭시 users부분이 해당 학생 id로 바뀌게 수정 필요
+            "https://unimeet.duckdns.org/users/1/my-page?page=1", // 프로필 클릭시 1부분이 해당 공개프로필 id로 바뀌게 수정 필요
             {
               headers,
             }
@@ -70,7 +71,7 @@ export default function GestBook() {
           content: postGuestBookComment,
         };
         await axios.post(
-          "https://unimeet.duckdns.org/users/1/guestbooks", // 프로필 클릭시 users부분이 해당 학생 id로 바뀌게 수정 필요
+          `https://unimeet.duckdns.org/users/${studentId}/guestbooks`,
           postData,
           { headers }
         );
@@ -112,7 +113,6 @@ export default function GestBook() {
             <Department key={index}>
               <p>{each.major}</p> */}
             <Department>{studentData?.department}</Department>
-            <Department></Department>
             {/* ))} */}
           </InformationBox>
           <MBTI>
@@ -121,7 +121,12 @@ export default function GestBook() {
           {/* <Introduce>{user?.introduction}</Introduce> */}
         </ProfileBox>
         <GuestBooks>
-          <GuestBookForm onSubmit={postGuestBook}>
+          <GuestBookForm
+            onSubmit={postGuestBook}
+            onClick={() => {
+              setStudentId(studentData?.id);
+            }}
+          >
             <PostGuestBookCommentInputBox
               placeholder="방명록을 남겨보세요."
               onChange={onChange}
@@ -220,7 +225,7 @@ const InformationBox = styled.div`
 `;
 
 const Department = styled.div`
-  width: 48.5%;
+  width: 100%;
   height: 4vh;
 
   border-radius: 1rem;
