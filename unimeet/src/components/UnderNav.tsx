@@ -1,15 +1,10 @@
 import React, { useEffect } from "react";
 import { MainBox, MainUl, MainLink, MainImg } from "@/styles/UnderNavbarStyle";
-import { FaDog } from "react-icons/fa";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import Image from "next/image";
 
 const UnderNav = () => {
   const router = useRouter();
-  const Linked = (link: string) => {
-    router.push(link);
-  };
+
   useEffect(() => {
     const token = localStorage.getItem("login-token");
     if (!token) {

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { MypageRequest, handleSubmit } from "@/util/myPage";
+import { MypageRequest, accesstoken, handleSubmit } from "@/util/myPage";
 import { skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import UnderNav from "@/components/UnderNav";
@@ -41,12 +41,8 @@ const LockMypage: React.FC = () => {
   }));
 
   useEffect(() => {
-    const token = localStorage.getItem("login-token");
-    setToken(token || " ");
-  }, []);
-  useEffect(() => {
-    if (token) {
-      MypageRequest(token).then((res) => {
+    if (accesstoken) {
+      MypageRequest(accesstoken).then((res) => {
         console.log(res.data.data);
         setName(res.data.data.nickname);
         setMbti(res.data.data.mbti);
