@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
+import { parseCookies } from "nookies";
+import { accesstoken } from "@/util/myPage";
 
 interface Post {
   id: number;
@@ -26,7 +28,8 @@ export default function BulletinBoard() {
   useEffect(() => {
     const getPostsData = async () => {
       try {
-        setToken(localStorage.getItem("login-token") || " ");
+        setToken(accesstoken || " ");
+        //! accessTokend은 myPage.tsx(util파일)에서 정의중
         if (token) {
           const headers = {
             "Content-Type": "application/json",

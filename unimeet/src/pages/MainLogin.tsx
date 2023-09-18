@@ -6,31 +6,49 @@ import BubbleGround from "@/components/BubbleGround";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { setCookie } from "nookies";
+
 
 export default function MainLogin() {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const router = useRouter();
 
+
   function loginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     axios
-      .post("https://unimeet.duckdns.org/auth/sign-in", {
+      .post("https://unimeet.duckdns.org/auth/sign-in/short-token-exp", {
         email,
         password,
       })
       .then((res) => {
-        res.status === 200 && router.push("/bulletinBoard");
-        const token = res.data.data.accessToken;
-        localStorage.setItem("login-token", token);
-        console.log(res);
+        const accessEmail = email;
+        const accessPassword = password;
+        localStorage.setItem("accessEmail", accessEmail);
+        localStorage.setItem("accessPassword", accessPassword);
+        const accessToken = res.data.data.accessToken;
+        const refreshToken = res.data.data.refreshToken;
+        localStorage.setItem("accessToken", accessToken);
+        setCookie(null, "accessToken", accessToken, {
+          maxAge: 30 * 24 * 60 * 60, // 30일
+          path: "/", // 쿠키 경로
+        });
+        localStorage.setItem("refreshToken", refreshToken);
+        setCookie(null, "refresh-token", refreshToken, {
+          maxAge: 30 * 24 * 60 * 60, // 30일
+          path: "/", // 쿠키 경로
+        });
+        localStorage.setItem("login-token", accessToken);
+        router.push("/bulletinBoard");
+
       })
       .catch((err) => {
         alert("아이디 또는 비밀번호가 틀렸습니다."),
           console.log(err),
-          console.log(err.response),
-          console.log(email, password);
+          console.log(err.response);
       });
   }
   useEffect(() => {});
@@ -47,7 +65,6 @@ export default function MainLogin() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                console.log(e.target.value);
               }}
             />
           </TextBox>
