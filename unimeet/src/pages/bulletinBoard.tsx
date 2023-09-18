@@ -6,6 +6,7 @@ import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
 import { parseCookies } from "nookies";
 import { accesstoken } from "@/util/myPage";
+import Link from "next/link";
 
 interface Post {
   id: number;
@@ -92,40 +93,44 @@ export default function BulletinBoard() {
             data.map((each, index) => {
               return (
                 <Post key={index}>
-                  <Writer>
-                    <ProfileImageWrap>
-                      <ProfileImage
-                        src={each.profileImageUrl}
-                        alt="작성자 이미지 사진"
-                      ></ProfileImage>
-                    </ProfileImageWrap>
-                    <Name>{each.nickname}</Name>
-                  </Writer>
-                  {each.imageUrl !== "" && (
-                    <PictureWrap>
-                      <PictureImage
-                        src={each.imageUrl}
-                        alt="게시글 첨부 사진"
-                      ></PictureImage>
-                    </PictureWrap>
-                  )}
-                  <WritingBox>
-                    <Title>{each.title}</Title>
-                    <Text>{each.content}</Text>
-                  </WritingBox>
-                  <ReactionBox>
-                    <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
-                      {likedPosts.includes(each.id) ? (
-                        <StyledLikedHeartIcon />
-                      ) : (
-                        <StyledHeartIcon />
-                      )}
-                      <LikesCount>{each.likes}</LikesCount>
-                    </HeartWrap>
-                    {/* <CommentWrap>
+                  <Link
+                    href={{ pathname: "/detailBoard", query: { id: each.id } }}
+                  >
+                    <Writer>
+                      <ProfileImageWrap>
+                        <ProfileImage
+                          src={each.profileImageUrl}
+                          alt="작성자 이미지 사진"
+                        ></ProfileImage>
+                      </ProfileImageWrap>
+                      <Name>{each.nickname}</Name>
+                    </Writer>
+                    {each.imageUrl !== "" && (
+                      <PictureWrap>
+                        <PictureImage
+                          src={each.imageUrl}
+                          alt="게시글 첨부 사진"
+                        ></PictureImage>
+                      </PictureWrap>
+                    )}
+                    <WritingBox>
+                      <Title>{each.title}</Title>
+                      <Text>{each.content}</Text>
+                    </WritingBox>
+                    <ReactionBox>
+                      <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
+                        {likedPosts.includes(each.id) ? (
+                          <StyledLikedHeartIcon />
+                        ) : (
+                          <StyledHeartIcon />
+                        )}
+                        <LikesCount>{each.likes}</LikesCount>
+                      </HeartWrap>
+                      {/* <CommentWrap>
                     <Comment src="/comment.png" alt="댓글" />
                   </CommentWrap> */}
-                  </ReactionBox>
+                    </ReactionBox>
+                  </Link>
                 </Post>
               );
             })}
@@ -141,7 +146,7 @@ const MainBox = styled.div`
   align-content: center;
 
   margin-top: 5vh;
-  padding-bottom: 5vh;
+  padding-bottom: 10vh;
 
   width: 100%;
   height: auto;
