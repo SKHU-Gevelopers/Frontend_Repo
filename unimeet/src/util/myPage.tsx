@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from "next/router";
 import { parseCookies, setCookie } from "nookies";
 
 // const cookies = parseCookies();
@@ -11,7 +12,7 @@ export const requestToken = async (
 ): Promise<{ newAccessToken: string; newRefreshToken: string }> => {
   try {
     const response = await axios.post(
-      `https://unimeet.ducdns.org/token/reissue`,
+      `https://unimeet.duckdns.org/token/reissue`,
       {},
       {
         headers: {
@@ -75,7 +76,10 @@ export const MypageRequest = async (
         );
         return MypageRequest(newAccessToken, newRefreshToken);
       } catch (tokenErr: any) {
-        console.log("Failed to refresh token:", tokenErr);
+        if (tokenErr.response.status === 400) {
+          alert("로그인이 필요합니다.");
+          router.push("/MainLogin");
+        }
         throw tokenErr;
       }
     } else {
