@@ -6,9 +6,9 @@ const UnderNav = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("login-token");
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      router.push("/mainLogin");
+      router.push("/MainLogin");
     }
   });
 
@@ -17,7 +17,7 @@ const UnderNav = () => {
       <MainBox>
         <MainUl>
           <li>
-            <MainLink href="/lockMypage">
+            <MainLink href="/LockMypage">
               <MainImg src="/user.png" width="25" height="25" alt={""} />
               <span>내정보</span>
             </MainLink>

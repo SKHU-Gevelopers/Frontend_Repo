@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { MypageRequest, accesstoken, handleSubmit } from "@/util/myPage";
+import { MypageRequest, handleSubmit } from "@/util/myPage";
 import { skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import UnderNav from "@/components/UnderNav";
 import { ButtonStyle, InputDiv } from "@/styles/mypageStyle";
+import { parseCookies } from "nookies";
 
 interface MajorsType {
   id: number;
@@ -41,17 +42,21 @@ const LockMypage: React.FC = () => {
   }));
 
   useEffect(() => {
-    if (accesstoken) {
-      MypageRequest(accesstoken).then((res) => {
-        console.log(res.data.data);
-        setName(res.data.data.nickname);
-        setMbti(res.data.data.mbti);
-        setMajor1(res.data.data.majors[0]);
-        setMajor2(res.data.data.majors[1]);
-        setGender(res.data.data.gender);
-        setInformation(res.data.data.introduction);
-        setImage(res.data.data.profileImageUrl);
+    const cookies = parseCookies();
+    const accessToken = cookies["accessToken"];
+    const refreshToken = cookies["refresh-token"];
+    if (accessToken) {
+      MypageRequest(accessToken, refreshToken).then((res) => {
+        setName(res.data.nickname);
+        setMbti(res.data.mbti);
+        setMajor1(res.data.majors[0]);
+        setMajor2(res.data.majors[1]);
+        setGender(res.data.gender);
+        setInformation(res.data.introduction);
+        setImage(res.data.profileImageUrl);
       });
+    }else{
+      alert("다시 로그인을 해주세요.")
     }
   }, [token]);
 
@@ -199,7 +204,6 @@ const LockMypage: React.FC = () => {
     </LockMainDiv>
   );
 };
-
 
 export const FixBtn = styled(ButtonStyle)`
   margin: 0.3em 0;

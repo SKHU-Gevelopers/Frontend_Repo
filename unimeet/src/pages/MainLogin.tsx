@@ -25,10 +25,6 @@ export default function MainLogin() {
         password,
       })
       .then((res) => {
-        const accessEmail = email;
-        const accessPassword = password;
-        localStorage.setItem("accessEmail", accessEmail);
-        localStorage.setItem("accessPassword", accessPassword);
         const accessToken = res.data.data.accessToken;
         const refreshToken = res.data.data.refreshToken;
         localStorage.setItem("accessToken", accessToken);
@@ -36,12 +32,10 @@ export default function MainLogin() {
           maxAge: 30 * 24 * 60 * 60, // 30일
           path: "/", // 쿠키 경로
         });
-        localStorage.setItem("refreshToken", refreshToken);
         setCookie(null, "refresh-token", refreshToken, {
           maxAge: 30 * 24 * 60 * 60, // 30일
           path: "/", // 쿠키 경로
         });
-        localStorage.setItem("login-token", accessToken);
         router.push("/bulletinBoard");
 
       })
