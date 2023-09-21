@@ -6,7 +6,7 @@ const UnderNav = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("login-token");
+    const token = localStorage.getItem("accessToken");
     if (!token) {
       router.push("/mainLogin");
     }
