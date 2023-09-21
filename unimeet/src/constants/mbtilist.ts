@@ -1,0 +1,18 @@
+export const mbtilist = [
+  { id: 1, mbti: "ISTJ" },
+  { id: 2, mbti: "ISFJ" },
+  { id: 3, mbti: "INFJ" },
+  { id: 4, mbti: "INTJ" },
+  { id: 5, mbti: "ISTP" },
+  { id: 6, mbti: "ISFP" },
+  { id: 7, mbti: "INFP" },
+  { id: 8, mbti: "INTP" },
+  { id: 9, mbti: "ESTJ" },
+  { id: 10, mbti: "ESFJ" },
+  { id: 11, mbti: "ENFJ" },
+  { id: 12, mbti: "ENTJ" },
+  { id: 13, mbti: "ESTP" },
+  { id: 14, mbti: "ESFP" },
+  { id: 15, mbti: "ENFP" },
+  { id: 16, mbti: "ENTP" },
+];

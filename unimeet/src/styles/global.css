@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+  
+}
+html,
+body {
+  width: 100%;
+  height: fit-content;
+  background: linear-gradient(220deg, #3246ff, #e3ceff, #ff46d1);
+}
+
+.main{
+  height: 100vh;
+}
