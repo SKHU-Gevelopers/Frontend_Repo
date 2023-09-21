@@ -113,7 +113,7 @@ export const InputDiv = styled.div`
     & > .label {
       width: fit-content;
       height: 1.5rem;
-      background-color: #e496ff9c;
+      background-color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -135,7 +135,10 @@ export const PictureInput = styled(LetterInput)`
 export const FileInput = styled.input`
   display: none;
 `;
-export const FindImage = styled.button`
+export const FindImage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 8rem;
   height: 1.7rem;
   border: 1px solid #e496ff9c;

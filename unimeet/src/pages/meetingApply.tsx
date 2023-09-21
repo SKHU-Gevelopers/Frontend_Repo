@@ -16,13 +16,31 @@ import {
   ApplyButton,
   SendImg,
 } from "@/styles/applyStyle";
-import Image from "next/image";
 import { MdArrowBack } from "react-icons/md";
-import { ChangeEvent, useState } from "react";
-import { ImageCoordinate } from "./lockMypage";
+import { ChangeEvent, useEffect, useState } from "react";
+import { ImageCoordinate } from "./LockMypage";
 import UnderNav from "@/components/UnderNav";
+import { parseCookies } from "nookies";
+import router from "next/router";
+import { meetingApplyFunc } from "@/util/meetingApply/apllyUtil";
+import Link from "next/link";
 
 export default function meetingApply() {
+  const [accessToken, setAccessToken] = useState("");
+  const [refreshToken, setRefreshToken] = useState("");
+  const [meetingID, setMeetingID] = useState(0);
+
+  useEffect(() => {
+    const cookies = parseCookies();
+    const accessToken = cookies["accessToken"];
+    const refreshToken = cookies["refresh-token"];
+    if (!accessToken) {
+      router.push("/MainLogin");
+    } else {
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
+    }
+  });
   const [image, setImage] = useState("/dogImage.png");
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -40,21 +58,36 @@ export default function meetingApply() {
       }
     };
   };
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    meetingApplyFunc(meetingID, accessToken, refreshToken)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(meetingID, accessToken, refreshToken);
+      });
+  };
+
   return (
     <>
-    <UnderNav />
+      <UnderNav />
       <Main>
         <Box className="Maindiv">
-          <BackButton>
-            <MdArrowBack size={20} />
-          </BackButton>
+          <Link href="">
+            {/* 이부분에 link 등 한번 로직을 봐야할듯 */}
+            <BackButton>
+              <MdArrowBack size={20} />
+            </BackButton>
+          </Link>
           <NameBox>
             <ProfilrImg src="/dogImage.png" width="35" height="35" alt={""} />
             <div className="name">멈뭄미</div>
           </NameBox>
           <ApplyInnerBox className="innerBox">
             <h3>만남 신청</h3>
-            <ApplyForm>
+            <ApplyForm onSubmit={handleSubmit}>
               <InputDiv className="inputDiv">
                 <div className="labelBox">
                   <div className="label">제목</div>
@@ -63,6 +96,7 @@ export default function meetingApply() {
                   type="text"
                   placeholder="11글자 이내로 작성해주세요"
                   className="title"
+                  name="title"
                 />
               </InputDiv>
               <LetterInput className="inputDiv">
@@ -70,7 +104,7 @@ export default function meetingApply() {
                   <div className="label">전달할 내용</div>
                 </div>
                 <LetterBox
-                  name="letter"
+                  name="content"
                   id="letter"
                   rows={10}
                   cols={10}
@@ -86,6 +120,7 @@ export default function meetingApply() {
                   type="text"
                   placeholder="인스타 아이디"
                   className="input"
+                  name="contact"
                 />
               </InputDiv>
               <PictureInput className="inputDiv">
@@ -95,7 +130,7 @@ export default function meetingApply() {
                 <FileInput
                   onChange={onChangeFile}
                   type="file"
-                  name="file"
+                  name="meetUpImage=@"
                   id="file"
                 />
                 <ImageCoordinate>
@@ -107,7 +142,9 @@ export default function meetingApply() {
                   />
                 </ImageCoordinate>
               </PictureInput>
-              <ApplyButton className="submit">신청하기</ApplyButton>
+              <ApplyButton type="submit" className="submit">
+                신청하기
+              </ApplyButton>
             </ApplyForm>
           </ApplyInnerBox>
         </Box>
