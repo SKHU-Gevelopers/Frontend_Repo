@@ -149,9 +149,7 @@ function ReceivedRequests() {
       console.log(error);
       if (error.response && error.response.status === 401) {
         try {
-          const { newAccessToken, newRefreshToken } = await requestToken(
-            refreshToken
-          );
+          const { newAccessToken } = await requestToken(refreshToken);
           setToken(newAccessToken);
         } catch (error: any) {
           console.log("Failed to refresh token:", error);
@@ -180,9 +178,7 @@ function ReceivedRequests() {
       console.log(error);
       if (error.response && error.response.status === 401) {
         try {
-          const { newAccessToken, newRefreshToken } = await requestToken(
-            refreshToken
-          );
+          const { newAccessToken } = await requestToken(refreshToken);
           setToken(newAccessToken);
         } catch (error: any) {
           console.log("Failed to refresh token:", error);
@@ -206,9 +202,18 @@ function ReceivedRequests() {
         );
         alert("수락했습니다.");
       }
-    } catch (error) {
-      alert("이미 수락된 상태입니다.");
+    } catch (error: any) {
       console.log(error);
+      if (error.response && error.response.status === 400)
+        alert("이미 수락된 상태입니다.");
+      else if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken } = await requestToken(refreshToken);
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
     }
   };
 

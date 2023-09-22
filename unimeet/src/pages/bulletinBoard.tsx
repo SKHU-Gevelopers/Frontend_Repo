@@ -53,9 +53,7 @@ export default function BulletinBoard() {
       console.log(error);
       if (error.response && error.response.status === 401) {
         try {
-          const { newAccessToken, newRefreshToken } = await requestToken(
-            refreshToken
-          );
+          const { newAccessToken } = await requestToken(refreshToken);
           setToken(newAccessToken);
         } catch (error: any) {
           console.log("Failed to refresh token:", error);
@@ -63,7 +61,6 @@ export default function BulletinBoard() {
       }
     }
   };
-
 
   const clickLike = async (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -98,9 +95,7 @@ export default function BulletinBoard() {
       console.log(error);
       if (error.response && error.response.status === 401) {
         try {
-          const { newAccessToken, newRefreshToken } = await requestToken(
-            refreshToken
-          );
+          const { newAccessToken } = await requestToken(refreshToken);
           setToken(newAccessToken);
         } catch (error: any) {
           console.log("Failed to refresh token:", error);
