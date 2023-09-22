@@ -1,5 +1,7 @@
 import UnderNav from "@/components/UnderNav";
+import { requestToken } from "@/util/myPage";
 import axios from "axios";
+import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -18,34 +20,49 @@ interface GuestBook {
 }
 
 export default function GestBook() {
-  const [myData, setMyData] = useState<MyData | null>(null);
-  const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
   const [token, setToken] = useState<string>("");
 
+  const [myData, setMyData] = useState<MyData | null>(null);
+  const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
+
   useEffect(() => {
-    const getMyGuestBookUserData = async () => {
-      try {
-        setToken(localStorage.getItem("login-token") || " ");
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
-          const response = await axios.get(
-            "https://unimeet.duckdns.org/users/my-page-pub", 
-            {
-              headers,
-            }
-          );
-          setMyData(response.data.data.student);
-          setGuestBookData(response.data.data.guestBooks);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
     getMyGuestBookUserData();
   }, [token]);
+
+  const getMyGuestBookUserData = async () => {
+    try {
+      setToken(accessToken || " ");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await axios.get(
+          "https://unimeet.duckdns.org/users/my-page-pub",
+          {
+            headers,
+          }
+        );
+        setMyData(response.data.data.student);
+        setGuestBookData(response.data.data.guestBooks);
+      }
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken, newRefreshToken } = await requestToken(
+            refreshToken
+          );
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
+    }
+  };
 
   return (
     <>

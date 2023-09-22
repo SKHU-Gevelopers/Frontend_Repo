@@ -57,20 +57,13 @@ export default function BulletinBoard() {
             refreshToken
           );
           setToken(newAccessToken);
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${newAccessToken}`,
-          };
-          const response = await axios.get(`${searchUrl}`, {
-            headers,
-          });
-          setData(response.data.data.posts);
         } catch (error: any) {
           console.log("Failed to refresh token:", error);
         }
       }
     }
   };
+
 
   const clickLike = async (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -109,26 +102,6 @@ export default function BulletinBoard() {
             refreshToken
           );
           setToken(newAccessToken);
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${newAccessToken}`,
-          };
-          await axios.put(
-            `https://unimeet.duckdns.org/posts/${postId}/like`,
-            "게시글 좋아요",
-            { headers }
-          );
-
-          if (likedPosts.includes(postId)) {
-            setLikedPosts(likedPosts.filter((id) => id !== postId));
-          } else {
-            setLikedPosts([...likedPosts, postId]);
-          }
-
-          const updatedResponse = await axios.get(`${searchUrl}`, {
-            headers,
-          });
-          setData(updatedResponse.data.data.posts);
         } catch (error: any) {
           console.log("Failed to refresh token:", error);
         }

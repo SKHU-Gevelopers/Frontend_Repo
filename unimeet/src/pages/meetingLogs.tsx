@@ -1,6 +1,8 @@
 import Modal from "@/components/Modal";
 import UnderNav from "@/components/UnderNav";
+import { requestToken } from "@/util/myPage";
 import axios from "axios";
+import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -99,59 +101,74 @@ interface Application {
   sender: { id: number; nickname: string };
 }
 
+interface ApplicationDetail {
+  title: string;
+  content: string;
+  meetUpImages: [];
+  sender: {
+    id: number;
+    nickname: string;
+  };
+  targetPostId: number;
+}
+
 // 받은 신청함
 function ReceivedRequests() {
-  const [data, setData] = useState<Application[]>([]);
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
   const [token, setToken] = useState("");
+  const [detailData, setDetailData] = useState<ApplicationDetail>();
+  const [data, setData] = useState<Application[]>([]);
+  const [applicationId, setApplicationId] = useState<number | null>(null);
   const searchUrl = "https://unimeet.duckdns.org/meet-ups";
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const getRecivedApplication = async () => {
-      try {
-        setToken(localStorage.getItem("login-token") || " ");
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
-
-          const response = await axios.get(`${searchUrl}`, {
-            headers,
-          });
-          setData(response.data.data.meetUps);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
     getRecivedApplication();
   }, [token]);
 
-  interface ApplicationDetail {
-    title: string;
-    content: string;
-    meetUpImages: [];
-    sender: {
-      id: number;
-      nickname: string;
-    };
-    targetPostId: number;
-  }
+  useEffect(() => {
+    getRecivedApplicationDetailVersion();
+  }, [token, applicationId]);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [detailData, setDetailData] = useState<ApplicationDetail>();
-  const [applicationId, setApplicationId] = useState<number | null>(null);
+  const getRecivedApplication = async () => {
+    try {
+      setToken(accessToken || " ");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await axios.get(`${searchUrl}`, {
+          headers,
+        });
+        setData(response.data.data.meetUps);
+      }
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken, newRefreshToken } = await requestToken(
+            refreshToken
+          );
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
+    }
+  };
 
   const getRecivedApplicationDetailVersion = async () => {
     try {
       if (applicationId !== null) {
-        setToken(localStorage.getItem("login-token") || "");
+        setToken(accessToken || "");
         if (token) {
           const headers = {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           };
-
           const response = await axios.get(
             `https://unimeet.duckdns.org/meet-ups/${applicationId}`,
             { headers }
@@ -159,14 +176,20 @@ function ReceivedRequests() {
           setDetailData(response.data.data.meetUp);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken, newRefreshToken } = await requestToken(
+            refreshToken
+          );
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
     }
   };
-
-  useEffect(() => {
-    getRecivedApplicationDetailVersion();
-  }, [applicationId]);
 
   const acceptApplication = async () => {
     try {
