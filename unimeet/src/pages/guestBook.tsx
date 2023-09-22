@@ -5,6 +5,8 @@ import styled from "styled-components";
 import { TbSend } from "react-icons/tb";
 import DmModal from "@/components/DmModal";
 import { useRouter } from "next/router";
+import { parseCookies } from "nookies";
+import { requestToken } from "@/util/myPage";
 
 interface Student {
   id: number;
@@ -21,11 +23,17 @@ interface GuestBook {
 }
 
 export default function GestBook() {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+  const [token, setToken] = useState<string>("");
+
   const [studentData, setStudentData] = useState<Student | null>(null);
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
-  const [token, setToken] = useState<string>("");
+
   const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
   const [studentId, setStudentId] = useState<number | null>();
+  const [isDmModal, setIsDmModal] = useState(false);
   // **************************************** next.js Link 태그로 인한 추가 클릭시 이 해당 id 전송되게 만들어주세욤
   // const router = useRouter();
   // const { writerId } = router.query;
@@ -33,32 +41,41 @@ export default function GestBook() {
 
   // 공개 프로필 조회: 학생 정보와 학생의 방명록 불러오기
   useEffect(() => {
-    const getGuestBookUserData = async () => {
-      try {
-        setToken(localStorage.getItem("login-token") || " ");
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
-          const response = await axios.get(
-            "https://unimeet.duckdns.org/users/1/my-page?page=1",
-            // ********************************************************
-            // `https://unimeet.duckdns.org/users/${writerId}/my-page?page=1`,
-            // ******************************************************** 해당 writerId 사용한 url 은 writerId 받은 다음에 사용하려 합니담.
-            {
-              headers,
-            }
-          );
-          setStudentData(response.data.data.student);
-          setGuestBookData(response.data.data.guestBooks);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
     getGuestBookUserData();
   }, [token]);
+
+  const getGuestBookUserData = async () => {
+    try {
+      setToken(accessToken || " ");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await axios.get(
+          "https://unimeet.duckdns.org/users/1/my-page?page=1",
+          // ********************************************************
+          // `https://unimeet.duckdns.org/users/${writerId}/my-page?page=1`,
+          // ******************************************************** 해당 writerId 사용한 url 은 writerId 받은 다음에 사용하려 합니담.
+          {
+            headers,
+          }
+        );
+        setStudentData(response.data.data.student);
+        setGuestBookData(response.data.data.guestBooks);
+      }
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken } = await requestToken(refreshToken);
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
+    }
+  };
 
   // 방명록 작성 input 내용 저장
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -84,12 +101,18 @@ export default function GestBook() {
           { headers }
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken } = await requestToken(refreshToken);
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
     }
   };
-
-  const [isDmModal, setIsDmModal] = useState(false);
 
   const openDmModal = () => {
     setIsDmModal(true);

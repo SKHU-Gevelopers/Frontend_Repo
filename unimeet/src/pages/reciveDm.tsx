@@ -5,6 +5,8 @@ import axios from "axios";
 import Link from "next/link";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useRouter } from "next/router";
+import { parseCookies } from "nookies";
+import { requestToken } from "@/util/myPage";
 
 interface GetDmData {
   title: string;
@@ -12,14 +14,22 @@ interface GetDmData {
 }
 
 const ReciveDm = () => {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
   const [token, setToken] = useState<string>();
+
   const [DmData, setDmData] = useState<GetDmData>();
   const router = useRouter();
   const { dmId } = router.query;
 
+  useEffect(() => {
+    getDmData();
+  }, [token]);
+
   const getDmData = async () => {
     try {
-      setToken(localStorage.getItem("login-token") || "");
+      setToken(accessToken || "");
       if (token) {
         const headers = {
           "Content-Type": "application/json",
@@ -33,14 +43,18 @@ const ReciveDm = () => {
         );
         setDmData(response.data.data.dm);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken } = await requestToken(refreshToken);
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
     }
   };
-
-  useEffect(() => {
-    getDmData();
-  }, [token]);
 
   return (
     <>

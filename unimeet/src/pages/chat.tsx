@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import DmModal from "@/components/DmModal";
 import Link from "next/link";
+import { parseCookies } from "nookies";
+import { requestToken } from "@/util/myPage";
 
 interface DmData {
   id: number;
@@ -16,33 +18,43 @@ interface DmData {
 }
 
 export default function Chat() {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
   const [token, setToken] = useState<string>();
+
   const [data, setData] = useState<DmData[]>([]);
-
-  const chatGetData = async () => {
-    try {
-      setToken(localStorage.getItem("login-token") || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-
-        const response = await axios.get("https://unimeet.duckdns.org/dm", {
-          headers,
-        });
-        setData(response.data.data.dmList);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [isDmModal, setIsDmModal] = useState(false);
 
   useEffect(() => {
     chatGetData();
   }, [token]);
 
-  const [isDmModal, setIsDmModal] = useState(false);
+  const chatGetData = async () => {
+    try {
+      setToken(accessToken || "");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await axios.get("https://unimeet.duckdns.org/dm", {
+          headers,
+        });
+        setData(response.data.data.dmList);
+      }
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken } = await requestToken(refreshToken);
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
+    }
+  };
 
   const openDmModal = () => {
     setIsDmModal(true);
@@ -150,14 +162,14 @@ const DmAt = styled.div`
 const DmTitle = styled.div`
   height: 4vh;
 
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bolder;
 `;
 
 const DmSenderNickname = styled.div`
   height: 3vh;
 
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 800;
 `;
 
@@ -196,7 +208,4 @@ const Detail = styled.a`
 
   font-weight: 700;
   color: white;
-
-  text-decoration-line: none;
-  outline: none;
 `;

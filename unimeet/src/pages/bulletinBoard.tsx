@@ -5,8 +5,8 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
 import { parseCookies } from "nookies";
-import { accesstoken } from "@/util/myPage";
 import Link from "next/link";
+import { requestToken } from "@/util/myPage";
 
 interface Post {
   id: number;
@@ -22,41 +22,53 @@ interface Post {
 }
 
 export default function BulletinBoard() {
-  const [data, setData] = useState<Post[]>([]);
-  const [token, setToken] = useState("");
-  const searchUrl = "https://unimeet.duckdns.org/posts";
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
 
-  useEffect(() => {
-    const getPostsData = async () => {
-      try {
-        setToken(accesstoken || " ");
-        //! accessTokend은 myPage.tsx(util파일)에서 정의중
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
-          const response = await axios.get(`${searchUrl}`, {
-            headers,
-          });
-          setData(response.data.data.posts);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getPostsData();
-  }, [token]);
+  const [data, setData] = useState<Post[]>([]);
+  const [token, setToken] = useState(accessToken);
+  const searchUrl = "https://unimeet.duckdns.org/posts";
 
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
 
-  const ClickLike = async (
+  useEffect(() => {
+    getPostsData();
+  }, [token]);
+
+  const getPostsData = async () => {
+    try {
+      setToken(accessToken || " ");
+      if (token) {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await axios.get(`${searchUrl}`, {
+          headers,
+        });
+        setData(response.data.data.posts);
+      }
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken } = await requestToken(refreshToken);
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
+    }
+  };
+
+  const clickLike = async (
     e: React.MouseEvent<HTMLButtonElement>,
     postId: number
   ) => {
     e.preventDefault();
     try {
-      setToken(localStorage.getItem("login-token") || " ");
+      setToken(accessToken || " ");
       if (token) {
         const headers = {
           "Content-Type": "application/json",
@@ -68,7 +80,6 @@ export default function BulletinBoard() {
           { headers }
         );
 
-        // 좋아요한 포스트의 ID를 관리하는 상태 업데이트
         if (likedPosts.includes(postId)) {
           setLikedPosts(likedPosts.filter((id) => id !== postId));
         } else {
@@ -80,8 +91,16 @@ export default function BulletinBoard() {
         });
         setData(updatedResponse.data.data.posts);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken } = await requestToken(refreshToken);
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
     }
   };
 
@@ -118,7 +137,7 @@ export default function BulletinBoard() {
                       <Text>{each.content}</Text>
                     </WritingBox>
                     <ReactionBox>
-                      <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
+                      <HeartWrap onClick={(e) => clickLike(e, each.id)}>
                         {likedPosts.includes(each.id) ? (
                           <StyledLikedHeartIcon />
                         ) : (

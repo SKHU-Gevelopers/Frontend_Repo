@@ -3,6 +3,8 @@ import UnderNav from "./UnderNav";
 import axios from "axios";
 import { useState } from "react";
 import { TbSend } from "react-icons/tb";
+import { parseCookies } from "nookies";
+import { requestToken } from "@/util/myPage";
 
 interface DmModalProps {
   isOpen: boolean;
@@ -11,7 +13,11 @@ interface DmModalProps {
 }
 
 const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
   const [token, setToken] = useState<string>();
+
   const [title, setTitle] = useState<string>();
   const [content, setContent] = useState<string>();
 
@@ -29,7 +35,7 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
 
   const DmPost = async () => {
     try {
-      setToken(localStorage.getItem("login-token") || "");
+      setToken(accessToken || "");
       if (token) {
         const headers = {
           "Content-Type": "application/json",
@@ -43,11 +49,19 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
             headers,
           }
         );
-        onClose();
         alert("전송했습니다.");
+        onClose();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken } = await requestToken(refreshToken);
+          setToken(newAccessToken);
+        } catch (error: any) {
+          console.log("Failed to refresh token:", error);
+        }
+      }
     }
   };
 
