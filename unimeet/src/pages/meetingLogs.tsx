@@ -193,7 +193,7 @@ function ReceivedRequests() {
 
   const acceptApplication = async () => {
     try {
-      setToken(localStorage.getItem("login-token") || "");
+      setToken(accessToken || "");
       if (token) {
         const headers = {
           "Content-Type": "application/json",
