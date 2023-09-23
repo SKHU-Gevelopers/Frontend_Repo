@@ -4,7 +4,7 @@ import Image from "next/image";
 export const MainBox = styled.div`
   display: flex;
   justify-content: center;
-  background-color: #fef7ff;
+  background-color: #fff7ff;
   width: 100%;
   height: 10vh;
   position: fixed;
