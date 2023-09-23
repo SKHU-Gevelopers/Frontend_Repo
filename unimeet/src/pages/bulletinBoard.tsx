@@ -113,7 +113,7 @@ export default function BulletinBoard() {
               return (
                 <Post key={index}>
                   <Link
-                    href={{ pathname: "/detailBoard", query: { id: each.id } }}
+                    href={`/detailBoard/${each.id}`}
                   >
                     <Writer>
                       <ProfileImageWrap>
