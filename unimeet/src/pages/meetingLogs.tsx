@@ -1,12 +1,9 @@
 import Modal from "@/components/Modal";
 import UnderNav from "@/components/UnderNav";
-import { requestToken } from "@/util/myPage";
-import axios from "axios";
-import { parseCookies } from "nookies";
+import MeetingReciveUtil from "@/util/meetingReciveUtil";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-// 조건부 렌더링
 export default function MeetingLogs() {
   const [selectedBtn, setSelectedBtn] = useState("");
 
@@ -95,33 +92,19 @@ const SentRequestsBtn = styled.div`
   font-weight: 700;
 `;
 
-interface Application {
-  id: number;
-  title: string;
-  sender: { id: number; nickname: string };
-}
-
-interface ApplicationDetail {
-  title: string;
-  content: string;
-  meetUpImages: [];
-  sender: {
-    id: number;
-    nickname: string;
-  };
-  targetPostId: number;
-}
-
 // 받은 신청함
 function ReceivedRequests() {
-  const cookies = parseCookies();
-  const accessToken = cookies["accessToken"];
-  const refreshToken = cookies["refresh-token"];
-  const [token, setToken] = useState("");
-  const [detailData, setDetailData] = useState<ApplicationDetail>();
-  const [data, setData] = useState<Application[]>([]);
-  const [applicationId, setApplicationId] = useState<number | null>(null);
-  const searchUrl = "https://unimeet.duckdns.org/meet-ups";
+  const {
+    token,
+    detailData,
+    listData,
+    applicationId,
+    setApplicationId,
+    getRecivedApplication,
+    getRecivedApplicationDetailVersion,
+    acceptApplication,
+  } = MeetingReciveUtil();
+
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -132,96 +115,11 @@ function ReceivedRequests() {
     getRecivedApplicationDetailVersion();
   }, [token, applicationId]);
 
-  const getRecivedApplication = async () => {
-    try {
-      setToken(accessToken || " ");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await axios.get(`${searchUrl}`, {
-          headers,
-        });
-        setData(response.data.data.meetUps);
-      }
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
-        try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
-        } catch (error: any) {
-          console.log("Failed to refresh token:", error);
-        }
-      }
-    }
-  };
-
-  const getRecivedApplicationDetailVersion = async () => {
-    try {
-      if (applicationId !== null) {
-        setToken(accessToken || "");
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
-          const response = await axios.get(
-            `https://unimeet.duckdns.org/meet-ups/${applicationId}`,
-            { headers }
-          );
-          setDetailData(response.data.data.meetUp);
-        }
-      }
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
-        try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
-        } catch (error: any) {
-          console.log("Failed to refresh token:", error);
-        }
-      }
-    }
-  };
-
-  const acceptApplication = async () => {
-    try {
-      setToken(accessToken || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await axios.post(
-          `https://unimeet.duckdns.org/meet-ups/${applicationId}/accept`,
-          "수락하기",
-          { headers }
-        );
-        alert("수락했습니다.");
-      }
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.status === 400)
-        alert("이미 수락된 상태입니다.");
-      else if (error.response && error.response.status === 401) {
-        try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
-        } catch (error: any) {
-          console.log("Failed to refresh token:", error);
-        }
-      }
-    }
-  };
-
   return (
     <MainBox>
       <Article>
-        {data &&
-          data.map((each, index) => {
+        {listData &&
+          listData.map((each, index) => {
             return (
               <Application key={index}>
                 <Title>{each.title}</Title>
@@ -237,7 +135,7 @@ function ReceivedRequests() {
                   </ViewDetails>
                   {isOpen && (
                     <ModalWrap>
-                      {data && (
+                      {listData && (
                         <Modal isOpen={isOpen}>
                           <DeleteModal onClick={() => setIsOpen(false)}>
                             닫기
