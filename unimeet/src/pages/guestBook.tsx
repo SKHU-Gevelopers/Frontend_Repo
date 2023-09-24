@@ -42,11 +42,30 @@ export default function GestBook() {
 
   // 방명록 작성 input 내용 저장
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPostGuestBookComment(e.target.value);
+    const newComment = e.target.value;
+    if (newComment.length >= 20) {
+      alert("글자수를 초과했습니다.");
+      setPostGuestBookComment("");
+    } else {
+      setPostGuestBookComment(newComment);
+    }
   };
-
   const openDmModal = () => {
     setIsDmModal(true);
+  };
+
+  const handlePostGuestBook = async () => {
+    if (postGuestBookComment.trim() !== "") {
+      if (studentId !== undefined) {
+        postGuestBook(
+          accessToken,
+          refreshToken,
+          postGuestBookComment,
+          studentId
+        );
+        setPostGuestBookComment("");
+      }
+    }
   };
 
   return (
@@ -83,29 +102,24 @@ export default function GestBook() {
           {/* <Introduce>{user?.introduction}</Introduce> */}
         </ProfileBox>
         <GuestBooks>
-          <GuestBookForm
-            onSubmit={async (e) => {
-              if (
-                studentId !== undefined &&
-                postGuestBookComment.trim() !== ""
-              ) {
-                await postGuestBook(
-                  e,
-                  accessToken,
-                  refreshToken,
-                  postGuestBookComment,
-                  studentId
-                );
-              }
-            }}
-            onClick={() => {
-              setStudentId(studentData?.id);
-            }}
-          >
-            <PostGuestBookCommentInputBox
-              placeholder="방명록을 남겨보세요."
-              onChange={onChange}
-            ></PostGuestBookCommentInputBox>
+          <GuestBookForm>
+            <GuestBookSubmitWrap>
+              <PostGuestBookCommentInputBox
+                placeholder="방명록을 남겨보세요."
+                onChange={onChange}
+                value={postGuestBookComment}
+              ></PostGuestBookCommentInputBox>
+              <SubmitWrap>
+                <Submit
+                  onClick={() => {
+                    setStudentId(studentData?.id);
+                    handlePostGuestBook();
+                  }}
+                >
+                  전송
+                </Submit>
+              </SubmitWrap>
+            </GuestBookSubmitWrap>
           </GuestBookForm>
           {guestBookData?.map((each, Id) => {
             return (
@@ -266,21 +280,54 @@ const GuestBookForm = styled.form`
   height: 13vh;
 `;
 
-const PostGuestBookCommentInputBox = styled.input`
-  padding-left: 3%;
+const GuestBookSubmitWrap = styled.div`
+  padding-bottom: 0.6em;
 
   width: 100%;
   height: 100%;
 
   border-radius: 1rem;
-  border: none;
-  outline: none;
 
   background-color: white;
   opacity: 0.7;
+`;
+
+const PostGuestBookCommentInputBox = styled.input`
+  padding-left: 3%;
+  padding-top: 1.7em;
+
+  width: 100%;
+  height: 70%;
+
+  border-radius: 1rem;
+  border: none;
+  outline: none;
 
   font-size: 1rem;
   font-weight: 600;
+`;
+
+const SubmitWrap = styled.div`
+  display: flex;
+  justify-content: flex-end;
+
+  padding-right: 0.5em;
+
+  width: 100%;
+  height: 2.5em;
+`;
+
+const Submit = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 3em;
+  height: 2em;
+
+  background-color: white;
+  border-radius: 1rem;
+  border: solid 1px gray;
 `;
 
 const GuestImage = styled.img`

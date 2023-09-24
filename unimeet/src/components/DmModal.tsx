@@ -25,7 +25,13 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
   }
 
   const changeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+    if (newTitle.length >= 20) {
+      alert("글자수를 초과했습니다.");
+      setTitle("");
+    } else {
+      setTitle(e.target.value);
+    }
   };
 
   const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

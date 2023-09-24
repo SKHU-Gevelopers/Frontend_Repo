@@ -42,13 +42,11 @@ export const getGuestBookUserData = async (
 };
 
 export const postGuestBook = async (
-  e: FormEvent<HTMLFormElement>,
   accessToken: string,
   refreshToken: string,
   postGuestBookComment: string,
   studentId: number
 ): Promise<void> => {
-  e.preventDefault();
   try {
     const headers = {
       "Content-Type": "application/json",
@@ -70,7 +68,6 @@ export const postGuestBook = async (
           refreshToken
         );
         return postGuestBook(
-          e,
           newAccessToken,
           newRefreshToken,
           postGuestBookComment,
