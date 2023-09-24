@@ -142,7 +142,7 @@ function ReceivedRequests() {
         refreshToken,
         applicationId
       ).then((res) => {
-        setDetailData(res.data.meetUps);
+        setDetailData(res.data.meetUp);
       });
     }
   }, [accessToken, applicationId]);
