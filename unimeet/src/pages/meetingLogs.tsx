@@ -183,7 +183,6 @@ function ReceivedRequests() {
                           </ModalContent>
                           <AcceptButton
                             onClick={() => {
-                              setIsOpen(false);
                               if (applicationId !== undefined) {
                                 acceptApplication(
                                   accessToken,
@@ -191,6 +190,7 @@ function ReceivedRequests() {
                                   applicationId
                                 );
                               }
+                              setIsOpen(false);
                             }}
                           >
                             수락하기
