@@ -32,7 +32,7 @@ export default function BulletinBoard() {
     getPostsData(accessToken, refreshToken).then((res) => {
       setData(res.data.posts);
     });
-  }, [accessToken]);
+  }, [accessToken, likedPosts]);
 
   return (
     <>
