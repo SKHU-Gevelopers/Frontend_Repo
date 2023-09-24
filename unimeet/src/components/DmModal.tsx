@@ -16,7 +16,6 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
   const refreshToken = cookies["refresh-token"];
-  const [token, setToken] = useState<string>();
 
   const [title, setTitle] = useState<string>();
   const [content, setContent] = useState<string>();
@@ -26,38 +25,46 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
   }
 
   const changeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+    if (newTitle.length >= 20) {
+      alert("글자수를 초과했습니다.");
+      setTitle("");
+    } else {
+      setTitle(e.target.value);
+    }
   };
 
   const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
 
-  const DmPost = async () => {
+  const DmPost = async (
+    accessToken: string,
+    refreshToken: string
+  ): Promise<any> => {
     try {
-      setToken(accessToken || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const Dmdata = { title, content };
-        await axios.post(
-          `https://unimeet.duckdns.org/users/${senderId}/dm`,
-          Dmdata,
-          {
-            headers,
-          }
-        );
-        alert("전송했습니다.");
-        onClose();
-      }
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      };
+      const Dmdata = { title, content };
+      await axios.post(
+        `https://unimeet.duckdns.org/users/${senderId}/dm`,
+        Dmdata,
+        {
+          headers,
+        }
+      );
+      alert("전송했습니다.");
+      onClose();
     } catch (error: any) {
       console.log(error);
       if (error.response && error.response.status === 401) {
         try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
+          const { newAccessToken, newRefreshToken } = await requestToken(
+            refreshToken
+          );
+          return DmPost(newAccessToken, newRefreshToken);
         } catch (error: any) {
           console.log("Failed to refresh token:", error);
         }
@@ -71,7 +78,9 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
         <Main>
           <Action>
             <DeleteModal onClick={onClose}>X</DeleteModal>
-            <StyledSend onClick={DmPost}></StyledSend>
+            <StyledSend
+              onClick={() => DmPost(accessToken, refreshToken)}
+            ></StyledSend>
           </Action>
           <DmInputData>
             <TitleInput
