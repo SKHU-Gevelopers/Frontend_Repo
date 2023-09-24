@@ -10,53 +10,53 @@
 
 ## 기술 스택
 
-<img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white"/> 
-<img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white"/> 
-<img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white"/>
-<img src ="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styledcomponents&logoColor=white">
-<img src="https://img.shields.io/badge/Vercel-000000?style=flat&logo=Vercel&logoColor=white">
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white"/> <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white"/> <img src ="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styledcomponents&logoColor=white"> <img src="https://img.shields.io/badge/Vercel-000000?style=flat&logo=Vercel&logoColor=white">
 
 ## 소스 트리
 
 ```bash
 .
 ├── components
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   └──
+│   ├──ApplyModal.tsx
+│   ├──BubbleGround.tsx
+│   ├──Comments.tsx
+│   ├──DmModal.tsx
+│   ├──InputBox.tsx
+│   ├──Modal.tsx
+│   └──UnderNav.tsx
 ├── constants
-│   ├──
-│   └──
+│   ├──department.ts
+│   └──mbtilist.ts
 ├── pages
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   ├──
-│   └──
+│   ├──_app.tsx
+│   ├──_document.tsx
+│   ├──bulletinBoard.tsx
+│   ├──chat.tsx
+│   ├──detailBoeard.tsx
+│   ├──guestBook.tsx
+│   ├──index.tsx
+│   ├──LockMypages.tsx
+│   ├──MainLogin.tsx
+│   ├──meetingApply.tsx
+│   ├──meetingLogs.tsx
+│   ├──myGuestBook.tsx
+│   ├──recive.tsx
+│   └──signup.tsx
 ├── styles
-│   ├──
-│   ├──
-│   ├──
-│   ├──
+│   ├──componentsStyle
+│   │  └──commentStyle.tsx
+│   ├──applyStyle.tsx
+│   ├──detailBoardStyle.tsx
+│   ├──global.css
+│   ├──mypageStyle.tsx
+│   └──UnderNavbar.tsx 
 └── util
-    ├──
-    ├──
-    ├──
-    ├──
-    └──
-
+    ├──meetingApply
+    │  └──apllyUtil.tsx
+    ├── etailUtil.tsx
+    ├──myPage.tsx
+    ├──signUtil.tsx
+    └──userUtil.tsx
 
 ```
 
