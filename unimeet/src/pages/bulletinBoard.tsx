@@ -1,12 +1,11 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
-import { parseCookies } from "nookies";
 import Link from "next/link";
-import { requestToken } from "@/util/myPage";
+import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
+import { parseCookies } from "nookies";
 
 interface Post {
   id: number;
@@ -27,82 +26,13 @@ export default function BulletinBoard() {
   const refreshToken = cookies["refresh-token"];
 
   const [data, setData] = useState<Post[]>([]);
-  const [token, setToken] = useState(accessToken);
-  const searchUrl = "https://unimeet.duckdns.org/posts";
-
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
 
   useEffect(() => {
-    getPostsData();
-  }, [token]);
-
-  const getPostsData = async () => {
-    try {
-      setToken(accessToken || " ");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await axios.get(`${searchUrl}`, {
-          headers,
-        });
-        setData(response.data.data.posts);
-      }
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
-        try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
-        } catch (error: any) {
-          console.log("Failed to refresh token:", error);
-        }
-      }
-    }
-  };
-
-  const clickLike = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-    postId: number
-  ) => {
-    e.preventDefault();
-    try {
-      setToken(accessToken || " ");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        await axios.put(
-          `https://unimeet.duckdns.org/posts/${postId}/like`,
-          "게시글 좋아요",
-          { headers }
-        );
-
-        if (likedPosts.includes(postId)) {
-          setLikedPosts(likedPosts.filter((id) => id !== postId));
-        } else {
-          setLikedPosts([...likedPosts, postId]);
-        }
-
-        const updatedResponse = await axios.get(`${searchUrl}`, {
-          headers,
-        });
-        setData(updatedResponse.data.data.posts);
-      }
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
-        try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
-        } catch (error: any) {
-          console.log("Failed to refresh token:", error);
-        }
-      }
-    }
-  };
+    getPostsData(accessToken, refreshToken).then((res) => {
+      setData(res.data.posts);
+    });
+  }, [accessToken, likedPosts]);
 
   return (
     <>
@@ -112,9 +42,7 @@ export default function BulletinBoard() {
             data.map((each, index) => {
               return (
                 <Post key={index}>
-                  <Link
-                    href={`/detailBoard/${each.id}`}
-                  >
+                  <Link href={`/detailBoard/${each.id}`}>
                     <Writer>
                       <ProfileImageWrap>
                         <ProfileImage
@@ -137,7 +65,18 @@ export default function BulletinBoard() {
                       <Text>{each.content}</Text>
                     </WritingBox>
                     <ReactionBox>
-                      <HeartWrap onClick={(e) => clickLike(e, each.id)}>
+                      <HeartWrap
+                        onClick={(e) =>
+                          clickLike(
+                            accessToken,
+                            refreshToken,
+                            e,
+                            each.id,
+                            likedPosts,
+                            setLikedPosts
+                          )
+                        }
+                      >
                         {likedPosts.includes(each.id) ? (
                           <StyledLikedHeartIcon />
                         ) : (
@@ -241,7 +180,7 @@ const PictureImage = styled.img`
 
   border-radius: 5px;
 
-  background-color: blue;
+  background-color: #ebedfa;
 `;
 
 const WritingBox = styled.div`

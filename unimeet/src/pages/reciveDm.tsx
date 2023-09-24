@@ -1,60 +1,34 @@
 import styled from "styled-components";
 import UnderNav from "../components/UnderNav";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Link from "next/link";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
-import { requestToken } from "@/util/myPage";
+import { getDmData } from "@/util/ReciveDmUtil";
+import { useRouter } from "next/router";
 
 interface GetDmData {
   title: string;
   content: string;
 }
 
-const ReciveDm = () => {
+export default function ReciveDm() {
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
   const refreshToken = cookies["refresh-token"];
-  const [token, setToken] = useState<string>();
 
   const [DmData, setDmData] = useState<GetDmData>();
+
   const router = useRouter();
-  const { dmId } = router.query;
+  const dmId = router.query.dmId as string;
 
   useEffect(() => {
-    getDmData();
-  }, [token]);
-
-  const getDmData = async () => {
-    try {
-      setToken(accessToken || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await axios.get(
-          `https://unimeet.duckdns.org/dm/${dmId}`,
-          {
-            headers,
-          }
-        );
-        setDmData(response.data.data.dm);
-      }
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
-        try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
-        } catch (error: any) {
-          console.log("Failed to refresh token:", error);
-        }
-      }
+    if (accessToken && dmId) {
+      getDmData(accessToken, refreshToken, dmId).then((res) => {
+        setDmData(res.data.dm);
+      });
     }
-  };
+  }, [accessToken]);
 
   return (
     <>
@@ -73,7 +47,7 @@ const ReciveDm = () => {
       </DmWrap>
     </>
   );
-};
+}
 
 const DmWrap = styled.div`
   display: flex;
@@ -154,5 +128,3 @@ const Content = styled.div`
 
   overflow: hidden;
 `;
-
-export default ReciveDm;

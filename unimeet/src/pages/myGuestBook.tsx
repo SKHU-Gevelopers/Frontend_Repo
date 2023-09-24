@@ -1,6 +1,5 @@
 import UnderNav from "@/components/UnderNav";
-import { requestToken } from "@/util/myPage";
-import axios from "axios";
+import { getMyGuestBookUserData } from "@/util/myGuestBookUtil";
 import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -19,48 +18,20 @@ interface GuestBook {
   content: string;
 }
 
-export default function GestBook() {
+export default function MyGuestBook() {
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
   const refreshToken = cookies["refresh-token"];
-  const [token, setToken] = useState<string>("");
 
   const [myData, setMyData] = useState<MyData | null>(null);
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
 
   useEffect(() => {
-    getMyGuestBookUserData();
-  }, [token]);
-
-  const getMyGuestBookUserData = async () => {
-    try {
-      setToken(accessToken || " ");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await axios.get(
-          "https://unimeet.duckdns.org/users/my-page-pub",
-          {
-            headers,
-          }
-        );
-        setMyData(response.data.data.student);
-        setGuestBookData(response.data.data.guestBooks);
-      }
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
-        try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
-        } catch (error: any) {
-          console.log("Failed to refresh token:", error);
-        }
-      }
-    }
-  };
+    getMyGuestBookUserData(accessToken, refreshToken).then((res) => {
+      setMyData(res.data.student);
+      setGuestBookData(res.data.guestBooks);
+    });
+  }, [accessToken]);
 
   return (
     <>
