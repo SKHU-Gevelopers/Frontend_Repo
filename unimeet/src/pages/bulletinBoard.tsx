@@ -1,17 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
 import Link from "next/link";
-import { BulletinBoardUtil } from "@/util/bulletinBoardUtil";
+import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
+import { parseCookies } from "nookies";
+
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  imageUrl: string;
+  state: string;
+  maxPeople: number;
+  gender: string;
+  profileImageUrl: string;
+  nickname: string;
+  likes: number;
+}
 
 export default function BulletinBoard() {
-  const { data, token, likedPosts, getPostsData, clickLike } = BulletinBoardUtil();
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
+  const [data, setData] = useState<Post[]>([]);
+  const [likedPosts, setLikedPosts] = useState<number[]>([]);
 
   useEffect(() => {
-    getPostsData();
-  }, [token]);
+    getPostsData(accessToken, refreshToken).then((res) => {
+      setData(res.data.posts);
+    });
+  }, [accessToken]);
 
   return (
     <>
@@ -44,7 +65,18 @@ export default function BulletinBoard() {
                       <Text>{each.content}</Text>
                     </WritingBox>
                     <ReactionBox>
-                      <HeartWrap onClick={(e) => clickLike(e, each.id)}>
+                      <HeartWrap
+                        onClick={(e) =>
+                          clickLike(
+                            accessToken,
+                            refreshToken,
+                            e,
+                            each.id,
+                            likedPosts,
+                            setLikedPosts
+                          )
+                        }
+                      >
                         {likedPosts.includes(each.id) ? (
                           <StyledLikedHeartIcon />
                         ) : (
@@ -148,7 +180,7 @@ const PictureImage = styled.img`
 
   border-radius: 5px;
 
-  background-color: blue;
+  background-color: #ebedfa;
 `;
 
 const WritingBox = styled.div`

@@ -1,15 +1,37 @@
 import UnderNav from "@/components/UnderNav";
-import MyGuestBookUtil from "@/util/myGuestBookUtil";
-import { useEffect } from "react";
+import { getMyGuestBookUserData } from "@/util/myGuestBookUtil";
+import { parseCookies } from "nookies";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+interface MyData {
+  id: number;
+  profileImageUrl: string;
+  nickname: string;
+  department: string;
+  mbti: string;
+}
+
+interface GuestBook {
+  writerId: number;
+  profileImageUrl: string;
+  content: string;
+}
+
 export default function MyGuestBook() {
-  const { token, myData, guestBookData, getMyGuestBookUserData } =
-    MyGuestBookUtil();
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
+  const [myData, setMyData] = useState<MyData | null>(null);
+  const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
 
   useEffect(() => {
-    getMyGuestBookUserData();
-  }, [token]);
+    getMyGuestBookUserData(accessToken, refreshToken).then((res) => {
+      setMyData(res.data.student);
+      setGuestBookData(res.data.guestBooks);
+    });
+  }, [accessToken]);
 
   return (
     <>

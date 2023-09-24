@@ -3,24 +3,42 @@ import { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import { TbSend } from "react-icons/tb";
 import DmModal from "@/components/DmModal";
-import GuestBookUtil from "@/util/guestBookUtil";
+import { getGuestBookUserData, postGuestBook } from "@/util/guestBookUtil";
+import { parseCookies } from "nookies";
+
+interface Student {
+  id: number;
+  profileImageUrl: string;
+  nickname: string;
+  department: string;
+  mbti: string;
+}
+
+interface GuestBook {
+  writerId: number;
+  profileImageUrl: string;
+  content: string;
+}
 
 export default function GestBook() {
-  const {
-    token,
-    studentData,
-    guestBookData,
-    setPostGuestBookComment,
-    setStudentId,
-    getGuestBookUserData,
-    postGuestBook,
-  } = GuestBookUtil();
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
+  const [studentData, setStudentData] = useState<Student | null>(null);
+  const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
+
+  const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
+  const [studentId, setStudentId] = useState<number>();
 
   const [isDmModal, setIsDmModal] = useState(false);
 
   useEffect(() => {
-    getGuestBookUserData();
-  }, [token]);
+    getGuestBookUserData(accessToken, refreshToken).then((res) => {
+      setStudentData(res.data.student);
+      setGuestBookData(res.data.guestBooks);
+    });
+  }, [accessToken]);
 
   // 방명록 작성 input 내용 저장
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +84,20 @@ export default function GestBook() {
         </ProfileBox>
         <GuestBooks>
           <GuestBookForm
-            onSubmit={postGuestBook}
+            onSubmit={async (e) => {
+              if (
+                studentId !== undefined &&
+                postGuestBookComment.trim() !== ""
+              ) {
+                await postGuestBook(
+                  e,
+                  accessToken,
+                  refreshToken,
+                  postGuestBookComment,
+                  studentId
+                );
+              }
+            }}
             onClick={() => {
               setStudentId(studentData?.id);
             }}

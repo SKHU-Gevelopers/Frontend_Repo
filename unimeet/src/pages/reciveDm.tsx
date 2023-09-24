@@ -1,16 +1,34 @@
 import styled from "styled-components";
 import UnderNav from "../components/UnderNav";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import ReciveDmUtil from "@/util/ReciveDmUtil";
+import { parseCookies } from "nookies";
+import { getDmData } from "@/util/ReciveDmUtil";
+import { useRouter } from "next/router";
 
-const ReciveDm = () => {
-  const { token, DmData, getDmData } = ReciveDmUtil();
+interface GetDmData {
+  title: string;
+  content: string;
+}
+
+export default function ReciveDm() {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
+  const [DmData, setDmData] = useState<GetDmData>();
+
+  const router = useRouter();
+  const dmId = router.query.dmId as string;
 
   useEffect(() => {
-    getDmData();
-  }, [token]);
+    if (accessToken && dmId) {
+      getDmData(accessToken, refreshToken, dmId).then((res) => {
+        setDmData(res.data.dm);
+      });
+    }
+  }, [accessToken]);
 
   return (
     <>
@@ -29,7 +47,7 @@ const ReciveDm = () => {
       </DmWrap>
     </>
   );
-};
+}
 
 const DmWrap = styled.div`
   display: flex;
@@ -110,5 +128,3 @@ const Content = styled.div`
 
   overflow: hidden;
 `;
-
-export default ReciveDm;

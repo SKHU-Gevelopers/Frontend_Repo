@@ -3,15 +3,32 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import DmModal from "@/components/DmModal";
 import Link from "next/link";
-import ChatUtil from "@/util/chatUtil";
+import { parseCookies } from "nookies";
+import { chatGetData } from "@/util/chatUtil";
+
+interface DmData {
+  id: number;
+  title: string;
+  sender: {
+    id: number;
+    nickname: string;
+  };
+  sentAt: string;
+}
 
 export default function Chat() {
-  const { data, token, chatGetData } = ChatUtil();
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
+  const [data, setData] = useState<DmData[]>([]);
   const [isDmModal, setIsDmModal] = useState(false);
 
   useEffect(() => {
-    chatGetData();
-  }, [token]);
+    chatGetData(accessToken, refreshToken).then((res) => {
+      setData(res.data.dmList);
+    });
+  }, [accessToken]);
 
   const openDmModal = () => {
     setIsDmModal(true);

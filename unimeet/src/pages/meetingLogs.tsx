@@ -1,6 +1,11 @@
 import Modal from "@/components/Modal";
 import UnderNav from "@/components/UnderNav";
-import MeetingReciveUtil from "@/util/meetingReciveUtil";
+import {
+  acceptApplication,
+  getRecivedApplication,
+  getRecivedApplicationDetailVersion,
+} from "@/util/meetingReciveUtil";
+import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -93,27 +98,54 @@ const SentRequestsBtn = styled.div`
 `;
 
 // 받은 신청함
+interface Application {
+  id: number;
+  title: string;
+  sender: { id: number; nickname: string };
+}
+
+interface ApplicationDetail {
+  title: string;
+  content: string;
+  meetUpImages: [];
+  sender: {
+    id: number;
+    nickname: string;
+  };
+  targetPostId: number;
+}
+
 function ReceivedRequests() {
-  const {
-    token,
-    detailData,
-    listData,
-    applicationId,
-    setApplicationId,
-    getRecivedApplication,
-    getRecivedApplicationDetailVersion,
-    acceptApplication,
-  } = MeetingReciveUtil();
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
+  const [listData, setListData] = useState<Application[]>([]);
+  const [detailData, setDetailData] = useState<ApplicationDetail>();
+
+  const [applicationId, setApplicationId] = useState<number>();
 
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    getRecivedApplication();
-  }, [token]);
+    if (accessToken) {
+      getRecivedApplication(accessToken, refreshToken).then((res) => {
+        setListData(res.data.meetUps);
+      });
+    }
+  }, [accessToken]);
 
   useEffect(() => {
-    getRecivedApplicationDetailVersion();
-  }, [token, applicationId]);
+    if (accessToken && applicationId !== undefined) {
+      getRecivedApplicationDetailVersion(
+        accessToken,
+        refreshToken,
+        applicationId
+      ).then((res) => {
+        setDetailData(res.data.meetUps);
+      });
+    }
+  }, [accessToken, applicationId]);
 
   return (
     <MainBox>
@@ -152,7 +184,13 @@ function ReceivedRequests() {
                           <AcceptButton
                             onClick={() => {
                               setIsOpen(false);
-                              acceptApplication();
+                              if (applicationId !== undefined) {
+                                acceptApplication(
+                                  accessToken,
+                                  refreshToken,
+                                  applicationId
+                                );
+                              }
                             }}
                           >
                             수락하기

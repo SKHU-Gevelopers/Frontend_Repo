@@ -16,7 +16,6 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
   const refreshToken = cookies["refresh-token"];
-  const [token, setToken] = useState<string>();
 
   const [title, setTitle] = useState<string>();
   const [content, setContent] = useState<string>();
@@ -33,31 +32,33 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
     setContent(e.target.value);
   };
 
-  const DmPost = async () => {
+  const DmPost = async (
+    accessToken: string,
+    refreshToken: string
+  ): Promise<any> => {
     try {
-      setToken(accessToken || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const Dmdata = { title, content };
-        await axios.post(
-          `https://unimeet.duckdns.org/users/${senderId}/dm`,
-          Dmdata,
-          {
-            headers,
-          }
-        );
-        alert("전송했습니다.");
-        onClose();
-      }
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      };
+      const Dmdata = { title, content };
+      await axios.post(
+        `https://unimeet.duckdns.org/users/${senderId}/dm`,
+        Dmdata,
+        {
+          headers,
+        }
+      );
+      alert("전송했습니다.");
+      onClose();
     } catch (error: any) {
       console.log(error);
       if (error.response && error.response.status === 401) {
         try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
+          const { newAccessToken, newRefreshToken } = await requestToken(
+            refreshToken
+          );
+          return DmPost(newAccessToken, newRefreshToken);
         } catch (error: any) {
           console.log("Failed to refresh token:", error);
         }
@@ -71,7 +72,9 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
         <Main>
           <Action>
             <DeleteModal onClick={onClose}>X</DeleteModal>
-            <StyledSend onClick={DmPost}></StyledSend>
+            <StyledSend
+              onClick={() => DmPost(accessToken, refreshToken)}
+            ></StyledSend>
           </Action>
           <DmInputData>
             <TitleInput

@@ -1,51 +1,28 @@
 import axios from "axios";
-import { parseCookies } from "nookies";
 import { requestToken } from "@/util/myPage";
-import { useState } from "react";
 
-interface DmData {
-  id: number;
-  title: string;
-  sender: {
-    id: number;
-    nickname: string;
-  };
-  sentAt: string;
-}
-
-export default function ChatUtil() {
-  const cookies = parseCookies();
-  const accessToken = cookies["accessToken"];
-  const refreshToken = cookies["refresh-token"];
-  const [token, setToken] = useState<string>();
-
-  const [data, setData] = useState<DmData[]>([]);
-
-  const chatGetData = async () => {
+export  const chatGetData = async (
+    accessToken: string,
+    refreshToken: string
+  ): Promise<any> => {
     try {
-      setToken(accessToken || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await axios.get("https://unimeet.duckdns.org/dm", {
-          headers,
-        });
-        setData(response.data.data.dmList);
-      }
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      };
+      const response = await axios.get("https://unimeet.duckdns.org/dm", {
+        headers,
+      });
+      return response.data;
     } catch (error: any) {
       console.log(error);
       if (error.response && error.response.status === 401) {
         try {
-          const { newAccessToken } = await requestToken(refreshToken);
-          setToken(newAccessToken);
+          const { newAccessToken, newRefreshToken } = await requestToken(refreshToken);
+          return chatGetData(newAccessToken, newRefreshToken)
         } catch (error: any) {
           console.log("Failed to refresh token:", error);
         }
       }
     }
   };
-
-  return { data, token, chatGetData };
-}
