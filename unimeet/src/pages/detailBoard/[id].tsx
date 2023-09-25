@@ -22,8 +22,27 @@ import { parseCookies } from "nookies";
 import { checkDetail } from "@/util/boardUtil/detailBoardUtil";
 import Link from "next/link";
 import DmModal from "@/components/DmModal";
+import { getcomments } from "@/util/boardUtil/commentUtil";
 
-export default function DetailBoard() {
+interface CommentsProps {
+  id: number;
+  content: string;
+  student: {
+    id: number;
+    nickname: string;
+  };
+}
+interface DetailPageProps {
+  data: {
+    id: number;
+    title: string;
+    tableTitle: string;
+    imageSrc: string[];
+    comments: Comment[];
+  };
+}
+
+export default function DetailBoard({ data }: DetailPageProps) {
   const router = useRouter();
   const { id } = router.query;
   const [profileImageUrl, setProfileImageUrl] = useState("");
@@ -38,6 +57,7 @@ export default function DetailBoard() {
   const [gender, setGender] = useState("여자");
   const [accessToken, setAccessToken] = useState("");
   const [refreshToken, setRefreshToken] = useState("");
+  const [comments, setComments] = useState<CommentsProps[]>([]);
 
   const [dm, setDm] = useState(false);
 
@@ -53,25 +73,31 @@ export default function DetailBoard() {
     const cookies = parseCookies();
     const accessToken = cookies["accessToken"];
     const refreshToken = cookies["refresh-token"];
-    checkDetail(Number(id), accessToken, refreshToken).then((res) => {
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-      setGender(res.data.gender);
-      setNickname(res.data.nickname);
-      setTitle(res.data.title);
-      setProfileImageUrl(res.data.profileImageUrl);
-      setImageSrc(res.data.imageUrls);
-      res.data.state === "IN_PROGRESS"
-        ? setNowState("모집중")
-        : setNowState("모집완료");
-      setMaxpeople(res.data.maxPeople);
-      setLikes(res.data.likes);
-      setContent(res.data.content);
-      //   res.data.meetingPlace === null
-      //     ? setPlace("미정")
-      //     : setPlace(res.data.meetingPlace);
-      // 이부분 아직 반환 안되고 있음
-    });
+    checkDetail(Number(id), accessToken, refreshToken)
+      .then((res) => {
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        setGender(res.data.gender);
+        setNickname(res.data.nickname);
+        setTitle(res.data.title);
+        setProfileImageUrl(res.data.profileImageUrl);
+        setImageSrc(res.data.imageUrls);
+        res.data.state === "IN_PROGRESS"
+          ? setNowState("모집중")
+          : setNowState("모집완료");
+        setMaxpeople(res.data.maxPeople);
+        setLikes(res.data.likes);
+        setContent(res.data.content);
+        //   res.data.meetingPlace === null
+        //     ? setPlace("미정")
+        //     : setPlace(res.data.meetingPlace);
+        // 이부분 아직 반환 안되고 있음
+      })
+      .then(() => {
+        getcomments(accessToken, refreshToken, Number(id)).then((res) => {
+          setComments(res.data);
+        });
+      });
   }, []);
 
   return (
@@ -135,11 +161,7 @@ export default function DetailBoard() {
             );
           })}
         </DetailMainDiv>
-        <Comments
-          accessToken={accessToken}
-          refreshToken={refreshToken}
-          id={Number(id)}
-        />
+        <Comments id={Number(id)} comments={comments} />
       </DetailMain>
     </>
   );

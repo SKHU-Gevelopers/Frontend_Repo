@@ -38,10 +38,12 @@ export default function MyGuestBook() {
       <MainBox>
         <ProfileBox>
           <ProfileImageWrap>
-            <ProfileImage
-              src={myData?.profileImageUrl}
-              alt="profileImage"
-            ></ProfileImage>
+            <div className="profileImage">
+              <ProfileImage
+                src={myData?.profileImageUrl}
+                alt="profileImage"
+              ></ProfileImage>
+            </div>
           </ProfileImageWrap>
           <Name>{myData?.nickname}</Name>
           <InformationBox>
@@ -103,9 +105,17 @@ const ProfileBox = styled.div`
 const ProfileImageWrap = styled.div`
   width: 10rem;
   height: 18vh;
+  display: flex;
+  justify-content: center;
+  
 
   border-radius: 50%;
-  border: solid 1px rgba(103, 79, 244, 0.8);
+  & > .profileImage {
+    width: 8rem;
+    height: 8rem;
+
+    border-radius: 50%;
+  }
 `;
 
 const ProfileImage = styled.img`
