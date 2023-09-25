@@ -51,7 +51,6 @@ export default function meetingApply() {
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const image = event.target.files?.[0];
-    console.log(image);
     if (!image) {
       alert("파일이 없습니다.");
       return;
@@ -79,8 +78,6 @@ export default function meetingApply() {
         router.push("/meetingLogs");
       })
       .catch((err) => {
-        console.log(err);
-        console.log(id, accessToken, refreshToken);
       });
   };
 

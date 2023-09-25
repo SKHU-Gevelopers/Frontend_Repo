@@ -1,6 +1,8 @@
 import axios from "axios";
 import { requestToken } from "../myPage";
 import { access } from "fs";
+import router from "next/router";
+import { destroyCookie } from "nookies";
 
 export const checkDetail = async (
   meetingId: number,
@@ -26,10 +28,7 @@ export const checkDetail = async (
           refreshToken
         );
         return checkDetail(meetingId, newAccessToken, newRefreshToken);
-      } catch (tokenErr: any) {
-        console.log("Failed to refresh token:", tokenErr);
-        throw tokenErr;
-      }
+      } catch (tokenErr: any) {}
     } else {
       throw err;
     }
@@ -63,13 +62,13 @@ export const postcomments = async (
         );
         return postcomments(
           newAccessToken,
+          
           newRefreshToken,
           meetingId,
           content
         );
       } catch (tokenErr: any) {
-        console.log("Failed to refresh token:", tokenErr);
-        throw tokenErr;
+
       }
     } else {
       throw err;

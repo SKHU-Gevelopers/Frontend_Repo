@@ -47,10 +47,10 @@ export const Comments: React.FC<CommentsProps> = ({
       <div>
         <UserProfileWrap>
           <PeopleImage src={"/dogImage.png"} alt={""} width={35} height={35} />
-          <span>작성자</span>
+          <span>쩡스</span>
         </UserProfileWrap>
         <CommentWrap>
-          <div>댓글dfasfadasdasdasdadasdasddsadsdasfasf</div>
+          <div>여자 4명 구하는건가?</div>
           <button>삭제</button>
         </CommentWrap>
       </div>

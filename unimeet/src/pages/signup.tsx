@@ -42,9 +42,6 @@ export default function Signup(this: any) {
     requestText: major.requestText,
   }));
 
-  useEffect(() => {
-    console.log(email),console.log(username)
-  }, [email]);
   
   const emailFix = (event: React.ChangeEvent<HTMLInputElement>) => {
     const email = event.target.value;

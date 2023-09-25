@@ -26,7 +26,6 @@ import DmModal from "@/components/DmModal";
 export default function DetailBoard() {
   const router = useRouter();
   const { id } = router.query;
-  console.log(id);
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [imageSrc, setImageSrc] = useState([]);
   const [nickname, setNickname] = useState("배달원");
@@ -36,6 +35,7 @@ export default function DetailBoard() {
   const [likes, setLikes] = useState(0);
   const [maxpeople, setMaxpeople] = useState(0);
   const [place, setPlace] = useState("만남 장소가 미정입니다.");
+  const [gender, setGender] = useState("여자");
   const [accessToken, setAccessToken] = useState("");
   const [refreshToken, setRefreshToken] = useState("");
 
@@ -44,6 +44,7 @@ export default function DetailBoard() {
   const tableTitle = [
     { title: "모집 상태", value: nowState },
     { title: "최대 인원", value: maxpeople },
+    { title: "모집 성별", value: gender },
     { title: "만남 장소", value: place },
     { title: "전달 내용", value: content },
   ];
@@ -55,6 +56,7 @@ export default function DetailBoard() {
     checkDetail(Number(id), accessToken, refreshToken).then((res) => {
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
+      setGender(res.data.gender);
       setNickname(res.data.nickname);
       setTitle(res.data.title);
       setProfileImageUrl(res.data.profileImageUrl);

@@ -65,6 +65,7 @@ export const DetailBtn = styled.button`
   color: white;
   margin: 0 0.5rem;
   width: 4rem;
+  height: 2rem;
 `;
 export const DetailBtnBox = styled.div`
   display: flex;
