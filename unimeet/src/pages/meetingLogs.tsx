@@ -1,10 +1,14 @@
 import Modal from "@/components/Modal";
 import UnderNav from "@/components/UnderNav";
-import axios from "axios";
+import {
+  acceptApplication,
+  getRecivedApplication,
+  getRecivedApplicationDetailVersion,
+} from "@/util/meetingReciveUtil";
+import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-// 조건부 렌더링
 export default function MeetingLogs() {
   const [selectedBtn, setSelectedBtn] = useState("");
 
@@ -93,107 +97,61 @@ const SentRequestsBtn = styled.div`
   font-weight: 700;
 `;
 
+// 받은 신청함
 interface Application {
   id: number;
   title: string;
   sender: { id: number; nickname: string };
 }
 
-// 받은 신청함
+interface ApplicationDetail {
+  title: string;
+  content: string;
+  meetUpImages: [];
+  sender: {
+    id: number;
+    nickname: string;
+  };
+  targetPostId: number;
+}
+
 function ReceivedRequests() {
-  const [data, setData] = useState<Application[]>([]);
-  const [token, setToken] = useState("");
-  const searchUrl = "https://unimeet.duckdns.org/meet-ups";
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
 
-  useEffect(() => {
-    const getRecivedApplication = async () => {
-      try {
-        setToken(localStorage.getItem("login-token") || " ");
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
+  const [listData, setListData] = useState<Application[]>([]);
+  const [detailData, setDetailData] = useState<ApplicationDetail>();
 
-          const response = await axios.get(`${searchUrl}`, {
-            headers,
-          });
-          setData(response.data.data.meetUps);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getRecivedApplication();
-  }, [token]);
-
-  interface ApplicationDetail {
-    title: string;
-    content: string;
-    meetUpImages: [];
-    sender: {
-      id: number;
-      nickname: string;
-    };
-    targetPostId: number;
-  }
+  const [applicationId, setApplicationId] = useState<number>();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [detailData, setDetailData] = useState<ApplicationDetail>();
-  const [applicationId, setApplicationId] = useState<number | null>(null);
-
-  const getRecivedApplicationDetailVersion = async () => {
-    try {
-      if (applicationId !== null) {
-        setToken(localStorage.getItem("login-token") || "");
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
-
-          const response = await axios.get(
-            `https://unimeet.duckdns.org/meet-ups/${applicationId}`,
-            { headers }
-          );
-          setDetailData(response.data.data.meetUp);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
-    getRecivedApplicationDetailVersion();
-  }, [applicationId]);
-
-  const acceptApplication = async () => {
-    try {
-      setToken(localStorage.getItem("login-token") || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await axios.post(
-          `https://unimeet.duckdns.org/meet-ups/${applicationId}/accept`,
-          "수락하기",
-          { headers }
-        );
-        alert("수락했습니다.");
-      }
-    } catch (error) {
-      alert("이미 수락된 상태입니다.");
-      console.log(error);
+    if (accessToken) {
+      getRecivedApplication(accessToken, refreshToken).then((res) => {
+        setListData(res.data.meetUps);
+      });
     }
-  };
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (accessToken && applicationId !== undefined) {
+      getRecivedApplicationDetailVersion(
+        accessToken,
+        refreshToken,
+        applicationId
+      ).then((res) => {
+        setDetailData(res.data.meetUp);
+      });
+    }
+  }, [accessToken, applicationId]);
 
   return (
     <MainBox>
       <Article>
-        {data &&
-          data.map((each, index) => {
+        {listData &&
+          listData.map((each, index) => {
             return (
               <Application key={index}>
                 <Title>{each.title}</Title>
@@ -209,7 +167,7 @@ function ReceivedRequests() {
                   </ViewDetails>
                   {isOpen && (
                     <ModalWrap>
-                      {data && (
+                      {listData && (
                         <Modal isOpen={isOpen}>
                           <DeleteModal onClick={() => setIsOpen(false)}>
                             닫기
@@ -225,8 +183,14 @@ function ReceivedRequests() {
                           </ModalContent>
                           <AcceptButton
                             onClick={() => {
+                              if (applicationId !== undefined) {
+                                acceptApplication(
+                                  accessToken,
+                                  refreshToken,
+                                  applicationId
+                                );
+                              }
                               setIsOpen(false);
-                              acceptApplication();
                             }}
                           >
                             수락하기

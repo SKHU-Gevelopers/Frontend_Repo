@@ -34,6 +34,7 @@ const LockMypage: React.FC = () => {
   const [gender, setGender] = useState("");
   const [information, setInformation] = useState("");
   const [token, setToken] = useState("");
+  const [accessToken, setAccessToken] = useState("");
 
   const skhuMajors: MajorsType[] = skhuMajor.flat().map((major) => ({
     id: major.id,
@@ -55,15 +56,14 @@ const LockMypage: React.FC = () => {
         setInformation(res.data.introduction);
         setImage(res.data.profileImageUrl);
       });
-    }else{
-      alert("다시 로그인을 해주세요.")
+    } else {
+      alert("다시 로그인을 해주세요.");
     }
-  }, [token]);
+  }, [accessToken]);
 
   const [image, setImage] = useState("/dogImage.png");
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files?.[0];
-    console.log(image);
     if (!image) {
       alert("파일이 없습니다.");
       return;
@@ -79,13 +79,22 @@ const LockMypage: React.FC = () => {
 
   const submitOn = (e: any) => {
     e.preventDefault();
-    handleSubmit(token, name, mbti, image, information, major1, major2)
+    const cookies = parseCookies();
+    const accessToken = cookies["accessToken"];
+    const refreshToken = cookies["refresh-token"];
+    handleSubmit(
+      accessToken,
+      refreshToken,
+      name,
+      mbti,
+      image,
+      information,
+      major1,
+      major2
+    )
       .then((res) => {
-        console.log(res);
       })
       .catch((err) => {
-        console.log(err);
-        console.log(token, name, mbti, image, information, major1, major2);
       });
   };
 
@@ -128,16 +137,11 @@ const LockMypage: React.FC = () => {
           <span>성별:</span>
           <SelectStyle
             className="input"
-            value={mbti}
-            defaultValue={mbtilist[0].mbti}
+            value={gender}
             onChange={(e) => setGender(e.target.value)}
           >
-            <option key={0} value="남성">
-              {"남성"}
-            </option>
-            <option key={1} value={"여성"}>
-              {"여성"}
-            </option>
+            <option key={0}>{"남성"}</option>
+            <option key={1}>{"여성"}</option>
           </SelectStyle>
         </label>
         <label>
@@ -195,7 +199,6 @@ const LockMypage: React.FC = () => {
           cols={40}
         />
         <div>
-          <ButtonStyle type="reset">초기화</ButtonStyle>
           <ButtonStyle onClick={submitOn} type="submit">
             수정하기
           </ButtonStyle>

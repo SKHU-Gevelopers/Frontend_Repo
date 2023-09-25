@@ -10,6 +10,7 @@ const UnderNav = () => {
     if (!token) {
       router.push("/MainLogin");
     }
+
   });
 
   return (
@@ -23,7 +24,7 @@ const UnderNav = () => {
             </MainLink>
           </li>
           <li>
-            <MainLink href="/guestBook">
+            <MainLink href="/myGuestBook">
               <MainImg src="/agenda.png" width="25" height="25" alt={""} />
               <span>방명록</span>
             </MainLink>

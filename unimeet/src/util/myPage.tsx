@@ -1,6 +1,6 @@
 import axios from "axios";
 import router from "next/router";
-import { parseCookies, setCookie } from "nookies";
+import { destroyCookie, parseCookies, setCookie } from "nookies";
 
 // const cookies = parseCookies();
 // export const accesstoken = cookies["accessToken"];
@@ -22,7 +22,6 @@ export const requestToken = async (
         },
       }
     );
-    console.log(response.data.data);
     const newAccessToken = response.data.data.accessToken;
     const newRefreshToken = response.data.data.refreshToken;
     setCookie(null, "accessToken", newAccessToken, {
@@ -35,18 +34,11 @@ export const requestToken = async (
     });
     return { newAccessToken, newRefreshToken };
   } catch (err: any) {
-    console.log(token);
-    if (err.response && err.response.status === 401) {
-      if (retryCount < 3) {
-        // 최대 3번 재시도하도록 설정
-        const { newAccessToken, newRefreshToken } = await requestToken(
-          token,
-          retryCount + 1
-        ); // 재귀 호출 시 재시도 횟수를 증가
-        return { newAccessToken, newRefreshToken };
-      } else {
-        throw new Error("너무 많이 재요청되었습니다."); // 재시도 횟수가 너무 많아지면 오류 처리
-      }
+    if (err.response.status === 400) {
+      alert("다시 로그인이 필요합니다.");
+      destroyCookie(undefined, "refresh-token");
+      destroyCookie(undefined, "accessToken");
+      localStorage.removeItem("accessToken");
     }
     throw err;
   }
@@ -76,10 +68,6 @@ export const MypageRequest = async (
         );
         return MypageRequest(newAccessToken, newRefreshToken);
       } catch (tokenErr: any) {
-        if (tokenErr.response.status === 400) {
-          alert("로그인이 필요합니다.");
-          router.push("/MainLogin");
-        }
         throw tokenErr;
       }
     } else {
@@ -88,8 +76,9 @@ export const MypageRequest = async (
   }
 };
 
-export function handleSubmit(
-  token: string,
+export async function handleSubmit(
+  accessToken: string,
+  refreshToken: string,
   nickname: string,
   mbti: string,
   profileImgXXX: string,
@@ -100,16 +89,47 @@ export function handleSubmit(
   const formData = new FormData();
   formData.append("nickname", nickname);
   formData.append("mbti", mbti);
-  formData.append("profileImg", profileImgXXX);
+  formData.append("profileImgXXX=@", profileImgXXX);
   formData.append("introduction", introduction);
   formData.append("majors", major1);
   formData.append("majors", major2);
 
-  return axios.post("https://unimeet.duckdns.org/users/my-page", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Accept: "application/json",
-      Authorization: "Bearer " + token,
-    },
-  });
+  try {
+    const response = await axios.post(
+      "https://unimeet.duckdns.org/users/my-page",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Accept: "application/json",
+          Authorization: "Bearer " + accessToken,
+        },
+      }
+    );
+    return response.data;
+  } catch (err: any) {
+    if (err.response && err.response.status === 401) {
+      try {
+        const { newAccessToken, newRefreshToken } = await requestToken(
+          refreshToken
+        );
+        return handleSubmit(
+          newAccessToken,
+          newRefreshToken,
+          nickname,
+          mbti,
+          profileImgXXX,
+          introduction,
+          major1,
+          major2
+        );
+      } catch (tokenErr: any) {
+        alert("토큰 발급에 실패하셨습니다.");
+        router.push("/MainLogin");
+        throw tokenErr;
+      }
+    } else {
+      throw err;
+    }
+  }
 }

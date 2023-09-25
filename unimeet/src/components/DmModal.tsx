@@ -3,6 +3,9 @@ import UnderNav from "./UnderNav";
 import axios from "axios";
 import { useState } from "react";
 import { TbSend } from "react-icons/tb";
+import { parseCookies } from "nookies";
+import { requestToken } from "@/util/myPage";
+import router from "next/router";
 
 interface DmModalProps {
   isOpen: boolean;
@@ -11,7 +14,10 @@ interface DmModalProps {
 }
 
 const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
-  const [token, setToken] = useState<string>();
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
   const [title, setTitle] = useState<string>();
   const [content, setContent] = useState<string>();
 
@@ -20,34 +26,50 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
   }
 
   const changeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+    if (newTitle.length >= 20) {
+      alert("글자수를 초과했습니다.");
+      setTitle("");
+    } else {
+      setTitle(e.target.value);
+    }
   };
 
   const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
 
-  const DmPost = async () => {
+  const DmPost = async (
+    accessToken: string,
+    refreshToken: string
+  ): Promise<any> => {
     try {
-      setToken(localStorage.getItem("login-token") || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const Dmdata = { title, content };
-        await axios.post(
-          `https://unimeet.duckdns.org/users/${senderId}/dm`,
-          Dmdata,
-          {
-            headers,
-          }
-        );
-        onClose();
-        alert("전송했습니다.");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      };
+      const Dmdata = { title, content };
+      await axios.post(
+        `https://unimeet.duckdns.org/users/${senderId}/dm`,
+        Dmdata,
+        {
+          headers,
+        }
+      );
+      alert("전송했습니다.");
+      onClose();
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const { newAccessToken, newRefreshToken } = await requestToken(
+            refreshToken
+          );
+          return DmPost(newAccessToken, newRefreshToken);
+        } catch (error: any) {
+          alert("다시 로그인을 해주세요.");
+          router.push("/MainLogin");
+        }
       }
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -57,7 +79,9 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
         <Main>
           <Action>
             <DeleteModal onClick={onClose}>X</DeleteModal>
-            <StyledSend onClick={DmPost}></StyledSend>
+            <StyledSend
+              onClick={() => DmPost(accessToken, refreshToken)}
+            ></StyledSend>
           </Action>
           <DmInputData>
             <TitleInput

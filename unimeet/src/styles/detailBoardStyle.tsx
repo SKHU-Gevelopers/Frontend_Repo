@@ -10,7 +10,7 @@ export const DetailMain = styled.div`
   background-color: #ffffff64;
   padding: 1rem;
   border-radius: 10px;
-  min-height: 120vh;
+  min-height: 135vh;
   max-height: max-content;
   overflow: scroll;
   display: flex;
@@ -47,6 +47,7 @@ export const DetailBoxTitleBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 `;
 export const ImageBox = styled(Image)`
   border-radius: 5%;
@@ -64,6 +65,7 @@ export const DetailBtn = styled.button`
   color: white;
   margin: 0 0.5rem;
   width: 4rem;
+  height: 2rem;
 `;
 export const DetailBtnBox = styled.div`
   display: flex;

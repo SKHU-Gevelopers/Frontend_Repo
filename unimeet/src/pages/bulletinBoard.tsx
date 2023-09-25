@@ -1,12 +1,11 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
-import { parseCookies } from "nookies";
-import { accesstoken } from "@/util/myPage";
 import Link from "next/link";
+import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
+import { parseCookies } from "nookies";
 
 interface Post {
   id: number;
@@ -22,68 +21,18 @@ interface Post {
 }
 
 export default function BulletinBoard() {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
   const [data, setData] = useState<Post[]>([]);
-  const [token, setToken] = useState("");
-  const searchUrl = "https://unimeet.duckdns.org/posts";
-
-  useEffect(() => {
-    const getPostsData = async () => {
-      try {
-        setToken(accesstoken || " ");
-        //! accessTokend은 myPage.tsx(util파일)에서 정의중
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
-          const response = await axios.get(`${searchUrl}`, {
-            headers,
-          });
-          setData(response.data.data.posts);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getPostsData();
-  }, [token]);
-
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
 
-  const ClickLike = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-    postId: number
-  ) => {
-    e.preventDefault();
-    try {
-      setToken(localStorage.getItem("login-token") || " ");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        await axios.put(
-          `https://unimeet.duckdns.org/posts/${postId}/like`,
-          "게시글 좋아요",
-          { headers }
-        );
-
-        // 좋아요한 포스트의 ID를 관리하는 상태 업데이트
-        if (likedPosts.includes(postId)) {
-          setLikedPosts(likedPosts.filter((id) => id !== postId));
-        } else {
-          setLikedPosts([...likedPosts, postId]);
-        }
-
-        const updatedResponse = await axios.get(`${searchUrl}`, {
-          headers,
-        });
-        setData(updatedResponse.data.data.posts);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    getPostsData(accessToken, refreshToken).then((res) => {
+      setData(res.data.posts);
+    });
+  }, [accessToken, likedPosts]);
 
   return (
     <>
@@ -93,9 +42,7 @@ export default function BulletinBoard() {
             data.map((each, index) => {
               return (
                 <Post key={index}>
-                  <Link
-                    href={{ pathname: "/detailBoard", query: { id: each.id } }}
-                  >
+                  <Link href={`/detailBoard/${each.id}`}>
                     <Writer>
                       <ProfileImageWrap>
                         <ProfileImage
@@ -118,7 +65,18 @@ export default function BulletinBoard() {
                       <Text>{each.content}</Text>
                     </WritingBox>
                     <ReactionBox>
-                      <HeartWrap onClick={(e) => ClickLike(e, each.id)}>
+                      <HeartWrap
+                        onClick={(e) =>
+                          clickLike(
+                            accessToken,
+                            refreshToken,
+                            e,
+                            each.id,
+                            likedPosts,
+                            setLikedPosts
+                          )
+                        }
+                      >
                         {likedPosts.includes(each.id) ? (
                           <StyledLikedHeartIcon />
                         ) : (
@@ -151,7 +109,7 @@ const MainBox = styled.div`
   width: 100%;
   height: auto;
 
-  background-color: #efe3ff;
+  background-color: #efe3ff67;
 `;
 
 const Article = styled.div`
@@ -184,8 +142,8 @@ const Writer = styled.div`
 `;
 
 const ProfileImageWrap = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 2rem;
+  height: 2rem;
 
   border-radius: 50%;
   background-color: pink;
@@ -202,18 +160,18 @@ const Name = styled.div`
   padding-left: 2%;
 
   font-size: 1.2rem;
-  font-weight: 600;
 `;
 
 const PictureWrap = styled.div`
-  margin-left: 3%;
+  margin: auto;
+  margin-bottom: 2%;
+
   display: flex;
   justify-content: center;
+  align-items: center;
 
   width: 93.5%;
   height: 18vh;
-
-  background-color: #ebedfa;
 `;
 
 const PictureImage = styled.img`
@@ -221,8 +179,6 @@ const PictureImage = styled.img`
   height: 100%;
 
   border-radius: 5px;
-
-  background-color: blue;
 `;
 
 const WritingBox = styled.div`
@@ -236,11 +192,17 @@ const WritingBox = styled.div`
 const Title = styled.div`
   font-size: 1.3rem;
   font-weight: 700;
+  padding: 1%;
+  width: fit-content;
 `;
 
 const Text = styled.div`
   font-size: 1.1rem;
   margin-top: 0.5vh;
+  background-color: #ffffff7d;
+  padding: 2%;
+  border-radius: 10px;
+  border: 1px solid #bb8dfb;
 `;
 
 const ReactionBox = styled.div`
@@ -261,7 +223,7 @@ const HeartWrap = styled.button`
   width: 11%;
   height: 3.8vh;
 
-  background-color: #efe3ff;
+  background-color: #a52a2a00;
   border: none;
 `;
 

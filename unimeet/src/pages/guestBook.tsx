@@ -1,10 +1,10 @@
 import UnderNav from "@/components/UnderNav";
-import axios from "axios";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import { TbSend } from "react-icons/tb";
 import DmModal from "@/components/DmModal";
-import { useRouter } from "next/router";
+import { getGuestBookUserData, postGuestBook } from "@/util/guestBookUtil";
+import { parseCookies } from "nookies";
 
 interface Student {
   id: number;
@@ -21,78 +21,51 @@ interface GuestBook {
 }
 
 export default function GestBook() {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
   const [studentData, setStudentData] = useState<Student | null>(null);
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
-  const [token, setToken] = useState<string>("");
+
   const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
-  const [studentId, setStudentId] = useState<number | null>();
-  // **************************************** next.js Link 태그로 인한 추가 클릭시 이 해당 id 전송되게 만들어주세욤
-  // const router = useRouter();
-  // const { writerId } = router.query;
-  // ******************************************
-
-  // 공개 프로필 조회: 학생 정보와 학생의 방명록 불러오기
-  useEffect(() => {
-    const getGuestBookUserData = async () => {
-      try {
-        setToken(localStorage.getItem("login-token") || " ");
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
-          const response = await axios.get(
-            "https://unimeet.duckdns.org/users/1/my-page?page=1",
-            // ********************************************************
-            // `https://unimeet.duckdns.org/users/${writerId}/my-page?page=1`,
-            // ******************************************************** 해당 writerId 사용한 url 은 writerId 받은 다음에 사용하려 합니담.
-            {
-              headers,
-            }
-          );
-          setStudentData(response.data.data.student);
-          setGuestBookData(response.data.data.guestBooks);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getGuestBookUserData();
-  }, [token]);
-
-  // 방명록 작성 input 내용 저장
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPostGuestBookComment(e.target.value);
-  };
-
-  // 방명록 작성해서 보내기
-  const postGuestBook = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      setToken(localStorage.getItem("login-token") || " ");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const postData = {
-          content: postGuestBookComment,
-        };
-        await axios.post(
-          `https://unimeet.duckdns.org/users/${studentId}/guestbooks`,
-          postData,
-          { headers }
-        );
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [studentId, setStudentId] = useState<number>();
 
   const [isDmModal, setIsDmModal] = useState(false);
 
+  useEffect(() => {
+    getGuestBookUserData(accessToken, refreshToken).then((res) => {
+      setStudentData(res.data.student);
+      setGuestBookData(res.data.guestBooks);
+    });
+  }, [accessToken]);
+
+  // 방명록 작성 input 내용 저장
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newComment = e.target.value;
+    if (newComment.length >= 20) {
+      alert("글자수를 초과했습니다.");
+      setPostGuestBookComment("");
+    } else {
+      setPostGuestBookComment(newComment);
+    }
+  };
   const openDmModal = () => {
     setIsDmModal(true);
+  };
+
+  const handlePostGuestBook = async () => {
+    if (postGuestBookComment.trim() !== "") {
+      if (studentId !== undefined) {
+        postGuestBook(
+          accessToken,
+          refreshToken,
+          postGuestBookComment,
+          studentId
+        );
+        setPostGuestBookComment("");
+      }
+    }
   };
 
   return (
@@ -129,16 +102,24 @@ export default function GestBook() {
           {/* <Introduce>{user?.introduction}</Introduce> */}
         </ProfileBox>
         <GuestBooks>
-          <GuestBookForm
-            onSubmit={postGuestBook}
-            onClick={() => {
-              setStudentId(studentData?.id);
-            }}
-          >
-            <PostGuestBookCommentInputBox
-              placeholder="방명록을 남겨보세요."
-              onChange={onChange}
-            ></PostGuestBookCommentInputBox>
+          <GuestBookForm>
+            <GuestBookSubmitWrap>
+              <PostGuestBookCommentInputBox
+                placeholder="방명록을 남겨보세요."
+                onChange={onChange}
+                value={postGuestBookComment}
+              ></PostGuestBookCommentInputBox>
+              <SubmitWrap>
+                <Submit
+                  onClick={() => {
+                    setStudentId(studentData?.id);
+                    handlePostGuestBook();
+                  }}
+                >
+                  전송
+                </Submit>
+              </SubmitWrap>
+            </GuestBookSubmitWrap>
           </GuestBookForm>
           {guestBookData?.map((each, Id) => {
             return (
@@ -299,21 +280,54 @@ const GuestBookForm = styled.form`
   height: 13vh;
 `;
 
-const PostGuestBookCommentInputBox = styled.input`
-  padding-left: 3%;
+const GuestBookSubmitWrap = styled.div`
+  padding-bottom: 0.6em;
 
   width: 100%;
   height: 100%;
 
   border-radius: 1rem;
-  border: none;
-  outline: none;
 
   background-color: white;
   opacity: 0.7;
+`;
+
+const PostGuestBookCommentInputBox = styled.input`
+  padding-left: 3%;
+  padding-top: 1.7em;
+
+  width: 100%;
+  height: 70%;
+
+  border-radius: 1rem;
+  border: none;
+  outline: none;
 
   font-size: 1rem;
   font-weight: 600;
+`;
+
+const SubmitWrap = styled.div`
+  display: flex;
+  justify-content: flex-end;
+
+  padding-right: 0.5em;
+
+  width: 100%;
+  height: 2.5em;
+`;
+
+const Submit = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 3em;
+  height: 2em;
+
+  background-color: white;
+  border-radius: 1rem;
+  border: solid 1px gray;
 `;
 
 const GuestImage = styled.img`

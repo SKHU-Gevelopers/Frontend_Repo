@@ -14,6 +14,7 @@ export const Box = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: column;
+
   width: 100%;
   height: 94%;
   list-style: none;
@@ -63,7 +64,7 @@ export const NameBox = styled.div`
 export const ApplyInnerBox = styled.div`
   background-color: #ffffff;
   border: 1px solid #fca8ff;
-
+  justify-content: center;
   padding: 1rem 1rem 0.5rem 1rem;
   margin: 1rem 0;
   border-radius: 15px;
@@ -71,7 +72,7 @@ export const ApplyInnerBox = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: fit-content;
 `;
 
 export const ApplyForm = styled.form`

@@ -18,17 +18,24 @@ import {
 } from "@/styles/applyStyle";
 import { MdArrowBack } from "react-icons/md";
 import { ChangeEvent, useEffect, useState } from "react";
-import { ImageCoordinate } from "./LockMypage";
+import { ImageCoordinate } from "../LockMypage";
 import UnderNav from "@/components/UnderNav";
 import { parseCookies } from "nookies";
-import router from "next/router";
+import { useRouter } from "next/router";
 import { meetingApplyFunc } from "@/util/meetingApply/apllyUtil";
 import Link from "next/link";
 
 export default function meetingApply() {
+  const router = useRouter();
+  const { id } = router.query;
   const [accessToken, setAccessToken] = useState("");
   const [refreshToken, setRefreshToken] = useState("");
-  const [meetingID, setMeetingID] = useState(0);
+
+  console.log(id);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [contact, setContact] = useState("");
+  const [imageSrc, setImageSrc] = useState<string[]>(["/dogImage.png"]);
 
   useEffect(() => {
     const cookies = parseCookies();
@@ -41,11 +48,9 @@ export default function meetingApply() {
       setRefreshToken(refreshToken);
     }
   });
-  const [image, setImage] = useState("/dogImage.png");
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const image = event.target.files?.[0];
-    console.log(image);
     if (!image) {
       alert("파일이 없습니다.");
       return;
@@ -54,19 +59,25 @@ export default function meetingApply() {
     fileReader.readAsDataURL(image);
     fileReader.onload = (data) => {
       if (typeof data.target?.result === "string") {
-        setImage(data.target?.result);
+        setImageSrc([data.target?.result]);
       }
     };
   };
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    meetingApplyFunc(meetingID, accessToken, refreshToken)
+    meetingApplyFunc(
+      Number(id),
+      accessToken,
+      refreshToken,
+      title,
+      content,
+      contact,
+      imageSrc[0]
+    )
       .then((res) => {
-        console.log(res);
+        router.push("/meetingLogs");
       })
       .catch((err) => {
-        console.log(err);
-        console.log(meetingID, accessToken, refreshToken);
       });
   };
 
@@ -75,8 +86,7 @@ export default function meetingApply() {
       <UnderNav />
       <Main>
         <Box className="Maindiv">
-          <Link href="">
-            {/* 이부분에 link 등 한번 로직을 봐야할듯 */}
+          <Link href={`/detailBoard/${id}`}>
             <BackButton>
               <MdArrowBack size={20} />
             </BackButton>
@@ -97,6 +107,7 @@ export default function meetingApply() {
                   placeholder="11글자 이내로 작성해주세요"
                   className="title"
                   name="title"
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </InputDiv>
               <LetterInput className="inputDiv">
@@ -110,6 +121,7 @@ export default function meetingApply() {
                   cols={10}
                   placeholder="100자 이내로 작성 가능합니다."
                   className="input"
+                  onChange={(e) => setContent(e.target.value)}
                 />
               </LetterInput>
               <InputDiv className="inputDiv">
@@ -121,6 +133,7 @@ export default function meetingApply() {
                   placeholder="인스타 아이디"
                   className="input"
                   name="contact"
+                  onChange={(e) => setContact(e.target.value)}
                 />
               </InputDiv>
               <PictureInput className="inputDiv">
@@ -135,7 +148,7 @@ export default function meetingApply() {
                 />
                 <ImageCoordinate>
                   <SendImg
-                    src={image}
+                    src={imageSrc[0]}
                     width={110}
                     height={110}
                     alt="Picture of the author"

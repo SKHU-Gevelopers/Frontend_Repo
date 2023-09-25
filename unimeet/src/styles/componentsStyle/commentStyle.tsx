@@ -48,6 +48,7 @@ export const UserProfileWrap = styled.div`
 export const CommentWrap = styled.div`
   display: flex;
   justify-content: space-between;
+
   align-items: center;
   padding: 1% 8%;
   margin: 0 0 3% 4%;
@@ -61,6 +62,7 @@ export const CommentWrap = styled.div`
     background-color: #674ff4;
     color: white;
     font-size: 1rem;
+    border-radius: 10px;
     padding: 3%;
     height: fit-content;
     width: 18%;

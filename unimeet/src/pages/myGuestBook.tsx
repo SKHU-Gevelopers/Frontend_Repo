@@ -1,5 +1,6 @@
 import UnderNav from "@/components/UnderNav";
-import axios from "axios";
+import { getMyGuestBookUserData } from "@/util/myGuestBookUtil";
+import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -17,45 +18,32 @@ interface GuestBook {
   content: string;
 }
 
-export default function GestBook() {
+export default function MyGuestBook() {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
   const [myData, setMyData] = useState<MyData | null>(null);
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
-  const [token, setToken] = useState<string>("");
 
   useEffect(() => {
-    const getMyGuestBookUserData = async () => {
-      try {
-        setToken(localStorage.getItem("login-token") || " ");
-        if (token) {
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          };
-          const response = await axios.get(
-            "https://unimeet.duckdns.org/users/my-page-pub", 
-            {
-              headers,
-            }
-          );
-          setMyData(response.data.data.student);
-          setGuestBookData(response.data.data.guestBooks);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getMyGuestBookUserData();
-  }, [token]);
+    getMyGuestBookUserData(accessToken, refreshToken).then((res) => {
+      setMyData(res.data.student);
+      setGuestBookData(res.data.guestBooks);
+    });
+  }, [accessToken]);
 
   return (
     <>
       <MainBox>
         <ProfileBox>
           <ProfileImageWrap>
-            <ProfileImage
-              src={myData?.profileImageUrl}
-              alt="profileImage"
-            ></ProfileImage>
+            <div className="profileImage">
+              <ProfileImage
+                src={myData?.profileImageUrl}
+                alt="profileImage"
+              ></ProfileImage>
+            </div>
           </ProfileImageWrap>
           <Name>{myData?.nickname}</Name>
           <InformationBox>
@@ -117,9 +105,17 @@ const ProfileBox = styled.div`
 const ProfileImageWrap = styled.div`
   width: 10rem;
   height: 18vh;
+  display: flex;
+  justify-content: center;
+  
 
   border-radius: 50%;
-  border: solid 1px rgba(103, 79, 244, 0.8);
+  & > .profileImage {
+    width: 8rem;
+    height: 8rem;
+
+    border-radius: 50%;
+  }
 `;
 
 const ProfileImage = styled.img`

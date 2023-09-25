@@ -1,9 +1,10 @@
 import UnderNav from "@/components/UnderNav";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import DmModal from "@/components/DmModal";
 import Link from "next/link";
+import { parseCookies } from "nookies";
+import { chatGetData } from "@/util/chatUtil";
 
 interface DmData {
   id: number;
@@ -16,33 +17,18 @@ interface DmData {
 }
 
 export default function Chat() {
-  const [token, setToken] = useState<string>();
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
   const [data, setData] = useState<DmData[]>([]);
-
-  const chatGetData = async () => {
-    try {
-      setToken(localStorage.getItem("login-token") || "");
-      if (token) {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-
-        const response = await axios.get("https://unimeet.duckdns.org/dm", {
-          headers,
-        });
-        setData(response.data.data.dmList);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [isDmModal, setIsDmModal] = useState(false);
 
   useEffect(() => {
-    chatGetData();
-  }, [token]);
-
-  const [isDmModal, setIsDmModal] = useState(false);
+    chatGetData(accessToken, refreshToken).then((res) => {
+      setData(res.data.dmList);
+    });
+  }, [accessToken]);
 
   const openDmModal = () => {
     setIsDmModal(true);
@@ -124,11 +110,11 @@ const EachDm = styled.div`
   flex-direction: column;
   justify-content: center;
 
-  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  padding: 0.8rem 1.5rem 0.8rem 1.5rem;
 
   width: 92%;
-  min-height: 16vh;
-  max-height: 16vh;
+  min-height: 18vh;
+  max-height: 18vh;
 
   background-color: rgba(255, 255, 255, 0.7);
 
@@ -148,16 +134,20 @@ const DmAt = styled.div`
 `;
 
 const DmTitle = styled.div`
-  height: 4vh;
+  padding-top: 0.5vh;
 
-  font-size: 1.2rem;
+  height: 6vh;
+
+  font-size: 1.1rem;
   font-weight: bolder;
 `;
 
 const DmSenderNickname = styled.div`
-  height: 3vh;
+  padding-top: 0.2vh;
 
-  font-size: 1rem;
+  height: 2.5vh;
+
+  font-size: 0.8rem;
   font-weight: 800;
 `;
 
@@ -171,7 +161,7 @@ const ReplyDm = styled.div`
   align-items: center;
   justify-content: center;
 
-  width: 5rem;
+  width: 5em;
   height: 3.5vh;
 
   border-radius: 0.5em;
@@ -187,7 +177,7 @@ const Detail = styled.a`
   align-items: center;
   justify-content: center;
 
-  width: 5rem;
+  width: 5em;
   height: 3.5vh;
 
   border-radius: 0.5em;
@@ -196,7 +186,4 @@ const Detail = styled.a`
 
   font-weight: 700;
   color: white;
-
-  text-decoration-line: none;
-  outline: none;
 `;
