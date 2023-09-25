@@ -34,10 +34,12 @@ export const requestToken = async (
     });
     return { newAccessToken, newRefreshToken };
   } catch (err: any) {
-    alert("다시 로그인이 필요합니다.");
-    destroyCookie(undefined, "refresh-token");
-    destroyCookie(undefined, "accessToken");
-    localStorage.removeItem("accessToken");
+    if (err.response.status === 400) {
+      alert("다시 로그인이 필요합니다.");
+      destroyCookie(undefined, "refresh-token");
+      destroyCookie(undefined, "accessToken");
+      localStorage.removeItem("accessToken");
+    }
     throw err;
   }
 };
@@ -66,10 +68,6 @@ export const MypageRequest = async (
         );
         return MypageRequest(newAccessToken, newRefreshToken);
       } catch (tokenErr: any) {
-        if (tokenErr.response.status === 400) {
-          alert("로그인이 필요합니다.");
-          router.push("/MainLogin");
-        }
         throw tokenErr;
       }
     } else {

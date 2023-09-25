@@ -7,30 +7,30 @@ import {
   PeopleImage,
   UserProfileWrap,
 } from "@/styles/componentsStyle/commentStyle";
-import { postcomments } from "@/util/boardUtil/detailBoardUtil";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { postcomments } from "@/util/boardUtil/commentUtil";
+import { parseCookies } from "nookies";
+import { use, useEffect, useState } from "react";
 
 interface CommentsProps {
-  accessToken: string;
-  refreshToken: string;
   id: number;
+  comments: any[];
 }
 
-export const Comments: React.FC<CommentsProps> = ({
-  accessToken,
-  refreshToken,
-  id,
-}) => {
+export const Comments: React.FC<CommentsProps> = (props) => {
+  const { id, comments } = props;
+  const [commentlist, setCommentList] = useState(comments);
   const [comment, setComment] = useState("");
 
   const postComment = () => {
     // 댓글 작성
     console.log(comment);
     console.log(id);
-    // postcomments(accessToken, refreshToken, id, comment).then((res) => {
-    //   console.log(res);
-    // });
+    const cookie = parseCookies();
+    const accessToken = cookie["accessToken"];
+    const refreshToken = cookie["refreshToken"];
+    postcomments(accessToken, refreshToken, id, comment).then((res) => {
+      console.log(res);
+    });
   };
 
   return (
@@ -44,16 +44,25 @@ export const Comments: React.FC<CommentsProps> = ({
         ></CommentInput>
         <CommentBtn type="submit">전송</CommentBtn>
       </CommentInputForm>
-      <div>
-        <UserProfileWrap>
-          <PeopleImage src={"/dogImage.png"} alt={""} width={35} height={35} />
-          <span>쩡스</span>
-        </UserProfileWrap>
-        <CommentWrap>
-          <div>여자 4명 구하는건가?</div>
-          <button>삭제</button>
-        </CommentWrap>
-      </div>
+      {commentlist.map((comment) => {
+        return (
+          <div>
+            <UserProfileWrap>
+              {/* <PeopleImage
+                src={"/dogImage.png"}
+                alt={""}
+                width={35}
+                height={35}
+              /> */}
+              <span>{comment.student.nickname}</span>
+            </UserProfileWrap>
+            <CommentWrap>
+              <div>{comment.content}</div>
+              <button>삭제</button>
+            </CommentWrap>
+          </div>
+        );
+      })}
     </CommentBox>
   );
 };

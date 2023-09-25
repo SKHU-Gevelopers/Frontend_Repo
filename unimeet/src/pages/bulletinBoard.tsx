@@ -109,7 +109,7 @@ const MainBox = styled.div`
   width: 100%;
   height: auto;
 
-  background-color: #efe3ff;
+  background-color: #efe3ff67;
 `;
 
 const Article = styled.div`
@@ -142,8 +142,8 @@ const Writer = styled.div`
 `;
 
 const ProfileImageWrap = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 2rem;
+  height: 2rem;
 
   border-radius: 50%;
   background-color: pink;
@@ -160,18 +160,18 @@ const Name = styled.div`
   padding-left: 2%;
 
   font-size: 1.2rem;
-  font-weight: 600;
 `;
 
 const PictureWrap = styled.div`
-  margin-left: 3%;
+  margin: auto;
+  margin-bottom: 2%;
+
   display: flex;
   justify-content: center;
+  align-items: center;
 
   width: 93.5%;
   height: 18vh;
-
-  background-color: #ebedfa;
 `;
 
 const PictureImage = styled.img`
@@ -179,8 +179,6 @@ const PictureImage = styled.img`
   height: 100%;
 
   border-radius: 5px;
-
-  background-color: #ebedfa;
 `;
 
 const WritingBox = styled.div`
@@ -194,11 +192,17 @@ const WritingBox = styled.div`
 const Title = styled.div`
   font-size: 1.3rem;
   font-weight: 700;
+  padding: 1%;
+  width: fit-content;
 `;
 
 const Text = styled.div`
   font-size: 1.1rem;
   margin-top: 0.5vh;
+  background-color: #ffffff7d;
+  padding: 2%;
+  border-radius: 10px;
+  border: 1px solid #bb8dfb;
 `;
 
 const ReactionBox = styled.div`
@@ -219,7 +223,7 @@ const HeartWrap = styled.button`
   width: 11%;
   height: 3.8vh;
 
-  background-color: #efe3ff;
+  background-color: #a52a2a00;
   border: none;
 `;
 
