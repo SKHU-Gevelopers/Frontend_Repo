@@ -110,11 +110,11 @@ const EachDm = styled.div`
   flex-direction: column;
   justify-content: center;
 
-  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  padding: 0.8rem 1.5rem 0.8rem 1.5rem;
 
   width: 92%;
-  min-height: 16vh;
-  max-height: 16vh;
+  min-height: 18vh;
+  max-height: 18vh;
 
   background-color: rgba(255, 255, 255, 0.7);
 
@@ -134,16 +134,20 @@ const DmAt = styled.div`
 `;
 
 const DmTitle = styled.div`
-  height: 4vh;
+  padding-top: 0.5vh;
+
+  height: 6vh;
 
   font-size: 1.1rem;
   font-weight: bolder;
 `;
 
 const DmSenderNickname = styled.div`
-  height: 3vh;
+  padding-top: 0.2vh;
 
-  font-size: 0.9rem;
+  height: 2.5vh;
+
+  font-size: 0.8rem;
   font-weight: 800;
 `;
 
@@ -157,7 +161,7 @@ const ReplyDm = styled.div`
   align-items: center;
   justify-content: center;
 
-  width: 5rem;
+  width: 5em;
   height: 3.5vh;
 
   border-radius: 0.5em;
@@ -173,7 +177,7 @@ const Detail = styled.a`
   align-items: center;
   justify-content: center;
 
-  width: 5rem;
+  width: 5em;
   height: 3.5vh;
 
   border-radius: 0.5em;
