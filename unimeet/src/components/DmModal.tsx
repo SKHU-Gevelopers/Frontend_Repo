@@ -5,6 +5,7 @@ import { useState } from "react";
 import { TbSend } from "react-icons/tb";
 import { parseCookies } from "nookies";
 import { requestToken } from "@/util/myPage";
+import router from "next/router";
 
 interface DmModalProps {
   isOpen: boolean;
@@ -58,7 +59,6 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
       alert("전송했습니다.");
       onClose();
     } catch (error: any) {
-      console.log(error);
       if (error.response && error.response.status === 401) {
         try {
           const { newAccessToken, newRefreshToken } = await requestToken(
@@ -66,7 +66,8 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
           );
           return DmPost(newAccessToken, newRefreshToken);
         } catch (error: any) {
-          console.log("Failed to refresh token:", error);
+          alert("다시 로그인을 해주세요.");
+          router.push("/MainLogin");
         }
       }
     }

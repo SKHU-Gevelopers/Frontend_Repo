@@ -6,16 +6,13 @@ import BubbleGround from "@/components/BubbleGround";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { setCookie } from "nookies";
-
+import { parseCookies, setCookie } from "nookies";
 
 export default function MainLogin() {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const router = useRouter();
-
 
   function loginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,15 +34,18 @@ export default function MainLogin() {
           path: "/", // 쿠키 경로
         });
         router.push("/bulletinBoard");
-
       })
       .catch((err) => {
-        alert("아이디 또는 비밀번호가 틀렸습니다."),
-          console.log(err),
-          console.log(err.response);
+        alert("아이디 또는 비밀번호가 틀렸습니다.");
       });
   }
-  useEffect(() => {});
+  useEffect(() => {
+    const cookies = parseCookies();
+    const accessToken = cookies["accessToken"];
+    if (accessToken) {
+      router.push("/bulletinBoard");
+    }
+  });
 
   return (
     <Main>

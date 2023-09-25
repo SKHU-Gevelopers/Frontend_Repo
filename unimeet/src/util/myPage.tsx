@@ -1,6 +1,6 @@
 import axios from "axios";
 import router from "next/router";
-import { parseCookies, setCookie } from "nookies";
+import { destroyCookie, parseCookies, setCookie } from "nookies";
 
 // const cookies = parseCookies();
 // export const accesstoken = cookies["accessToken"];
@@ -34,19 +34,10 @@ export const requestToken = async (
     });
     return { newAccessToken, newRefreshToken };
   } catch (err: any) {
-    console.log(token);
-    if (err.response && err.response.status === 401) {
-      if (retryCount < 3) {
-        // 최대 3번 재시도하도록 설정
-        const { newAccessToken, newRefreshToken } = await requestToken(
-          token,
-          retryCount + 1
-        ); // 재귀 호출 시 재시도 횟수를 증가
-        return { newAccessToken, newRefreshToken };
-      } else {
-        throw new Error("너무 많이 재요청되었습니다."); // 재시도 횟수가 너무 많아지면 오류 처리
-      }
-    }
+    alert("다시 로그인이 필요합니다.");
+    destroyCookie(undefined, "refresh-token");
+    destroyCookie(undefined, "accessToken");
+    localStorage.removeItem("accessToken");
     throw err;
   }
 };

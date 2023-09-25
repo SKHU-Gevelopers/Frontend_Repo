@@ -64,7 +64,6 @@ const LockMypage: React.FC = () => {
   const [image, setImage] = useState("/dogImage.png");
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files?.[0];
-    console.log(image);
     if (!image) {
       alert("파일이 없습니다.");
       return;
@@ -94,11 +93,8 @@ const LockMypage: React.FC = () => {
       major2
     )
       .then((res) => {
-        console.log(res);
       })
       .catch((err) => {
-        console.log(err);
-        console.log(token, name, mbti, image, information, major1, major2);
       });
   };
 

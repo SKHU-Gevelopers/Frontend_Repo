@@ -26,7 +26,6 @@ import DmModal from "@/components/DmModal";
 export default function DetailBoard() {
   const router = useRouter();
   const { id } = router.query;
-  console.log(id);
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [imageSrc, setImageSrc] = useState([]);
   const [nickname, setNickname] = useState("배달원");

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { requestToken } from "../myPage";
+import router from "next/router";
 
 export const meetingApplyFunc = async (
   meetingId: number,
@@ -34,10 +35,18 @@ export const meetingApplyFunc = async (
         const { newAccessToken, newRefreshToken } = await requestToken(
           refreshToken
         );
-        return meetingApplyFunc(meetingId, newAccessToken, newRefreshToken, title, content, contact, image)
-        
+        return meetingApplyFunc(
+          meetingId,
+          newAccessToken,
+          newRefreshToken,
+          title,
+          content,
+          contact,
+          image
+        );
       } catch (tokenErr: any) {
-        console.log("Failed to refresh token:", tokenErr);
+        alert("다시 로그인을 해주세요.");
+        router.push("/MainLogin");
         throw tokenErr;
       }
     } else {
