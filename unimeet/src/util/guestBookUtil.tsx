@@ -1,5 +1,4 @@
 import axios from "axios";
-import { FormEvent } from "react";
 import { requestToken } from "./myPage";
 
 // **************************************** next.js Link 태그로 인한 추가 클릭시 이 해당 id 전송되게 만들어주세욤
@@ -27,16 +26,15 @@ export const getGuestBookUserData = async (
     );
     return response.data;
   } catch (error: any) {
-    console.log(error);
     if (error.response && error.response.status === 401) {
       try {
         const { newAccessToken, newRefreshToken } = await requestToken(
           refreshToken
         );
         return getGuestBookUserData(newAccessToken, newRefreshToken);
-      } catch (error: any) {
-        console.log("Failed to refresh token:", error);
-      }
+      } catch (error: any) {}
+    } else {
+      throw error;
     }
   }
 };
@@ -61,7 +59,6 @@ export const postGuestBook = async (
       { headers }
     );
   } catch (error: any) {
-    console.log(error);
     if (error.response && error.response.status === 401) {
       try {
         const { newAccessToken, newRefreshToken } = await requestToken(
@@ -73,9 +70,9 @@ export const postGuestBook = async (
           postGuestBookComment,
           studentId
         );
-      } catch (error: any) {
-        console.log("Failed to refresh token:", error);
-      }
+      } catch (error: any) {}
+    } else {
+      throw error;
     }
   }
 };
