@@ -17,16 +17,15 @@ export const getRecivedApplication = async (
     });
     return response.data;
   } catch (error: any) {
-    console.log(error);
     if (error.response && error.response.status === 401) {
       try {
         const { newAccessToken, newRefreshToken } = await requestToken(
           refreshToken
         );
         return getRecivedApplication(newAccessToken, newRefreshToken);
-      } catch (error: any) {
-        console.log("Failed to refresh token:", error);
-      }
+      } catch (error: any) {}
+    } else {
+      throw error;
     }
   }
 };
@@ -49,7 +48,6 @@ export const getRecivedApplicationDetailVersion = async (
       return response.data;
     }
   } catch (error: any) {
-    console.log(error);
     if (error.response && error.response.status === 401) {
       try {
         const { newAccessToken, newRefreshToken } = await requestToken(
@@ -60,9 +58,9 @@ export const getRecivedApplicationDetailVersion = async (
           newRefreshToken,
           applicationId
         );
-      } catch (error: any) {
-        console.log("Failed to refresh token:", error);
-      }
+      } catch (error: any) {}
+    } else {
+      throw error;
     }
   }
 };
@@ -84,7 +82,6 @@ export const acceptApplication = async (
     );
     alert("수락했습니다.");
   } catch (error: any) {
-    console.log(error);
     if (error.response && error.response.status === 400)
       alert("이미 수락된 상태입니다.");
     else if (error.response && error.response.status === 401) {
@@ -97,9 +94,9 @@ export const acceptApplication = async (
           newRefreshToken,
           applicationId
         );
-      } catch (error: any) {
-        console.log("Failed to refresh token:", error);
-      }
+      } catch (error: any) {}
+    } else {
+      throw error;
     }
   }
 };
