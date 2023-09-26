@@ -46,7 +46,7 @@ export const Comments: React.FC<CommentsProps> = (props) => {
       </CommentInputForm>
       {commentlist.map((comment) => {
         return (
-          <div>
+          <div key={comment}>
             <UserProfileWrap>
               {/* <PeopleImage
                 src={"/dogImage.png"}

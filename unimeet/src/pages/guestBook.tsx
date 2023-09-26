@@ -38,7 +38,7 @@ export default function GestBook() {
       setStudentData(res.data.student);
       setGuestBookData(res.data.guestBooks);
     });
-  }, [accessToken]);
+  }, []);
 
   // 방명록 작성 input 내용 저장
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -98,7 +98,7 @@ export default function DetailBoard({ data }: DetailPageProps) {
           setComments(res.data);
         });
       });
-  }, []);
+  }, [id]);
 
   return (
     <>
@@ -153,6 +153,7 @@ export default function DetailBoard({ data }: DetailPageProps) {
           {imageSrc.map((item, index) => {
             return (
               <ImageBox
+                key={index}
                 src={item}
                 alt="profileImg"
                 width={310}
