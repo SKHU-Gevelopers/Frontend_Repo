@@ -1,7 +1,15 @@
 import { Inter } from "next/font/google";
+import router from "next/router";
+import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  return <></>;
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      router.push("/MainLogin");
+    }
+  });
+  return <div>home이 보인다면 여기</div>;
 }
