@@ -26,9 +26,9 @@ export default function Chat() {
 
   useEffect(() => {
     chatGetData(accessToken, refreshToken).then((res) => {
-      setData(res.data.dmList);
+      res.data.dmList && setData(res.data.dmList);
     });
-  }, [accessToken]);
+  }, []);
 
   const openDmModal = () => {
     setIsDmModal(true);
