@@ -25,7 +25,7 @@ import { useRouter } from "next/router";
 import { meetingApplyFunc } from "@/util/meetingApply/apllyUtil";
 import Link from "next/link";
 
-export default function meetingApply() {
+export default function MeetingApply() {
   const router = useRouter();
   const { id } = router.query;
   const [accessToken, setAccessToken] = useState("");
