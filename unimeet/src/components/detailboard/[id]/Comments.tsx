@@ -23,8 +23,6 @@ export const Comments: React.FC<CommentsProps> = (props) => {
 
   const postComment = () => {
     // 댓글 작성
-    console.log(comment);
-    console.log(id);
     const cookie = parseCookies();
     const accessToken = cookie["accessToken"];
     const refreshToken = cookie["refreshToken"];
