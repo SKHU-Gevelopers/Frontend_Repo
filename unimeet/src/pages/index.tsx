@@ -11,5 +11,5 @@ export default function Home() {
       router.push("/MainLogin");
     }
   });
-  return <div>home이 보인다면 여기</div>;
+  return( <div></div>);
 }

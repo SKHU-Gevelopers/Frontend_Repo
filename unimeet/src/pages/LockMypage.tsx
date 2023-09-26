@@ -214,6 +214,7 @@ export const FixBtn = styled(ButtonStyle)`
 
 const LockMainDiv = styled.div`
   height: 100vh;
+  padding-top: 2rem;
 `;
 
 const InfoBox = styled.div`

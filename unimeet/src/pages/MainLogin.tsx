@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { parseCookies, setCookie } from "nookies";
+import { isMobile } from "react-device-detect";
 
 export default function MainLogin() {
   const [email, setEmail] = useState("");
@@ -45,41 +46,48 @@ export default function MainLogin() {
     if (accessToken) {
       router.push("/bulletinBoard");
     }
+    if(isMobile){
+      alert("모바일 환경만 지원하고 있습니다.")
+    }
   });
 
   return (
-    <Main>
-      <BubbleGround />
-      <LoginBox>
-        <form onSubmit={loginSubmit}>
-          <TextBox>
-            <AiOutlineUser color="gray" />
-            <input
-              placeholder="username"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-            />
-          </TextBox>
-          <TextBox>
-            <BiLockAlt color="gray" />
-            <input
-              type="password"
-              placeholder="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </TextBox>
-          <ButtonDiv>
-            <ButtonStyle type="submit">login</ButtonStyle>
-            <Link href="/signup">
-              <ButtonStyle>signup</ButtonStyle>
-            </Link>
-          </ButtonDiv>
-        </form>
-      </LoginBox>
-    </Main>
+    <>
+      {isMobile && (
+        <Main>
+          <BubbleGround />
+          <LoginBox>
+            <form onSubmit={loginSubmit}>
+              <TextBox>
+                <AiOutlineUser color="gray" />
+                <input
+                  placeholder="username"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+              </TextBox>
+              <TextBox>
+                <BiLockAlt color="gray" />
+                <input
+                  type="password"
+                  placeholder="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </TextBox>
+              <ButtonDiv>
+                <ButtonStyle type="submit">login</ButtonStyle>
+                <Link href="/signup">
+                  <ButtonStyle>signup</ButtonStyle>
+                </Link>
+              </ButtonDiv>
+            </form>
+          </LoginBox>
+        </Main>
+      )}
+    </>
   );
 }
 const pulse = keyframes`

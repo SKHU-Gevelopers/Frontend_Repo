@@ -107,7 +107,7 @@ const ProfileImageWrap = styled.div`
   height: 18vh;
   display: flex;
   justify-content: center;
-  
+
 
   border-radius: 50%;
   & > .profileImage {
