@@ -31,7 +31,7 @@ export default function BulletinBoard() {
 
   useEffect(() => {
     getPostsData(accessToken, refreshToken).then((res) => {
-      setData(res.data.posts);
+      res && setData(res.data.posts);
     });
   }, [likedPosts]);
 

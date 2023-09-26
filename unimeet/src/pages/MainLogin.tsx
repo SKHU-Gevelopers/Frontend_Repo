@@ -18,7 +18,7 @@ export default function MainLogin() {
   function loginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     axios
-      .post("https://unimeet.duckdns.org/auth/sign-in/short-token-exp", {
+      .post("https://unimeet.duckdns.org/auth/sign-in", {
         email,
         password,
       })
