@@ -15,16 +15,15 @@ export const getPostsData = async (
     });
     return response.data;
   } catch (error: any) {
-    console.log(error);
     if (error.response && error.response.status === 401) {
       try {
         const { newAccessToken, newRefreshToken } = await requestToken(
           refreshToken
         );
         return getPostsData(newAccessToken, newRefreshToken);
-      } catch (error: any) {
-        console.log("Failed to refresh token:", error);
-      }
+      } catch (error: any) {}
+    } else {
+      throw error;
     }
   }
 };
@@ -58,7 +57,6 @@ export const clickLike = async (
     const updatedData = await getPostsData(accessToken, refreshToken);
     return updatedData;
   } catch (error: any) {
-    console.log(error);
     if (error.response && error.response.status === 401) {
       try {
         const { newAccessToken, newRefreshToken } = await requestToken(
@@ -72,9 +70,9 @@ export const clickLike = async (
           likedPosts,
           setLikedPosts
         );
-      } catch (error: any) {
-        console.log("Failed to refresh token:", error);
-      }
+      } catch (error: any) {}
+    } else {
+      throw error;
     }
   }
 };
