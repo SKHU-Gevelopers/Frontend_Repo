@@ -3,7 +3,8 @@
 ![soft](https://capsule-render.vercel.app/api?type=soft&color=674ff4&text=UNIMEET&fontSize=40&fontColor=FFFFFF)
 
 ## 서비스 🔗
-
+**모바일**
+[]()
 ## 소개 영상 🔗
 
 []()
@@ -21,9 +22,10 @@
 ```bash
 .
 ├── components
+│   ├──detailboard\[id]
+│   │  └──Comments.tsx
 │   ├──ApplyModal.tsx
 │   ├──BubbleGround.tsx
-│   ├──Comments.tsx
 │   ├──DmModal.tsx
 │   ├──InputBox.tsx
 │   ├──Modal.tsx
@@ -32,16 +34,20 @@
 │   ├──department.ts
 │   └──mbtilist.ts
 ├── pages
+│   ├──detailboard
+│   │  └──[id].tsx
+│   ├──meetingApply
+│   │  └──[id].tsx
+│   ├──post
+│   │  └──postWrite.tsx
 │   ├──_app.tsx
 │   ├──_document.tsx
 │   ├──bulletinBoard.tsx
 │   ├──chat.tsx
-│   ├──detailBoeard.tsx
 │   ├──guestBook.tsx
 │   ├──index.tsx
 │   ├──LockMypages.tsx
 │   ├──MainLogin.tsx
-│   ├──meetingApply.tsx
 │   ├──meetingLogs.tsx
 │   ├──myGuestBook.tsx
 │   ├──recive.tsx
@@ -49,14 +55,21 @@
 ├── styles
 │   ├──componentsStyle
 │   │  └──commentStyle.tsx
+│   ├──postStyle
+│   │  └──postStyle.tsx
 │   ├──applyStyle.tsx
 │   ├──detailBoardStyle.tsx
 │   ├──global.css
 │   ├──mypageStyle.tsx
 │   └──UnderNavbar.tsx 
 └── util
+    ├──boardUtil
+    │  ├──commentUtil.tsx
+    │  └──detailBoardUtil.tsx
     ├──meetingApply
     │  └──apllyUtil.tsx
+    ├──post
+    │  └──postUtil.tsx
     ├──etailUtil.tsx
     ├──myPage.tsx
     ├──signUtil.tsx
@@ -66,11 +79,12 @@
 
 ## 구성
 
-- 회원가입, 로그인, 로그아웃
-- 마이페이지, 방명록
-- 게시글
-- 만남신청
-- 쪽지
+- 회원가입, 로그인
+- 메인 게시판
+- 내 정보 수정
+- 방명록
+- 쪽지함
+- 신청함
 
 ## 프론트엔드 개발자
 
