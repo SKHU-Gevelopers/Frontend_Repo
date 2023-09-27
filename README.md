@@ -3,11 +3,11 @@
 ![soft](https://capsule-render.vercel.app/api?type=soft&color=674ff4&text=UNIMEET&fontSize=40&fontColor=FFFFFF)
 
 ## 서비스 🔗
-**모바일**
-[]()
+`모바일 웹 서비스입니다.` </br>
+[UNIMEET 서비스](https://www.skhu-unimeet.site)
 ## 소개 영상 🔗
 
-[]()
+[UNIMEET 소개 영상](https://youtu.be/dvCvhqd-bK8?feature=shared)
 
 ## UNIMEET?
 
@@ -15,16 +15,17 @@
 
 ## 기술 스택
 
-<img src="https://img.shields.io/badge/Figma-F24E1E?style=flat&logo&logo=Figma&logoColor=white"/> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white"/> <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white"/> <img src ="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styledcomponents&logoColor=white"> <img src="https://img.shields.io/badge/Vercel-000000?style=flat&logo=Vercel&logoColor=white">
+<img src="https://img.shields.io/badge/Figma-F24E1E?style=flat&logo&logo=Figma&logoColor=white"/> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white"/> <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white"/> <img src="https://img.shields.io/badge/axios-FFFFFF?style=flat&logo=axios&logoColor=purple"/> <img src ="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styledcomponents&logoColor=white"> <img src="https://img.shields.io/badge/Vercel-000000?style=flat&logo=Vercel&logoColor=white">
 
 ## 소스 트리
 
 ```bash
 .
 ├── components
+│   ├──apply
+│   │  └──ApplyModal.tsx
 │   ├──detailboard\[id]
 │   │  └──Comments.tsx
-│   ├──ApplyModal.tsx
 │   ├──BubbleGround.tsx
 │   ├──DmModal.tsx
 │   ├──InputBox.tsx
@@ -50,7 +51,7 @@
 │   ├──MainLogin.tsx
 │   ├──meetingLogs.tsx
 │   ├──myGuestBook.tsx
-│   ├──recive.tsx
+│   ├──reciveDm.tsx
 │   └──signup.tsx
 ├── styles
 │   ├──componentsStyle
@@ -70,8 +71,14 @@
     │  └──apllyUtil.tsx
     ├──post
     │  └──postUtil.tsx
-    ├──etailUtil.tsx
-    ├──myPage.tsx
+    ├──bulletinBoardUtil.tsx
+    ├──chatUtil.tsx
+    ├──detailUtil.tsx
+    ├──guestBookUtil.tsx
+    ├──meetingReciveUtil.tsx
+    ├──myGuestBookUtil.tsx
+    ├──myPageUtil.tsx
+    ├──ReciveUtil.tsx
     ├──signUtil.tsx
     └──userUtil.tsx
 
@@ -80,11 +87,11 @@
 ## 구성
 
 - 회원가입, 로그인
-- 메인 게시판
-- 내 정보 수정
+- 게시판
+- 만남 신청
 - 방명록
-- 쪽지함
-- 신청함
+- 쪽지
+- 마이페이
 
 ## 프론트엔드 개발자
 
