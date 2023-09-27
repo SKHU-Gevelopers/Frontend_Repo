@@ -26,7 +26,7 @@ export default function Chat() {
 
   useEffect(() => {
     chatGetData(accessToken, refreshToken).then((res) => {
-      res.data.dmList && setData(res.data.dmList);
+      res && setData(res.data.dmList);
     });
   }, []);
 

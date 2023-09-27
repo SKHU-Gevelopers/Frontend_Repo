@@ -46,13 +46,13 @@ export default function MainLogin() {
     if (accessToken) {
       router.push("/bulletinBoard");
     }
-    if(isMobile){
-      alert("모바일 환경만 지원하고 있습니다.")
+    if (isMobile) {
+      alert("모바일 환경만 지원하고 있습니다.");
     }
-  });
+  }, []);
 
   return (
-    <>
+    <div>
       {isMobile && (
         <Main>
           <BubbleGround />
@@ -87,7 +87,7 @@ export default function MainLogin() {
           </LoginBox>
         </Main>
       )}
-    </>
+    </div>
   );
 }
 const pulse = keyframes`
