@@ -17,6 +17,15 @@
 
 <img src="https://img.shields.io/badge/Figma-F24E1E?style=flat&logo&logo=Figma&logoColor=white"/> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white"/> <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white"/> <img src="https://img.shields.io/badge/axios-FFFFFF?style=flat&logo=axios&logoColor=purple"/> <img src ="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styledcomponents&logoColor=white"> <img src="https://img.shields.io/badge/Vercel-000000?style=flat&logo=Vercel&logoColor=white">
 
+## 구성
+
+- 회원가입, 로그인
+- 게시판
+- 만남 신청
+- 방명록
+- 쪽지
+- 마이페이
+
 ## 소스 트리
 
 ```bash
@@ -84,14 +93,6 @@
 
 ```
 
-## 구성
-
-- 회원가입, 로그인
-- 게시판
-- 만남 신청
-- 방명록
-- 쪽지
-- 마이페이
 
 ## 프론트엔드 개발자
 
