@@ -78,14 +78,16 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
       <DmModalWrap>
         <Main>
           <Action>
-            <DeleteModal onClick={onClose}>X</DeleteModal>
-            <StyledSend
-              onClick={() => DmPost(accessToken, refreshToken)}
-            ></StyledSend>
+            <DeleteModalWrap>
+              <DeleteModal onClick={onClose}>X</DeleteModal>
+            </DeleteModalWrap>
+            <SendWrap>
+              <Send onClick={() => DmPost(accessToken, refreshToken)}></Send>
+            </SendWrap>
           </Action>
           <DmInputData>
             <TitleInput
-              placeholder="제목을 입력하세요."
+              placeholder="제목을 입력하세요.(최대 20자)"
               value={title}
               onChange={changeTitle}
             ></TitleInput>
@@ -129,70 +131,80 @@ const Main = styled.div`
 const Action = styled.div`
   display: flex;
 
-  align-items: center;
+  padding-top: 1em;
 
-  gap: 65%;
+  width: 100%;
+  height: 3em;
+
+  align-items: center;
+`;
+
+const DeleteModalWrap = styled.div`
+  margin-left: 8%;
+  width: 50%;
 `;
 
 const DeleteModal = styled.div`
-  padding-top: 2vh;
-  padding-left: 8%;
-
   font-weight: 900;
-  font-size: 2rem;
+  font-size: 2em;
 `;
 
-const StyledSend = styled(TbSend)`
-  margin-top: 5%;
+const SendWrap = styled.div`
+  display: flex;
+  justify-content: right;
 
-  width: 2.7em;
-  height: 2.7em;
+  margin-right: 5%;
+  width: 50%;
+`;
+
+const Send = styled(TbSend)`
+  width: 2em;
+  height: 2em;
 `;
 
 const DmInputData = styled.div`
   display: flex;
   flex-direction: column;
 
-  margin-top: 3vh;
+  margin-top: 2vh;
   padding-left: 8%;
   padding-right: 8%;
 `;
 
 const TitleInput = styled.textarea`
+  padding: 0.5em;
+
   width: 100%;
-  height: 8vh;
+  height: 9vh;
+  resize: none;
 
   background-color: rgba(255, 255, 255, 0);
 
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   font-weight: 900;
 
   border: none;
-
-  textarea&:focus {
-    outline: solid 2px white;
-    border-radius: 0.5rem;
-  }
+  outline: solid 5px rgba(198, 141, 245, 0.37);
+  border-radius: 0.8em;
 
   overflow: hidden;
 `;
 
 const ContentInput = styled.textarea`
-  margin-top: 1vh;
+  padding: 0.5em;
+  margin-top: 3vh;
 
   width: 100%;
   height: 55vh;
+  resize: none;
 
   background-color: rgba(255, 255, 255, 0);
 
   font-size: 1rem;
 
   border: none;
-
-  textarea&:focus {
-    outline: solid 2px white;
-    border-radius: 0.5rem;
-  }
+  outline: solid 5px rgba(198, 141, 245, 0.37);
+  border-radius: 0.8em;
 
   overflow: hidden;
 `;
