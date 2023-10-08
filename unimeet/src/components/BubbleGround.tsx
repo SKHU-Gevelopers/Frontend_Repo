@@ -3,11 +3,11 @@ import styled, { keyframes } from "styled-components";
 export default function BubbleGround() {
   return (
     <>
-      <Bubble />
-      <Bubble2 />
-      <Bubble3 />
-      <Bubble4 />
-      <Bubble5 />
+      <Bubble1 className="bubble1"/>
+      <Bubble2 className="bubble2"/>
+      <Bubble3 className="bubble3"/>
+      <Bubble4 className="bubble4"/>
+      <Bubble5 className="bubble5"/>
     </>
   );
 }
@@ -58,7 +58,7 @@ const floating4 = keyframes`
     }
 `;
 
-const Bubble = styled.div`
+const Bubble1 = styled.div`
   height: 200px;
   width: 200px;
   border-radius: 50%;
@@ -78,7 +78,7 @@ const Bubble = styled.div`
   left: 7%;
   animation: ${floating1} 6s infinite;
 `;
-const Bubble2 = styled(Bubble)`
+const Bubble2 = styled(Bubble1)`
   height: 100px;
   width: 100px;
   top: 7%;
@@ -88,7 +88,7 @@ const Bubble2 = styled(Bubble)`
     inset 88px 0px 60px #0003ff70, inset -20px -30px 50px #fde9eaed,
     inset 0 50px 140px #ffced042, 0 0 4px #ffffffd6;
 `;
-const Bubble3 = styled(Bubble)`
+const Bubble3 = styled(Bubble1)`
   top: 58%;
   left: 9%;
 
@@ -103,7 +103,7 @@ const Bubble3 = styled(Bubble)`
     #00ffff57 100%
   );
 `;
-const Bubble4 = styled(Bubble)`
+const Bubble4 = styled(Bubble1)`
   top: 38%;
   left: 71%;
   width: 7rem;

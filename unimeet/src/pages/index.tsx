@@ -1,15 +1,82 @@
-import { Inter } from "next/font/google";
-import router from "next/router";
-import { useEffect } from "react";
-
-const inter = Inter({ subsets: ["latin"] });
+import { AiOutlineUser } from "react-icons/ai";
+import { BiLockAlt } from "react-icons/bi";
+import Link from "next/link";
+import BubbleGround from "@/components/BubbleGround";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
+import { parseCookies, setCookie } from "nookies";
+import { isMobile } from "react-device-detect";
+import { Main } from "@/styles/DefaultStyle/flexStyle";
+import {
+  ButtonDiv,
+  ButtonStyle,
+  LoginBox,
+  TextBox,
+} from "@/styles/pageStyle/MainloginStyle";
 
 export default function Home() {
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      router.push("/MainLogin");
-    }
-  });
-  return <div>home이 보인다면 여기</div>;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  function loginSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    axios
+      .post("https://unimeet.duckdns.org/auth/sign-in", {
+        email,
+        password,
+      })
+      .then((res) => {
+        const accessToken = res.data.data.accessToken;
+        const refreshToken = res.data.data.refreshToken;
+        setCookie(null, "accessToken", accessToken, {
+          path: "/", // 쿠키 경로
+        });
+        setCookie(null, "refresh-token", refreshToken, {
+          path: "/", // 쿠키 경로
+        });
+        router.push("/bulletinBoard");
+      })
+      .catch((err) => {
+        alert(err.response.data.message);
+      });
+  }
+
+  return (
+    <div className="main">
+      <Main className="Mainlogin_mainDiv">
+        <BubbleGround />
+        <LoginBox>
+          <form onSubmit={loginSubmit}>
+            <TextBox>
+              <AiOutlineUser color="gray" />
+              <input
+                placeholder="username"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+              />
+            </TextBox>
+            <TextBox>
+              <BiLockAlt color="gray" />
+              <input
+                type="password"
+                placeholder="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </TextBox>
+            <ButtonDiv>
+              <ButtonStyle type="submit">login</ButtonStyle>
+              <Link href="/signup">
+                <ButtonStyle>signup</ButtonStyle>
+              </Link>
+            </ButtonDiv>
+          </form>
+        </LoginBox>
+      </Main>
+    </div>
+  );
 }

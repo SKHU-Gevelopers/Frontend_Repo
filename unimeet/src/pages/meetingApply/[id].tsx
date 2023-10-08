@@ -18,7 +18,7 @@ import {
 } from "@/styles/applyStyle";
 import { MdArrowBack } from "react-icons/md";
 import { ChangeEvent, useEffect, useState } from "react";
-import { ImageCoordinate } from "../LockMypage";
+import { ImageCoordinate } from "../lockMypage";
 import UnderNav from "@/components/UnderNav";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
@@ -42,7 +42,7 @@ export default function MeetingApply() {
     const accessToken = cookies["accessToken"];
     const refreshToken = cookies["refresh-token"];
     if (!accessToken) {
-      router.push("/MainLogin");
+      router.push("/");
     } else {
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);

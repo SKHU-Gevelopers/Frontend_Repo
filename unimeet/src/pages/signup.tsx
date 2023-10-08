@@ -1,7 +1,7 @@
 import { mbtilist } from "@/constants/mbtilist";
 import { skhuDepartmentList, skhuMajor } from "@/constants/department";
 import styled from "styled-components";
-import { LoginBox } from "./MainLogin";
+import { LoginBox } from "../styles/pageStyle/MainloginStyle"
 import BubbleGround from "@/components/BubbleGround";
 import { keyframes } from "@emotion/react";
 import { useEffect, useState } from "react";
@@ -42,7 +42,6 @@ export default function Signup(this: any) {
     requestText: major.requestText,
   }));
 
-  
   const emailFix = (event: React.ChangeEvent<HTMLInputElement>) => {
     const email = event.target.value;
     setEmail(email);
@@ -58,7 +57,7 @@ export default function Signup(this: any) {
       })
       .catch((err) => {
         alert(err.message);
-        console.log(email, username); 
+        console.log(email, username);
       });
   };
 
@@ -106,7 +105,7 @@ export default function Signup(this: any) {
     <MainBox>
       <BubbleGround />
       <SignupBox>
-        <EmailForm onSubmit={handleSendBtnClick} >
+        <EmailForm onSubmit={handleSendBtnClick}>
           <LabelStyle htmlFor="myInput" className="label">
             <span className="label-title">이메일</span>
             <input
@@ -118,7 +117,7 @@ export default function Signup(this: any) {
               type="text"
             />
           </LabelStyle>
-          <SendBtn onClick={()=>handleSendBtnClick}>인증 요청</SendBtn>
+          <SendBtn onClick={() => handleSendBtnClick}>인증 요청</SendBtn>
         </EmailForm>
         <form method="post" onSubmit={SignupSubmit}>
           <LabelStyle htmlFor="myInput" className="label">
@@ -318,7 +317,7 @@ const glowing = keyframes`
   }
 `;
 
-const LabelStyle = styled.label`
+export const LabelStyle = styled.label`
   --border: rgb(66 66 66 / 0%);
   --bgLabel: rgb(120 120 120 / 0%);
   --bgInput: rgba(255, 255, 255, 1);
@@ -389,7 +388,7 @@ const LabelStyle = styled.label`
     }
   }
 `;
-const SignupBox = styled(LoginBox)`
+export const SignupBox = styled(LoginBox)`
   background-color: #ffffff5e;
   height: max-content;
   width: fit-content;
@@ -399,14 +398,14 @@ const SignupBox = styled(LoginBox)`
   justify-content: center;
   border-radius: 20px;
 `;
-const MainBox = styled.div`
+export const MainBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
 `;
 
-const MyDict = styled.div`
+export const MyDict = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin: 1rem 0 0.5rem;
@@ -421,7 +420,7 @@ const MyDict = styled.div`
   }
 `;
 
-const GenderInput = styled.input.attrs({ type: "radio" })`
+export const GenderInput = styled.input.attrs({ type: "radio" })`
   clip: rect(0 0 0 0);
   clip-path: inset(100%);
   height: 1px;
@@ -438,7 +437,7 @@ const GenderInput = styled.input.attrs({ type: "radio" })`
   }
 `;
 
-const GenderLabel = styled.label`
+export const GenderLabel = styled.label`
   span {
     display: block;
     cursor: pointer;
@@ -463,7 +462,7 @@ const GenderLabel = styled.label`
 `;
 export const SelectStyle = styled(LabelStyle)``;
 
-const SendBtn = styled.button`
+export const SendBtn = styled.button`
   border: none;
   background-color: rgb(164, 179, 255);
   border-radius: 0.3em;
@@ -482,11 +481,11 @@ const SendBtn = styled.button`
     background-color: #3052ff;
   }
 `;
-const EmailForm = styled.form`
+export const EmailForm = styled.form`
   display: flex;
   flex-direction: column;
 `;
 
-const SignBtn = styled(SendBtn)`
+export const SignBtn = styled(SendBtn)`
   width: -webkit-fill-available;
 `;

@@ -6,6 +6,7 @@ import UnderNav from "@/components/UnderNav";
 import Link from "next/link";
 import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
 import { parseCookies } from "nookies";
+import { PostWriteBtn, PostWriteLink } from "@/styles/postStyle/postStyle";
 
 interface Post {
   id: number;
@@ -30,9 +31,9 @@ export default function BulletinBoard() {
 
   useEffect(() => {
     getPostsData(accessToken, refreshToken).then((res) => {
-      setData(res.data.posts);
+      res && setData(res.data.posts);
     });
-  }, [likedPosts]);
+  }, []);
 
   return (
     <>
@@ -92,6 +93,9 @@ export default function BulletinBoard() {
                 </Post>
               );
             })}
+          <PostWriteLink href="/post/postWrite">
+            <PostWriteBtn>게시물 작성하기</PostWriteBtn>
+          </PostWriteLink>
         </Article>
       </MainBox>
       <UnderNav />

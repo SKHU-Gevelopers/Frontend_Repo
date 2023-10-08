@@ -34,7 +34,7 @@ export const requestToken = async (
     });
     return { newAccessToken, newRefreshToken };
   } catch (err: any) {
-    if (err.response.status === 400) {
+    if (err.response.status === 400|| err.response.status === 401) {
       alert("다시 로그인이 필요합니다.");
       destroyCookie(undefined, "refresh-token");
       destroyCookie(undefined, "accessToken");
@@ -84,7 +84,8 @@ export async function handleSubmit(
   profileImgXXX: string,
   introduction: string,
   major1: string,
-  major2: string
+  major2: string,
+  kakaoId: string
 ): Promise<any> {
   const formData = new FormData();
   formData.append("nickname", nickname);
@@ -93,6 +94,8 @@ export async function handleSubmit(
   formData.append("introduction", introduction);
   formData.append("majors", major1);
   formData.append("majors", major2);
+  formData.append("kakaoId",kakaoId);
+
 
   try {
     const response = await axios.post(
@@ -121,7 +124,8 @@ export async function handleSubmit(
           profileImgXXX,
           introduction,
           major1,
-          major2
+          major2,
+          kakaoId
         );
       } catch (tokenErr: any) {
         alert("토큰 발급에 실패하셨습니다.");

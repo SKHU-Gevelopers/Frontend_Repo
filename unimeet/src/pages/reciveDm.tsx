@@ -7,6 +7,7 @@ import { parseCookies } from "nookies";
 import { getDmData } from "@/util/ReciveDmUtil";
 import { useRouter } from "next/router";
 
+
 interface GetDmData {
   title: string;
   content: string;

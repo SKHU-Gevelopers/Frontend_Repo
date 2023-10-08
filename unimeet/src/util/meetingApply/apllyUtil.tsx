@@ -46,7 +46,7 @@ export const meetingApplyFunc = async (
         );
       } catch (tokenErr: any) {
         alert("다시 로그인을 해주세요.");
-        router.push("/MainLogin");
+        router.push("/");
         throw tokenErr;
       }
     } else {

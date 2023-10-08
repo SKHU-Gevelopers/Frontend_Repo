@@ -33,8 +33,8 @@ const LockMypage: React.FC = () => {
   const [major2, setMajor2] = useState("");
   const [gender, setGender] = useState("");
   const [information, setInformation] = useState("");
-  const [token, setToken] = useState("");
   const [accessToken, setAccessToken] = useState("");
+  const [kakaoId, setKaKaoId] = useState("");
 
   const skhuMajors: MajorsType[] = skhuMajor.flat().map((major) => ({
     id: major.id,
@@ -53,6 +53,7 @@ const LockMypage: React.FC = () => {
         setMajor1(res.data.majors[0]);
         setMajor2(res.data.majors[1]);
         setGender(res.data.gender);
+        setKaKaoId(res.data.kakaoId);
         setInformation(res.data.introduction);
         setImage(res.data.profileImageUrl);
       });
@@ -90,12 +91,11 @@ const LockMypage: React.FC = () => {
       image,
       information,
       major1,
-      major2
+      major2,
+      kakaoId
     )
-      .then((res) => {
-      })
-      .catch((err) => {
-      });
+      .then((res) => {})
+      .catch((err) => {});
   };
 
   return (
@@ -191,6 +191,15 @@ const LockMypage: React.FC = () => {
             ))}
           </SelectStyle>
         </label>
+        <label>
+          <span>카카오톡 ID:</span>
+          <InputStyle
+            value={kakaoId}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setKaKaoId(e.target.value);
+            }}
+          />
+        </label>
         <InputDiv
           value={information}
           onChange={(e) => setInformation(e.target.value)}
@@ -198,6 +207,7 @@ const LockMypage: React.FC = () => {
           rows={4}
           cols={40}
         />
+
         <div>
           <ButtonStyle onClick={submitOn} type="submit">
             수정하기
@@ -214,6 +224,7 @@ export const FixBtn = styled(ButtonStyle)`
 
 const LockMainDiv = styled.div`
   height: 100vh;
+  padding-top: 2rem;
 `;
 
 const InfoBox = styled.div`
