@@ -19,7 +19,7 @@ import {
 import { MdArrowBack } from "react-icons/md";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ImageCoordinate } from "../lockMypage";
-import UnderNav from "@/components/UnderNav";
+import UnderNav from "../../components/UnderNav";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
 import { meetingApplyFunc } from "@/util/meetingApply/apllyUtil";
