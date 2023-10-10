@@ -18,7 +18,7 @@ import {
 } from "@/styles/applyStyle";
 import { MdArrowBack } from "react-icons/md";
 import { ChangeEvent, useEffect, useState } from "react";
-import { ImageCoordinate } from "../lockMypage";
+import { ImageCoordinate } from "../LockMypage";
 import UnderNav from "../../components/UnderNav";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
