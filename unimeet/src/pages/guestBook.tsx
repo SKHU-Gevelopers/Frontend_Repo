@@ -44,7 +44,7 @@ export default function GestBook() {
     hasNext: false,
     hasPrevious: false,
     numberOfElements: 0,
-    first: false,
+    first: true,
     last: false,
   });
 
@@ -52,34 +52,44 @@ export default function GestBook() {
   const [studentId, setStudentId] = useState<number>();
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
 
-  const [isDmModal, setIsDmModal] = useState(false);
-
   const isLoading = useRef(false); // 로딩 상태를 useRef로 관리
   const [isScrollEnabled, setIsScrollEnabled] = useState(true);
   const guestBookRef = useRef<HTMLDivElement | null>(null);
 
-  // API에서 받아온 데이터를 id 순서로 정렬하여 guestBookData 상태 업데이트
-  const updateGuestBookData = (data: GuestBook[]) => {
-    const sortedData = data.sort((a, b) => b.id - a.id);
-    setGuestBookData(sortedData);
+  const [isDmModal, setIsDmModal] = useState(false);
+
+  const sortingGuestBookdata = (data: GuestBook[]) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => a.id - b.id);
+    return sortedData;
   };
 
-  const getGuestBookData = useCallback(() => {
+  const getGuestBookData = () => {
     if (isLoading.current) return;
     isLoading.current = true;
 
     getGuestBookUserData(accessToken, refreshToken, currentPageNumber)
       .then((res) => {
-        if (res != null) {
-          setStudentData(res.data.student);
-          updateGuestBookData(res.data.guestBooks);
-          setPageData(res.data.page);
+        if (currentPageNumber === 1) {
+          if (res != null) {
+            setStudentData(res.data.student);
+            setGuestBookData(sortingGuestBookdata(res.data.guestBooks));
+            setPageData(res.data.page);
+          }
+        } else if (currentPageNumber > 1) {
+          const newGuestBookData = sortingGuestBookdata(res.data.guestBooks);
+          if (newGuestBookData.length > 0) {
+            setGuestBookData((prevGuestBookdata) => [
+              ...prevGuestBookdata,
+              ...newGuestBookData,
+            ]);
+          }
         }
       })
       .finally(() => {
         isLoading.current = false;
       });
-  }, [accessToken, refreshToken, currentPageNumber]);
+  };
 
   useEffect(() => {
     getGuestBookData();
@@ -87,24 +97,21 @@ export default function GestBook() {
 
   // 스크롤 이벤트 핸들러 추가
   const handleScroll = useCallback(() => {
-    if (isScrollEnabled && pageData?.last !== true) {
+    if (isScrollEnabled && pageData?.hasNext) {
       const guestBookDiv = guestBookRef.current;
 
-      if (guestBookDiv) {
+      if (guestBookDiv && !isLoading.current) {
         const scrollHeight = guestBookDiv.scrollHeight;
         const scrollTop = guestBookDiv.scrollTop;
         const clientHeight = guestBookDiv.clientHeight;
 
-        if (scrollHeight - scrollTop <= clientHeight + 100) {
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
           setCurrentPageNumber((page) => page + 1);
-          setIsScrollEnabled(false);
-        } else if (scrollTop === 0 && currentPageNumber > 1) {
-          setCurrentPageNumber((page) => page - 1);
           setIsScrollEnabled(false);
         }
       }
     }
-  }, [setCurrentPageNumber, isScrollEnabled, currentPageNumber]);
+  }, [setCurrentPageNumber, isScrollEnabled, pageData]);
 
   useEffect(() => {
     const guestBookDiv = guestBookRef.current;
@@ -200,19 +207,21 @@ export default function GestBook() {
             </GuestBookSubmitWrap>
           </PostGuestBookForm>
           <GetGuestBook ref={guestBookRef}>
-            {guestBookData?.map((each) => {
-              return (
-                <EachReview key={each.id}>
-                  <GuestImageWrap>
-                    <GuestImage
-                      src={each.profileImageUrl}
-                      alt="profileImage"
-                    ></GuestImage>
-                  </GuestImageWrap>
-                  <GuestComment>{each.content}</GuestComment>
-                </EachReview>
-              );
-            })}
+            <DivForScroll>
+              {guestBookData?.map((each, id) => {
+                return (
+                  <EachReview key={`each${id}`}>
+                    <GuestImageWrap>
+                      <GuestImage
+                        src={each.profileImageUrl}
+                        alt="profileImage"
+                      ></GuestImage>
+                    </GuestImageWrap>
+                    <GuestComment>{each.content}</GuestComment>
+                  </EachReview>
+                );
+              })}
+            </DivForScroll>
           </GetGuestBook>
         </GuestBooks>
       </MainBox>
@@ -418,12 +427,20 @@ const GetGuestBook = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 53vh;
+  height: 52vh;
 
   overflow-y: scroll;
   overflow-x: hidden;
 `;
 
+const DivForScroll = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  min-height: 53vh;
+`;
 const GuestImage = styled.img`
   width: 100%;
   height: 100%;
