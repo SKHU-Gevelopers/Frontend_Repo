@@ -38,7 +38,7 @@ export default function GestBook() {
 
   const [studentData, setStudentData] = useState<Student | null>(null);
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
-  const [pageData, setPageData] = useState<Page | null>({
+  const [pageData, setPageData] = useState<Page>({
     currentPage: 1,
     size: 0,
     hasNext: false,
@@ -50,7 +50,6 @@ export default function GestBook() {
 
   const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
   const [studentId, setStudentId] = useState<number>();
-  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
 
   const isLoading = useRef(false); // 로딩 상태를 useRef로 관리
   const [isScrollEnabled, setIsScrollEnabled] = useState(true);
@@ -68,15 +67,15 @@ export default function GestBook() {
     if (isLoading.current) return;
     isLoading.current = true;
 
-    getGuestBookUserData(accessToken, refreshToken, currentPageNumber)
+    getGuestBookUserData(accessToken, refreshToken, pageData?.currentPage)
       .then((res) => {
-        if (currentPageNumber === 1) {
+        if (pageData?.currentPage === 1) {
           if (res != null) {
             setStudentData(res.data.student);
             setGuestBookData(sortingGuestBookdata(res.data.guestBooks));
             setPageData(res.data.page);
           }
-        } else if (currentPageNumber > 1) {
+        } else if (pageData.currentPage > 1) {
           const newGuestBookData = sortingGuestBookdata(res.data.guestBooks);
           if (newGuestBookData.length > 0) {
             setGuestBookData((prevGuestBookdata) => [
@@ -93,7 +92,7 @@ export default function GestBook() {
 
   useEffect(() => {
     getGuestBookData();
-  }, [accessToken, refreshToken, currentPageNumber]);
+  }, [accessToken, refreshToken, pageData.currentPage]);
 
   // 스크롤 이벤트 핸들러 추가
   const handleScroll = useCallback(() => {
@@ -106,12 +105,15 @@ export default function GestBook() {
         const clientHeight = guestBookDiv.clientHeight;
 
         if (scrollTop + clientHeight >= scrollHeight - 100) {
-          setCurrentPageNumber((page) => page + 1);
+          setPageData((prevPageData) => ({
+            ...prevPageData,
+            currentPage: prevPageData.currentPage + 1,
+          }));
           setIsScrollEnabled(false);
         }
       }
     }
-  }, [setCurrentPageNumber, isScrollEnabled, pageData]);
+  }, [isScrollEnabled, pageData]);
 
   useEffect(() => {
     const guestBookDiv = guestBookRef.current;
@@ -148,6 +150,7 @@ export default function GestBook() {
           postGuestBookComment,
           studentId
         );
+        alert("방명록이 등록되었습니다.");
         setPostGuestBookComment("");
       }
     }
