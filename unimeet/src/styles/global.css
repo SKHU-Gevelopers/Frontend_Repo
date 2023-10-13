@@ -18,3 +18,12 @@ a {
   color: black;
   text-decoration: none;
 }
+@font-face {
+  font-family: "SKYBORI";
+  font-weight: normal;
+  src: url("../fonts/SKYBORI.ttf") format("truetype");
+}
+
+body {
+  font-family: "SKYBORI";
+}

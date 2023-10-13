@@ -1,16 +1,18 @@
 import React, { useEffect } from "react";
 import { MainBox, MainUl, MainLink, MainImg } from "@/styles/UnderNavbarStyle";
 import { useRouter } from "next/router";
+import { parseCookies } from "nookies";
 
 const UnderNav = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      router.push("/MainLogin");
+    const cookies = parseCookies();
+    const accessToken = cookies["accessToken"];
+    const refreshToken = cookies["refresh-token"];
+    if (!accessToken || !refreshToken) {
+      router.push("/");
     }
-
   });
 
   return (

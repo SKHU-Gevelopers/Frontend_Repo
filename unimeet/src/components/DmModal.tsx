@@ -67,7 +67,7 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
           return DmPost(newAccessToken, newRefreshToken);
         } catch (error: any) {
           alert("다시 로그인을 해주세요.");
-          router.push("/MainLogin");
+          router.push("/");
         }
       }
     }
