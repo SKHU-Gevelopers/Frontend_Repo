@@ -6,13 +6,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { parseCookies, setCookie } from "nookies";
-import { isMobile } from "react-device-detect";
 import { Main } from "@/styles/DefaultStyle/flexStyle";
 import {
   ButtonDiv,
   ButtonStyle,
   LoginBox,
   TextBox,
+  UnimeetTitle,
 } from "@/styles/pageStyle/MainloginStyle";
 
 export default function Home() {
@@ -48,6 +48,7 @@ export default function Home() {
       <Main className="Mainlogin_mainDiv">
         <BubbleGround />
         <LoginBox>
+          <UnimeetTitle>unimeet</UnimeetTitle>
           <form onSubmit={loginSubmit}>
             <TextBox>
               <AiOutlineUser color="gray" />

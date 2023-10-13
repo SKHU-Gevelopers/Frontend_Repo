@@ -70,3 +70,12 @@ export const LoginBox = styled.div`
   backdrop-filter: blur(10px);
   box-shadow: 0px 0px 16px #686868;
 `;
+
+export const UnimeetTitle = styled.div`
+  width: 100%;
+  text-align: center;
+  font-weight: bolder;
+  font-size: xx-large;
+  color: aliceblue;
+  text-shadow: 2px 3px 3px slategray;
+`;
