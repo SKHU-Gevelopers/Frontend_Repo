@@ -69,20 +69,12 @@ export default function GestBook() {
 
     getGuestBookUserData(accessToken, refreshToken, pageData?.currentPage)
       .then((res) => {
-        if (pageData?.currentPage === 1) {
-          if (res != null) {
-            setStudentData(res.data.student);
-            setGuestBookData(sortingGuestBookdata(res.data.guestBooks));
-            setPageData(res.data.page);
-          }
-        } else if (pageData.currentPage > 1) {
-          const newGuestBookData = sortingGuestBookdata(res.data.guestBooks);
-          if (newGuestBookData.length > 0) {
-            setGuestBookData((prevGuestBookdata) => [
-              ...prevGuestBookdata,
-              ...newGuestBookData,
-            ]);
-          }
+        if (res != null) {
+          setStudentData(res.data.student);
+          const sortedGuestBookData = sortingGuestBookdata(res.data.guestBooks);
+          setGuestBookData((prevData) => [...prevData, ...sortedGuestBookData]);
+          setPageData(res.data.page);
+          setIsScrollEnabled(!res.data.page.last);
         }
       })
       .finally(() => {
@@ -92,7 +84,7 @@ export default function GestBook() {
 
   useEffect(() => {
     getGuestBookData();
-  }, [accessToken, refreshToken, pageData.currentPage]);
+  }, [accessToken, refreshToken, pageData.currentPage, isLoading]);
 
   // 스크롤 이벤트 핸들러 추가
   const handleScroll = useCallback(() => {
@@ -104,12 +96,12 @@ export default function GestBook() {
         const scrollTop = guestBookDiv.scrollTop;
         const clientHeight = guestBookDiv.clientHeight;
 
-        if (scrollTop + clientHeight >= scrollHeight - 100) {
+        if (scrollHeight - scrollTop <= clientHeight + 100) {
           setPageData((prevPageData) => ({
             ...prevPageData,
             currentPage: prevPageData.currentPage + 1,
           }));
-          setIsScrollEnabled(false);
+          isLoading.current = false;
         }
       }
     }
