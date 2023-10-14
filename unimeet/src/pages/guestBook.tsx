@@ -1,5 +1,5 @@
 import UnderNav from "@/components/UnderNav";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { TbSend } from "react-icons/tb";
 import DmModal from "@/components/DmModal";
@@ -15,9 +15,20 @@ interface Student {
 }
 
 interface GuestBook {
+  id: number;
   writerId: number;
   profileImageUrl: string;
   content: string;
+}
+
+interface Page {
+  currentPage: number;
+  size: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+  numberOfElements: number;
+  first: boolean;
+  last: boolean;
 }
 
 export default function GestBook() {
@@ -27,29 +38,97 @@ export default function GestBook() {
 
   const [studentData, setStudentData] = useState<Student | null>(null);
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
+  const [pageData, setPageData] = useState<Page>({
+    currentPage: 1,
+    size: 0,
+    hasNext: false,
+    hasPrevious: false,
+    numberOfElements: 0,
+    first: true,
+    last: false,
+  });
 
   const [postGuestBookComment, setPostGuestBookComment] = useState<string>("");
   const [studentId, setStudentId] = useState<number>();
 
+  const isLoading = useRef(false); // 로딩 상태를 useRef로 관리
+  const [isScrollEnabled, setIsScrollEnabled] = useState(true);
+  const guestBookRef = useRef<HTMLDivElement | null>(null);
+
   const [isDmModal, setIsDmModal] = useState(false);
 
+  const sortingGuestBookdata = (data: GuestBook[]) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => a.id - b.id);
+    return sortedData;
+  };
+
+  const getGuestBookData = () => {
+    if (isLoading.current) return;
+    isLoading.current = true;
+
+    getGuestBookUserData(accessToken, refreshToken, pageData?.currentPage)
+      .then((res) => {
+        if (res != null) {
+          setStudentData(res.data.student);
+          const sortedGuestBookData = sortingGuestBookdata(res.data.guestBooks);
+          setGuestBookData((prevData) => [...prevData, ...sortedGuestBookData]);
+          setPageData(res.data.page);
+          setIsScrollEnabled(!res.data.page.last);
+        }
+      })
+      .finally(() => {
+        isLoading.current = false;
+      });
+  };
+
   useEffect(() => {
-    getGuestBookUserData(accessToken, refreshToken).then((res) => {
-      setStudentData(res.data.student);
-      setGuestBookData(res.data.guestBooks);
-    });
-  }, []);
+    getGuestBookData();
+  }, [accessToken, refreshToken, pageData.currentPage, isLoading]);
+
+  // 스크롤 이벤트 핸들러 추가
+  const handleScroll = useCallback(() => {
+    if (isScrollEnabled && pageData?.hasNext) {
+      const guestBookDiv = guestBookRef.current;
+
+      if (guestBookDiv && !isLoading.current) {
+        const scrollHeight = guestBookDiv.scrollHeight;
+        const scrollTop = guestBookDiv.scrollTop;
+        const clientHeight = guestBookDiv.clientHeight;
+
+        if (scrollHeight - scrollTop <= clientHeight + 100) {
+          setPageData((prevPageData) => ({
+            ...prevPageData,
+            currentPage: prevPageData.currentPage + 1,
+          }));
+          isLoading.current = false;
+        }
+      }
+    }
+  }, [isScrollEnabled, pageData]);
+
+  useEffect(() => {
+    const guestBookDiv = guestBookRef.current;
+
+    if (guestBookDiv) {
+      guestBookDiv.addEventListener("scroll", handleScroll);
+
+      return () => {
+        guestBookDiv.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [handleScroll]);
 
   // 방명록 작성 input 내용 저장
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newComment = e.target.value;
     if (newComment.length >= 20) {
       alert("글자수를 초과했습니다.");
-      setPostGuestBookComment("");
     } else {
       setPostGuestBookComment(newComment);
     }
   };
+
   const openDmModal = () => {
     setIsDmModal(true);
   };
@@ -63,6 +142,7 @@ export default function GestBook() {
           postGuestBookComment,
           studentId
         );
+        alert("방명록이 등록되었습니다.");
         setPostGuestBookComment("");
       }
     }
@@ -102,7 +182,7 @@ export default function GestBook() {
           {/* <Introduce>{user?.introduction}</Introduce> */}
         </ProfileBox>
         <GuestBooks>
-          <GuestBookForm>
+          <PostGuestBookForm>
             <GuestBookSubmitWrap>
               <PostGuestBookCommentInputBox
                 placeholder="방명록을 남겨보세요."
@@ -120,20 +200,24 @@ export default function GestBook() {
                 </Submit>
               </SubmitWrap>
             </GuestBookSubmitWrap>
-          </GuestBookForm>
-          {guestBookData?.map((each, Id) => {
-            return (
-              <EachReview key={`writer${Id}`}>
-                <GuestImageWrap>
-                  <GuestImage
-                    src={each.profileImageUrl}
-                    alt="profileImage"
-                  ></GuestImage>
-                </GuestImageWrap>
-                <GuestComment>{each.content}</GuestComment>
-              </EachReview>
-            );
-          })}
+          </PostGuestBookForm>
+          <GetGuestBook ref={guestBookRef}>
+            <DivForScroll>
+              {guestBookData?.map((each, id) => {
+                return (
+                  <EachReview key={`each${id}`}>
+                    <GuestImageWrap>
+                      <GuestImage
+                        src={each.profileImageUrl}
+                        alt="profileImage"
+                      ></GuestImage>
+                    </GuestImageWrap>
+                    <GuestComment>{each.content}</GuestComment>
+                  </EachReview>
+                );
+              })}
+            </DivForScroll>
+          </GetGuestBook>
         </GuestBooks>
       </MainBox>
       <UnderNav />
@@ -153,6 +237,7 @@ const MainBox = styled.div`
 
   overflow: auto;
 `;
+
 const DmButtonWrap = styled.div`
   display: flex;
   justify-content: end;
@@ -273,7 +358,7 @@ const GuestBooks = styled.div`
   border-radius: 50%;
 `;
 
-const GuestBookForm = styled.form`
+const PostGuestBookForm = styled.form`
   margin-bottom: 2vh;
 
   width: 90%;
@@ -312,9 +397,10 @@ const SubmitWrap = styled.div`
   justify-content: flex-end;
 
   padding-right: 0.5em;
+  padding-bottom: 0.7em;
 
   width: 100%;
-  height: 2.5em;
+  height: 3em;
 `;
 
 const Submit = styled.div`
@@ -330,6 +416,26 @@ const Submit = styled.div`
   border: solid 1px gray;
 `;
 
+const GetGuestBook = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  height: 52vh;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+`;
+
+const DivForScroll = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  min-height: 53vh;
+`;
 const GuestImage = styled.img`
   width: 100%;
   height: 100%;
@@ -374,5 +480,6 @@ const GuestComment = styled.div`
   background-color: white;
   box-shadow: 0px 3px #b085c9;
 
+  font-size: 0.8em;
   font-weight: 500;
 `;

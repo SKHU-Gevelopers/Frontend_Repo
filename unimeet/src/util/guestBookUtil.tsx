@@ -8,7 +8,8 @@ import { requestToken } from "./myPage";
 
 export const getGuestBookUserData = async (
   accessToken: string,
-  refreshToken: string
+  refreshToken: string,
+  page: number
 ): Promise<any> => {
   try {
     const headers = {
@@ -16,7 +17,7 @@ export const getGuestBookUserData = async (
       Authorization: `Bearer ${accessToken}`,
     };
     const response = await axios.get(
-      "https://unimeet.duckdns.org/users/1/my-page?page=1",
+      `https://unimeet.duckdns.org/users/1/my-page?page=${page}`,
       // ********************************************************
       // `https://unimeet.duckdns.org/users/${writerId}/my-page?page=1`,
       // ******************************************************** 해당 writerId 사용한 url 은 writerId 받은 다음에 사용하려 합니담.
@@ -31,7 +32,7 @@ export const getGuestBookUserData = async (
         const { newAccessToken, newRefreshToken } = await requestToken(
           refreshToken
         );
-        return getGuestBookUserData(newAccessToken, newRefreshToken);
+        return getGuestBookUserData(newAccessToken, newRefreshToken, page);
       } catch (error: any) {}
     } else {
       throw error;
