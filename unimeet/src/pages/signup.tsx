@@ -5,7 +5,7 @@ import { LoginBox } from "../styles/pageStyle/MainloginStyle"
 import BubbleGround from "@/components/BubbleGround";
 import { keyframes } from "@emotion/react";
 import { useEffect, useState } from "react";
-import { authenticationRequest } from "@/util/signUtil";
+import { authenticationRequest } from "@/util/auth/signUtil";
 
 interface DepartmentType {
   id: number;
