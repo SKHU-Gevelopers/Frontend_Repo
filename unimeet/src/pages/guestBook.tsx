@@ -57,12 +57,6 @@ export default function GestBook() {
 
   const [isDmModal, setIsDmModal] = useState(false);
 
-  const sortingGuestBookdata = (data: GuestBook[]) => {
-    const sortedData = [...data];
-    sortedData.sort((a, b) => a.id - b.id);
-    return sortedData;
-  };
-
   const getGuestBookData = () => {
     if (isLoading.current) return;
     isLoading.current = true;
@@ -71,8 +65,7 @@ export default function GestBook() {
       .then((res) => {
         if (res != null) {
           setStudentData(res.data.student);
-          const sortedGuestBookData = sortingGuestBookdata(res.data.guestBooks);
-          setGuestBookData((prevData) => [...prevData, ...sortedGuestBookData]);
+          setGuestBookData((prevData) => [...prevData, ...res.data.guestBooks]);
           setPageData(res.data.page);
           setIsScrollEnabled(!res.data.page.last);
         }
@@ -144,6 +137,7 @@ export default function GestBook() {
         );
         alert("방명록이 등록되었습니다.");
         setPostGuestBookComment("");
+        // window.location.reload();
       }
     }
   };
@@ -205,7 +199,7 @@ export default function GestBook() {
             <DivForScroll>
               {guestBookData?.map((each, id) => {
                 return (
-                  <EachReview key={`each${id}`}>
+                  <EachReview key={id}>
                     <GuestImageWrap>
                       <GuestImage
                         src={each.profileImageUrl}
