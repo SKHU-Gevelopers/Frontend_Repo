@@ -88,7 +88,7 @@ const MainBox = styled.div`
   padding-bottom: 2vh;
 
   width: 100%;
-  height: 100vh;
+  height: 110vh;
 
   overflow: auto;
 `;

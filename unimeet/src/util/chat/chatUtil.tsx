@@ -10,7 +10,7 @@ export const chatGetData = async (
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const response = await axios.get("https://unimeet.duckdns.org/dm", {
+    const response = await axios.get("https://unimeet.duckdns.org/dm/received", {
       headers,
     });
     return response.data;
