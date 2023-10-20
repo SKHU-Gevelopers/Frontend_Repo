@@ -39,14 +39,6 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    const cookies = parseCookies();
-    const accessToken = cookies["accessToken"];
-    if (accessToken) {
-      router.push("/bulletinBoard");
-    }
-  }, []);
-
   function loginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     axios
@@ -71,15 +63,11 @@ export default function Home() {
   }
 
   function kakao_loginSubmit() {
-    // 카카오 로그인을 시작합니다.
-    console.log("kakao login");
-    
     Kakao.Auth.authorize({
       redirectUri: "https://unimeet.duckdns.org/auth/kakao/callback",
       scope:
         "profile_nickname, account_email, profile_image, gender, age_range, openid",
-    })
-    
+    });
   }
 
   return (

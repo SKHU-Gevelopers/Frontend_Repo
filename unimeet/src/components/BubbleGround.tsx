@@ -1,45 +1,3 @@
-import UnderNav from "@/components/UnderNav";
-import UnderNav from "@/components/UnderNav";
-import UnderNav from "@/components/UnderNav";
-import PersonBox from "@/components/chat/PersonBox";
-import PersonBox from "@/components/chat/PersonBox";
-import PersonBox from "@/components/chat/PersonBox";
-import { Main } from "@/styles/DefaultStyle/flexStyle";
-import { Main } from "@/styles/DefaultStyle/flexStyle";
-import { Main } from "@/styles/DefaultStyle/flexStyle";
-import { MainBox_Chat } from "@/styles/pageStyle/ChatStyle";
-import { MainBox_Chat } from "@/styles/pageStyle/ChatStyle";
-import { MainBox_Chat } from "@/styles/pageStyle/ChatStyle";
-import { chatGetData } from "@/util/chat/chatUtil";
-import { chatGetData } from "@/util/chat/chatUtil";
-import { chatGetData } from "@/util/chat/chatUtil";
-import Link from "next/link";
-import Link from "next/link";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useRouter } from "next/router";
-import { useRouter } from "next/router";
-import { parseCookies } from "nookies";
-import { parseCookies } from "nookies";
-import { parseCookies } from "nookies";
-import {
-  useEffect,
-  useState
-} from "react";
-import {
-  useEffect,
-  useState
-} from "react";
-import {
-  useEffect,
-  useState
-} from "react";
-import { Main } from "@/styles/DefaultStyle/flexStyle";
-import { MainBox_Chat } from "@/styles/pageStyle/ChatStyle";
-import { chatGetData } from "@/util/chat/chatUtil";
-import { useRouter } from "next/router";
-import { parseCookies } from "nookies";
-import { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 
 export default function BubbleGround() {
@@ -162,31 +120,3 @@ const Bubble5 = styled(Bubble4)`
   height: 8rem;
   animation: ${floating3} 5s infinite;
 `;
-export const MainChat = () => {
-  const router = useRouter();
-  const [accessToken, setAccessToken] = useState("");
-  const [refreshToken, setRefreshToken] = useState("");
-  useEffect(() => {
-    const cookies = parseCookies();
-    const accessToken = cookies["accessToken"];
-    setAccessToken(accessToken);
-    const refreshToken = cookies["refresh-token"];
-    setRefreshToken(refreshToken);
-    if (!accessToken || !refreshToken) {
-      router.push("/");
-    }
-  });
-  useEffect(() => {
-    chatGetData(accessToken, refreshToken);
-  });
-  return (
-    <Main>
-      <MainBox_Chat>
-        <Link href={"../chat/tempChat"}>
-          <PersonBox />
-        </Link>
-      </MainBox_Chat>
-      <UnderNav />
-    </Main>
-  );
-};
