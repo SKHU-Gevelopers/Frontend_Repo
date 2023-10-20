@@ -72,12 +72,14 @@ export default function Home() {
 
   function kakao_loginSubmit() {
     // 카카오 로그인을 시작합니다.
-    console.log("loginSubmit");
+    console.log("kakao login");
+    
     Kakao.Auth.authorize({
       redirectUri: "https://unimeet.duckdns.org/auth/kakao/callback",
       scope:
         "profile_nickname, account_email, profile_image, gender, age_range, openid",
-    });
+    })
+    
   }
 
   return (
