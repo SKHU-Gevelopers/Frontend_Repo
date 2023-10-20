@@ -129,7 +129,7 @@ export async function handleSubmit(
         );
       } catch (tokenErr: any) {
         alert("토큰 발급에 실패하셨습니다.");
-        router.push("/MainLogin");
+        router.push("/");
         throw tokenErr;
       }
     } else {
