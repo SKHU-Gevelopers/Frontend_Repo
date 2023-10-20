@@ -4,7 +4,7 @@ import {
   acceptApplication,
   getRecivedApplication,
   getRecivedApplicationDetailVersion,
-} from "@/util/meetingReciveUtil";
+} from "@/util/meetingLogs/meetingRecivedUtil";
 import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
