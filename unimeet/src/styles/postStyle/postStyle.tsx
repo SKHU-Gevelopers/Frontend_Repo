@@ -5,7 +5,7 @@ import { BacktoBoard } from "../detailBoardStyle";
 export const PostWriteBtn = styled.button`
   width: fit-content;
   height: fit-content;
-  border: 1px solid #ffffff52;
+  border: 1px solid #ddd6ff;
   background-color: #674ff4;
   color: white;
   font-size: 1.2rem;

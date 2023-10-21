@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.12.3",
     "@reduxjs/toolkit": "^1.9.5",
+    "@types/kakao-js-sdk": "^1.39.2",
     "@types/node": "18.15.11",
     "@types/react": "18.0.33",
     "@types/react-dom": "18.0.11",

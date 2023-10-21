@@ -20,6 +20,7 @@ export const ButtonDiv = styled.div`
   align-items: center;
 `;
 export const ButtonStyle = styled.button`
+  width: 6rem;
   border: none;
   color: #fff;
   background-image: linear-gradient(30deg, #a600ff, #4ce3f7);
@@ -64,9 +65,19 @@ export const LoginBox = styled.div`
   border-radius: 50px;
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
+  align-items: center;
   padding: 1rem;
   flex-direction: column;
   backdrop-filter: blur(10px);
-  box-shadow: 0px 0px 16px #686868;
+  box-shadow: 0px 0px 16px #8d8d8d;
+`;
+
+export const UnimeetTitle = styled.div`
+  width: 100%;
+  text-align: center;
+  font-weight: bolder;
+  font-size: xx-large;
+  color: aliceblue;
+  text-shadow: 2px 3px 3px slategray;
 `;

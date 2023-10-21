@@ -38,7 +38,7 @@ const UnderNav = () => {
             </MainLink>
           </li>
           <li>
-            <MainLink href="/chat">
+            <MainLink href="/message/mainChat">
               <MainImg src="/chat.png" width="25" height="25" alt={""} />
               <span>쪽지함</span>
             </MainLink>

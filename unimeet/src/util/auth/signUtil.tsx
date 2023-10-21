@@ -25,3 +25,11 @@ export const authenticationConfirm = (
     });
   }
 }
+export const Logout = (accessToken: string): Promise<any> => {
+  return axios.post("https://unimeet.duckdns.org/sign-out", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + accessToken,
+    },
+  });
+}
