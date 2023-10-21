@@ -64,7 +64,7 @@ export default function Home() {
 
   function kakao_loginSubmit() {
     Kakao.Auth.authorize({
-      redirectUri: "https://unimeet.duckdns.org/auth/kakao/callback",
+      redirectUri: "http://localhost:3000/auth/kakao/callback",
       scope:
         "profile_nickname, account_email, profile_image, gender, age_range, openid",
     });
