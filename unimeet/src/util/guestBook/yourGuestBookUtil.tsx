@@ -1,5 +1,5 @@
 import axios from "axios";
-import { requestToken } from "./myPage";
+import { requestToken } from "../myPage";
 
 // **************************************** next.js Link 태그로 인한 추가 클릭시 이 해당 id 전송되게 만들어주세욤
 // const router = useRouter();
