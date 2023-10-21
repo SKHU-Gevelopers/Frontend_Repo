@@ -77,7 +77,6 @@ export default function DetailBoard({ data }: DetailPageProps) {
       .then((res) => {
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
-        setGender(res.data.gender);
         setNickname(res.data.nickname);
         setTitle(res.data.title);
         setProfileImageUrl(res.data.profileImageUrl);

@@ -3,10 +3,11 @@
 ![soft](https://capsule-render.vercel.app/api?type=soft&color=674ff4&text=UNIMEET&fontSize=40&fontColor=FFFFFF)
 
 ## 서비스 🔗
-
+`모바일 웹 서비스입니다.` </br>
+[UNIMEET 서비스](https://www.skhu-unimeet.site)
 ## 소개 영상 🔗
 
-[]()
+[UNIMEET 소개 영상](https://youtu.be/dvCvhqd-bK8?feature=shared)
 
 ## UNIMEET?
 
@@ -14,16 +15,27 @@
 
 ## 기술 스택
 
-<img src="https://img.shields.io/badge/Figma-F24E1E?style=flat&logo&logo=Figma&logoColor=white"/> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white"/> <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white"/> <img src ="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styledcomponents&logoColor=white"> <img src="https://img.shields.io/badge/Vercel-000000?style=flat&logo=Vercel&logoColor=white">
+<img src="https://img.shields.io/badge/Figma-F24E1E?style=flat&logo&logo=Figma&logoColor=white"/> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white"/> <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white"/> <img src="https://img.shields.io/badge/axios-FFFFFF?style=flat&logo=axios&logoColor=purple"/> <img src ="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styledcomponents&logoColor=white"> <img src="https://img.shields.io/badge/Vercel-000000?style=flat&logo=Vercel&logoColor=white">
+
+## 구성
+
+- 회원가입, 로그인
+- 게시판
+- 만남 신청
+- 방명록
+- 쪽지
+- 마이페이지
 
 ## 소스 트리
 
 ```bash
 .
 ├── components
-│   ├──ApplyModal.tsx
+│   ├──apply
+│   │  └──ApplyModal.tsx
+│   ├──detailboard\[id]
+│   │  └──Comments.tsx
 │   ├──BubbleGround.tsx
-│   ├──Comments.tsx
 │   ├──DmModal.tsx
 │   ├──InputBox.tsx
 │   ├──Modal.tsx
@@ -32,45 +44,55 @@
 │   ├──department.ts
 │   └──mbtilist.ts
 ├── pages
+│   ├──detailboard
+│   │  └──[id].tsx
+│   ├──meetingApply
+│   │  └──[id].tsx
+│   ├──post
+│   │  └──postWrite.tsx
 │   ├──_app.tsx
 │   ├──_document.tsx
 │   ├──bulletinBoard.tsx
 │   ├──chat.tsx
-│   ├──detailBoeard.tsx
 │   ├──guestBook.tsx
 │   ├──index.tsx
 │   ├──LockMypages.tsx
 │   ├──MainLogin.tsx
-│   ├──meetingApply.tsx
 │   ├──meetingLogs.tsx
 │   ├──myGuestBook.tsx
-│   ├──recive.tsx
+│   ├──reciveDm.tsx
 │   └──signup.tsx
 ├── styles
 │   ├──componentsStyle
 │   │  └──commentStyle.tsx
+│   ├──postStyle
+│   │  └──postStyle.tsx
 │   ├──applyStyle.tsx
 │   ├──detailBoardStyle.tsx
 │   ├──global.css
 │   ├──mypageStyle.tsx
 │   └──UnderNavbar.tsx 
 └── util
+    ├──boardUtil
+    │  ├──commentUtil.tsx
+    │  └──detailBoardUtil.tsx
     ├──meetingApply
     │  └──apllyUtil.tsx
-    ├──etailUtil.tsx
-    ├──myPage.tsx
+    ├──post
+    │  └──postUtil.tsx
+    ├──bulletinBoardUtil.tsx
+    ├──chatUtil.tsx
+    ├──detailUtil.tsx
+    ├──guestBookUtil.tsx
+    ├──meetingReciveUtil.tsx
+    ├──myGuestBookUtil.tsx
+    ├──myPageUtil.tsx
+    ├──ReciveUtil.tsx
     ├──signUtil.tsx
     └──userUtil.tsx
 
 ```
 
-## 구성
-
-- 회원가입, 로그인, 로그아웃
-- 마이페이지, 방명록
-- 게시글
-- 만남신청
-- 쪽지
 
 ## 프론트엔드 개발자
 
