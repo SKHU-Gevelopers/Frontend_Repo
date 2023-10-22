@@ -31,7 +31,6 @@ export default function MeetingApply() {
   const [accessToken, setAccessToken] = useState("");
   const [refreshToken, setRefreshToken] = useState("");
 
-  console.log(id);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [contact, setContact] = useState("");
@@ -47,7 +46,7 @@ export default function MeetingApply() {
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
     }
-  });
+  },[accessToken, refreshToken]);
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const image = event.target.files?.[0];

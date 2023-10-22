@@ -23,7 +23,7 @@ const MainChat = () => {
   });
   useEffect(() => {
     chatGetData(accessToken, refreshToken);
-  });
+  },[accessToken, refreshToken]);
   return (
     <ChatPage_Main>
       <MainBox_Chat>
