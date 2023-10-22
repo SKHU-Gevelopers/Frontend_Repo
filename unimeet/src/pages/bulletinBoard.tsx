@@ -5,11 +5,10 @@ import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
 import Link from "next/link";
 import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
-import { destroyCookie, parseCookies } from "nookies";
+import { parseCookies } from "nookies";
 import { PostWriteBtn, PostWriteLink } from "@/styles/postStyle/postStyle";
-import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
-import { Logout } from "@/util/auth/signUtil";
 import { useRouter } from "next/router";
+// import { ImDrawer2 } from "react-icons/Im";
 
 interface Post {
   id: number;
@@ -39,18 +38,9 @@ export default function BulletinBoard() {
     });
   }, []);
 
-  function deleteCookie() {
-    Logout(accessToken).then((res) => {
-      destroyCookie(undefined, "refresh-token");
-      destroyCookie(undefined, "accessToken");
-      router.push("/");
-    });
-  }
-
   return (
     <>
       <MainBox>
-        <LogoutDiv onClick={deleteCookie}>로그아웃</LogoutDiv>
         <Article>
           {data &&
             data.map((each, index) => {

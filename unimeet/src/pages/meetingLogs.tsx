@@ -1,18 +1,40 @@
 import Modal from "@/components/Modal";
 import UnderNav from "@/components/UnderNav";
+import { getRecivedApplicationDetailVersion } from "@/util/meetingLogs/meetingApplcationDetail";
 import {
   acceptApplication,
   getRecivedApplication,
-  getRecivedApplicationDetailVersion,
-} from "@/util/meetingReciveUtil";
+} from "@/util/meetingLogs/meetingRecivedUtil";
+import { getSentApplication } from "@/util/meetingLogs/meetingSentUtil";
 import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-export default function MeetingLogs() {
-  const [selectedBtn, setSelectedBtn] = useState("");
+interface Application {
+  id: number;
+  title: string;
+  sender: { id: number; nickname: string; profileImageUrl: string };
+}
 
-  const switchiBtn = (BtnName: string) => {
+interface ApplicationDetail {
+  title: string;
+  content: string;
+  meetUpImages: [];
+  sender: {
+    id: number;
+    nickname: string;
+  };
+  targetPostId: number;
+}
+
+interface SelectedProps {
+  isSelected: boolean;
+}
+
+export default function MeetingLogs() {
+  const [selectedBtn, setSelectedBtn] = useState<string>("received");
+
+  const switchBtn = (BtnName: string) => {
     setSelectedBtn(BtnName);
   };
 
@@ -20,10 +42,16 @@ export default function MeetingLogs() {
     <>
       <Main>
         <SwitchDiv>
-          <ReceivedRequestsBtn onClick={() => switchiBtn("received")}>
+          <ReceivedRequestsBtn
+            isSelected={selectedBtn === "received"}
+            onClick={() => switchBtn("received")}
+          >
             받은 신청함
           </ReceivedRequestsBtn>
-          <SentRequestsBtn onClick={() => switchiBtn("sent")}>
+          <SentRequestsBtn
+            isSelected={selectedBtn === "sent"}
+            onClick={() => switchBtn("sent")}
+          >
             보낸 신청함
           </SentRequestsBtn>
         </SwitchDiv>
@@ -43,77 +71,47 @@ export default function MeetingLogs() {
 const Main = styled.div`
   width: 100%;
   max-height: 100%;
-
   overflow: hidden;
 `;
 
 const SwitchDiv = styled.div`
   display: flex;
   flex-direction: row;
-
   width: 100%;
   height: 5vh;
-
   gap: 2%;
-
   margin-top: 8vh;
   padding-left: 2%;
   padding-right: 2%;
 `;
 
-const ReceivedRequestsBtn = styled.div`
+const ReceivedRequestsBtn = styled.div<SelectedProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 49%;
   height: 5vh;
-
   border-radius: 1.1rem 1.1rem 0 0;
-
-  background-color: #674ff4;
-
+  background-color: ${(props) => (props.isSelected ? "#674ff4" : "#888")};
   color: white;
-
   font-size: 1.2rem;
   font-weight: 700;
 `;
 
-const SentRequestsBtn = styled.div`
+const SentRequestsBtn = styled.div<SelectedProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 49%;
   height: 5vh;
-
   border-radius: 1.1rem 1.1rem 0 0;
-
-  background-color: #674ff4;
-
+  background-color: ${(props) => (props.isSelected ? "#674ff4" : "#888")};
   color: white;
-
   font-size: 1.2rem;
   font-weight: 700;
 `;
 
 // 받은 신청함
-interface Application {
-  id: number;
-  title: string;
-  sender: { id: number; nickname: string };
-}
-
-interface ApplicationDetail {
-  title: string;
-  content: string;
-  meetUpImages: [];
-  sender: {
-    id: number;
-    nickname: string;
-  };
-  targetPostId: number;
-}
 
 function ReceivedRequests() {
   const cookies = parseCookies();
@@ -210,9 +208,94 @@ function ReceivedRequests() {
 
 // 보낸 신청함
 function SentRequests() {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
+  const [listData, setListData] = useState<Application[]>([]);
+  const [detailData, setDetailData] = useState<ApplicationDetail>();
+
+  const [applicationId, setApplicationId] = useState<number>();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (accessToken) {
+      getSentApplication(accessToken, refreshToken).then((res) => {
+        setListData(res.data.meetUps);
+      });
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (accessToken && applicationId !== undefined) {
+      getRecivedApplicationDetailVersion(
+        accessToken,
+        refreshToken,
+        applicationId
+      ).then((res) => {
+        setDetailData(res.data.meetUp);
+      });
+    }
+  }, [accessToken, applicationId]);
+
   return (
     <MainBox>
-      <Article></Article>
+      <Article>
+        {listData &&
+          listData.map((each, index) => {
+            return (
+              <Application key={index}>
+                <Title>{each.title}</Title>
+                <Nickname>{each.sender.nickname}</Nickname>
+                <Button>
+                  <ViewDetails
+                    onClick={() => {
+                      setIsOpen(true);
+                      setApplicationId(each.id);
+                    }}
+                  >
+                    상세보기
+                  </ViewDetails>
+                  {isOpen && (
+                    <ModalWrap>
+                      {listData && (
+                        <Modal isOpen={isOpen}>
+                          <DeleteModal onClick={() => setIsOpen(false)}>
+                            닫기
+                          </DeleteModal>
+                          <ModalContent>
+                            <DetailTitle>{detailData?.title}</DetailTitle>
+                            <DetailContent>{detailData?.content}</DetailContent>
+                            {/* <div>이미지 사진</div> */}
+                            <SenderNickname>
+                              <DetailCategory>신청자</DetailCategory>
+                              {detailData?.sender?.nickname}
+                            </SenderNickname>
+                          </ModalContent>
+                          <AcceptButton
+                            onClick={() => {
+                              if (applicationId !== undefined) {
+                                acceptApplication(
+                                  accessToken,
+                                  refreshToken,
+                                  applicationId
+                                );
+                              }
+                              setIsOpen(false);
+                            }}
+                          >
+                            수락하기
+                          </AcceptButton>
+                        </Modal>
+                      )}
+                    </ModalWrap>
+                  )}
+                </Button>
+              </Application>
+            );
+          })}
+      </Article>
     </MainBox>
   );
 }
