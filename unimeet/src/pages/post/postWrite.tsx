@@ -1,6 +1,5 @@
 import { FileInput, SendImg } from "@/styles/applyStyle";
 import { GenderInput, GenderLabel, MyDict } from "../signup";
-import { FindImage, ImageCoordinate } from "../lockMypage";
 import {
   BackBtn,
   PostImg,
@@ -12,6 +11,7 @@ import {
 import UnderNav from "@/components/UnderNav";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { ChangeEvent, useState } from "react";
+import { FindImage, ImageCoordinate } from "@/styles/mypageStyle";
 
 export default function PostWrite() {
   const peopleNum = [1, 2, 3, 4, 5, 6, 7, 8, "9이상"];

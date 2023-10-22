@@ -5,7 +5,7 @@ import { MypageRequest, handleSubmit } from "@/util/myPage";
 import { skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import UnderNav from "@/components/UnderNav";
-import { ButtonStyle, InputDiv } from "@/styles/mypageStyle";
+import { ButtonStyle, FindImage, ImageCoordinate, InputDiv } from "@/styles/mypageStyle";
 import { parseCookies } from "nookies";
 
 interface MajorsType {
@@ -275,12 +275,7 @@ const InputStyle = styled.input`
   }
 `;
 
-export const ImageCoordinate = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0.5rem;
-`;
+
 const SelectStyle = styled.select`
   font-family: monospace;
   width: 10rem;
@@ -313,20 +308,4 @@ const spin = keyframes`
     transform: rotate(0deg);
   }
 `;
-export const FindImage = styled.div`
-  width: 150px;
-  height: 30px;
-  background: #674ff4;
-  color: #fff;
-  border: none;
-  border-radius: 30px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    background: rgb(77, 77, 77);
-    color: #fff;
-  }
-`;
+

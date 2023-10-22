@@ -47,3 +47,5 @@ const Kakao: NextPage = () => {
 
   return <h2>로그인 중입니다..</h2>;
 };
+
+export default Kakao;
