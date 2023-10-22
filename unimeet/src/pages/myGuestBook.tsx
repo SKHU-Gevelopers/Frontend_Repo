@@ -1,8 +1,11 @@
 import UnderNav from "@/components/UnderNav";
 import { getMyGuestBookUserData } from "@/util/guestBook/myGuestBookUtil";
-import { parseCookies } from "nookies";
+import { destroyCookie, parseCookies } from "nookies";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
+import { Logout } from "@/util/auth/signUtil";
+import router from "next/router";
 
 interface MyData {
   id: number;
@@ -73,6 +76,14 @@ export default function MyGuestBook() {
     getMyGuestBookData();
   }, [accessToken, refreshToken, pageData.currentPage, isLoading]);
 
+  function deleteCookie() {
+    Logout(accessToken).then((res) => {
+      destroyCookie(undefined, "refresh-token");
+      destroyCookie(undefined, "accessToken");
+      router.push("/");
+    });
+  }
+
   const handleScroll = useCallback(() => {
     if (isScrollEnabled && pageData?.hasNext) {
       const guestBookDiv = guestBookRef.current;
@@ -108,6 +119,7 @@ export default function MyGuestBook() {
   return (
     <>
       <MainBox>
+        <LogoutDiv onClick={deleteCookie}>로그아웃</LogoutDiv>
         <ProfileBox>
           <ProfileImageWrap>
             <div className="profileImage">
