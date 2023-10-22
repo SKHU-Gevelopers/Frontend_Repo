@@ -20,6 +20,12 @@ export const ButtonStyle = styled.button`
     transition: all 1s;
   }
 `;
+export const ImageCoordinate = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
+`;
 
 export const InputDiv = styled.textarea`
   font-size: 1.3em;

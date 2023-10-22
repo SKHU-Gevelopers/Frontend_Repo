@@ -5,7 +5,7 @@ import { MypageRequest, handleSubmit } from "@/util/myPage";
 import { skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import UnderNav from "@/components/UnderNav";
-import { ButtonStyle, InputDiv } from "@/styles/mypageStyle";
+import { ButtonStyle, ImageCoordinate, InputDiv } from "@/styles/mypageStyle";
 import { parseCookies } from "nookies";
 
 interface MajorsType {
@@ -275,12 +275,7 @@ const InputStyle = styled.input`
   }
 `;
 
-export const ImageCoordinate = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0.5rem;
-`;
+
 const SelectStyle = styled.select`
   font-family: monospace;
   width: 10rem;
