@@ -48,3 +48,20 @@ export const InputDiv = styled.textarea`
     transition: all 1s;
   }
 `;
+export const FindImage = styled.div`
+  width: 150px;
+  height: 30px;
+  background: #674ff4;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background: rgb(77, 77, 77);
+    color: #fff;
+  }
+`;
