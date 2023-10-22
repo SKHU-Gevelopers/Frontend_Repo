@@ -84,7 +84,7 @@ export default function GestBook() {
 
   useEffect(() => {
     getGuestBookData();
-  }, [ ]);
+  });
 
   // 스크롤 이벤트 핸들러 추가
   const handleScroll = useCallback(() => {
