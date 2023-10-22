@@ -46,7 +46,8 @@ export default function MeetingApply() {
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
     }
-  });
+}, [router, setAccessToken, setRefreshToken]);
+
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const image = event.target.files?.[0];
