@@ -16,7 +16,7 @@ const Callback: NextPage = () => {
   const loginHandler = useCallback(
     async (code: string | string[]) => {
       // 백엔드에 전송
-      const response = await fetch(
+      await fetch(
         "https://unimeet.duckdns.org/auth/kakao/callback?code=" + code,
         {}
       )
