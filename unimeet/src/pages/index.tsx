@@ -15,7 +15,6 @@ import axios from "axios";
 import { parseCookies, setCookie } from "nookies";
 import { AiOutlineUser } from "react-icons/ai";
 import Image from "next/image";
-import { parse } from "path";
 
 export default function Home() {
   const [email, setEmail] = useState("");

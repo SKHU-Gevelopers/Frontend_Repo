@@ -1,6 +1,6 @@
 import { FileInput, SendImg } from "@/styles/applyStyle";
 import { GenderInput, GenderLabel, MyDict } from "../signup";
-import { FindImage, ImageCoordinate } from "../LockMypage";
+import { FindImage, ImageCoordinate } from "../lockMypage";
 import {
   BackBtn,
   PostImg,
