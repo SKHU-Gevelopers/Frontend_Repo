@@ -37,7 +37,7 @@ export default function BulletinBoard() {
     getPostsData(accessToken, refreshToken).then((res) => {
       res && setData(res.data.posts);
     });
-  }, []);
+  }, [accessToken, refreshToken]);
 
   function deleteCookie() {
     Logout(accessToken).then((res) => {

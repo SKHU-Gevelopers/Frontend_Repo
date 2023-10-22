@@ -31,7 +31,7 @@ export default function MyGuestBook() {
       setMyData(res.data.student);
       setGuestBookData(res.data.guestBooks);
     });
-  }, [accessToken]);
+  }, [accessToken, refreshToken]);
 
   return (
     <>
