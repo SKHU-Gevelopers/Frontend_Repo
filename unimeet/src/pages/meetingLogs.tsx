@@ -133,7 +133,7 @@ function ReceivedRequests() {
         setListData(res.data.meetUps);
       });
     }
-  }, [accessToken, refreshToken]);
+  });
 
   useEffect(() => {
     if (accessToken && applicationId !== undefined) {
@@ -145,7 +145,7 @@ function ReceivedRequests() {
         setDetailData(res.data.meetUp);
       });
     }
-  }, [accessToken, applicationId]);
+  });
 
   return (
     <MainBox>
