@@ -14,7 +14,7 @@ interface MajorsType {
   requestText: string;
 }
 
-const LockMypage: React.FC = () => {
+export default function LockMypage() {
   const imageStyle = {
     borderRadius: "100%",
     borderWidth: "1px",
@@ -216,7 +216,7 @@ const LockMypage: React.FC = () => {
       </InfoBox>
     </LockMainDiv>
   );
-};
+}
 
 export const FixBtn = styled(ButtonStyle)`
   margin: 0.3em 0;
@@ -330,5 +330,3 @@ export const FindImage = styled.div`
     color: #fff;
   }
 `;
-
-export default LockMypage;
