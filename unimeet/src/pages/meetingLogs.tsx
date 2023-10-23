@@ -27,10 +27,6 @@ interface ApplicationDetail {
   targetPostId: number;
 }
 
-interface SelectedProps {
-  isSelected: boolean;
-}
-
 export default function MeetingLogs() {
   const [selectedBtn, setSelectedBtn] = useState<string>("received");
 
@@ -42,16 +38,10 @@ export default function MeetingLogs() {
     <>
       <Main>
         <SwitchDiv>
-          <ReceivedRequestsBtn
-            isSelected={selectedBtn === "received"}
-            onClick={() => switchBtn("received")}
-          >
+          <ReceivedRequestsBtn onClick={() => switchBtn("received")}>
             받은 신청함
           </ReceivedRequestsBtn>
-          <SentRequestsBtn
-            isSelected={selectedBtn === "sent"}
-            onClick={() => switchBtn("sent")}
-          >
+          <SentRequestsBtn onClick={() => switchBtn("sent")}>
             보낸 신청함
           </SentRequestsBtn>
         </SwitchDiv>
@@ -85,27 +75,27 @@ const SwitchDiv = styled.div`
   padding-right: 2%;
 `;
 
-const ReceivedRequestsBtn = styled.div<SelectedProps>`
+const ReceivedRequestsBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 49%;
   height: 5vh;
   border-radius: 1.1rem 1.1rem 0 0;
-  background-color: ${(props) => (props.isSelected ? "#674ff4" : "#888")};
+  background-color: #674ff4;
   color: white;
   font-size: 1.2rem;
   font-weight: 700;
 `;
 
-const SentRequestsBtn = styled.div<SelectedProps>`
+const SentRequestsBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 49%;
   height: 5vh;
   border-radius: 1.1rem 1.1rem 0 0;
-  background-color: ${(props) => (props.isSelected ? "#674ff4" : "#888")};
+  background-color: #674ff4;
   color: white;
   font-size: 1.2rem;
   font-weight: 700;
