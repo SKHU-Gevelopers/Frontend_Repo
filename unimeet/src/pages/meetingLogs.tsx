@@ -19,7 +19,7 @@ interface Application {
 interface ApplicationDetail {
   title: string;
   content: string;
-  meetUpImages: [];
+  meetUpImages: string[];
   sender: {
     id: number;
     nickname: string;
@@ -154,38 +154,52 @@ function ReceivedRequests() {
                     상세보기
                   </ViewDetails>
                   {isOpen && (
-                    <ModalWrap>
-                      {listData && (
-                        <Modal isOpen={isOpen}>
-                          <DeleteModal onClick={() => setIsOpen(false)}>
-                            닫기
-                          </DeleteModal>
-                          <ModalContent>
-                            <DetailTitle>{detailData?.title}</DetailTitle>
-                            <DetailContent>{detailData?.content}</DetailContent>
-                            {/* <div>이미지 사진</div> */}
-                            <SenderNickname>
-                              <DetailCategory>신청자</DetailCategory>
-                              {detailData?.sender?.nickname}
-                            </SenderNickname>
-                          </ModalContent>
-                          <AcceptButton
-                            onClick={() => {
-                              if (applicationId !== undefined) {
-                                acceptApplication(
-                                  accessToken,
-                                  refreshToken,
-                                  applicationId
-                                );
-                              }
-                              setIsOpen(false);
-                            }}
-                          >
-                            수락하기
-                          </AcceptButton>
-                        </Modal>
-                      )}
-                    </ModalWrap>
+                    <BackGround>
+                      <ModalWrap>
+                        {listData && (
+                          <Modal isOpen={isOpen}>
+                            <DeleteModal onClick={() => setIsOpen(false)}>
+                              X
+                            </DeleteModal>
+                            <ModalContent>
+                              <DetailTitle>{detailData?.title}</DetailTitle>
+                              <SenderNickname>
+                                <DetailCategory>
+                                  신청자: {detailData?.sender?.nickname}
+                                </DetailCategory>
+                              </SenderNickname>
+                              <DetailContent>
+                                {detailData?.content}
+                              </DetailContent>
+                              <PictureWrap>
+                                {detailData?.meetUpImages &&
+                                  detailData?.meetUpImages.length > 0 && (
+                                    <PictureImage
+                                      src={detailData?.meetUpImages[0]}
+                                      alt="게시글 첨부 사진"
+                                    ></PictureImage>
+                                  )}
+                              </PictureWrap>
+                              <ShowPost>게시글</ShowPost>
+                              <AcceptButton
+                                onClick={() => {
+                                  if (applicationId !== undefined) {
+                                    acceptApplication(
+                                      accessToken,
+                                      refreshToken,
+                                      applicationId
+                                    );
+                                  }
+                                  setIsOpen(false);
+                                }}
+                              >
+                                수락하기
+                              </AcceptButton>
+                            </ModalContent>
+                          </Modal>
+                        )}
+                      </ModalWrap>
+                    </BackGround>
                   )}
                 </Button>
               </Application>
@@ -248,38 +262,52 @@ function SentRequests() {
                     상세보기
                   </ViewDetails>
                   {isOpen && (
-                    <ModalWrap>
-                      {listData && (
-                        <Modal isOpen={isOpen}>
-                          <DeleteModal onClick={() => setIsOpen(false)}>
-                            닫기
-                          </DeleteModal>
-                          <ModalContent>
-                            <DetailTitle>{detailData?.title}</DetailTitle>
-                            <DetailContent>{detailData?.content}</DetailContent>
-                            {/* <div>이미지 사진</div> */}
-                            <SenderNickname>
-                              <DetailCategory>신청자</DetailCategory>
-                              {detailData?.sender?.nickname}
-                            </SenderNickname>
-                          </ModalContent>
-                          <AcceptButton
-                            onClick={() => {
-                              if (applicationId !== undefined) {
-                                acceptApplication(
-                                  accessToken,
-                                  refreshToken,
-                                  applicationId
-                                );
-                              }
-                              setIsOpen(false);
-                            }}
-                          >
-                            수락하기
-                          </AcceptButton>
-                        </Modal>
-                      )}
-                    </ModalWrap>
+                    <BackGround>
+                      <ModalWrap>
+                        {listData && (
+                          <Modal isOpen={isOpen}>
+                            <DeleteModal onClick={() => setIsOpen(false)}>
+                              X
+                            </DeleteModal>
+                            <ModalContent>
+                              <DetailTitle>{detailData?.title}</DetailTitle>
+                              <SenderNickname>
+                                <DetailCategory>
+                                  신청자: {detailData?.sender?.nickname}
+                                </DetailCategory>
+                              </SenderNickname>
+                              <DetailContent>
+                                {detailData?.content}
+                              </DetailContent>
+                              <PictureWrap>
+                                {detailData?.meetUpImages &&
+                                  detailData?.meetUpImages.length > 0 && (
+                                    <PictureImage
+                                      src={detailData?.meetUpImages[0]}
+                                      alt="게시글 첨부 사진"
+                                    ></PictureImage>
+                                  )}
+                              </PictureWrap>
+                              <ShowPost>게시글</ShowPost>
+                              <AcceptButton
+                                onClick={() => {
+                                  if (applicationId !== undefined) {
+                                    acceptApplication(
+                                      accessToken,
+                                      refreshToken,
+                                      applicationId
+                                    );
+                                  }
+                                  setIsOpen(false);
+                                }}
+                              >
+                                수락하기
+                              </AcceptButton>
+                            </ModalContent>
+                          </Modal>
+                        )}
+                      </ModalWrap>
+                    </BackGround>
                   )}
                 </Button>
               </Application>
@@ -353,11 +381,29 @@ const ViewDetails = styled.div`
   border-radius: 5px;
 `;
 
-const ModalWrap = styled.div`
-  margin-top: 8vh;
+const BackGround = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   width: 100%;
-  height: 82vh;
+  height: 100%;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(220deg, #3246ff, #e3ceff, #ff46d1);
+  z-index: 9999; /* 다른 요소 위에 나타나도록 z-index 설정 */
+`;
+
+const ModalWrap = styled.div`
+  margin-top: 8vh;
+  margin-left: 3%;
+
+  width: 94%;
+  height: 78vh;
 
   position: fixed;
   top: 0;
@@ -365,13 +411,14 @@ const ModalWrap = styled.div`
   right: 0;
   bottom: 0;
 
-  background-color: #feeffe;
-  border: 0.2rem solid #bb8dfb;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 0.2rem solid #b194dc;
+  border-radius: 20px;
 `;
 
 const DeleteModal = styled.div`
-  padding-top: 2vh;
-  padding-left: 84%;
+  padding-top: 2.5vh;
+  margin-left: 90%;
 
   font-weight: 800;
   font-size: 1.3rem;
@@ -381,7 +428,7 @@ const ModalContent = styled.div`
   width: 100%;
   height: 60vh;
 
-  padding-top: 4vh;
+  padding-top: 2vh;
 
   display: flex;
   flex-direction: column;
@@ -395,27 +442,19 @@ const DetailTitle = styled.div`
 `;
 
 const DetailContent = styled.div`
-  margin-top: 3vh;
-  padding: 0.4rem;
+  margin-top: 1.5vh;
 
   width: 94%;
-  height: 15vh;
-
-  border: 0.2rem solid #bb8dfb;
+  height: 14vh;
 
   font-size: 1.2rem;
   font-weight: 700;
 `;
 
 const DetailCategory = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: 4.4rem;
+  width: 94%;
   height: 4vh;
 
-  background-color: #bb8dfb;
   border-radius: 3px;
 `;
 
@@ -423,26 +462,59 @@ const SenderNickname = styled.div`
   display: flex;
   align-items: center;
 
-  gap: 1rem;
-  margin-top: 2vh;
+  margin-top: 1.5vh;
 
   font-size: 1.2rem;
   font-weight: 700;
 `;
 
+const PictureWrap = styled.div`
+  margin-bottom: 2%;
+  margin-top: 3%;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  width: 94%;
+  height: 18vh;
+`;
+
+const PictureImage = styled.img`
+  width: 48%;
+  height: 100%;
+
+  border-radius: 5px;
+`;
+
 const AcceptButton = styled.div`
-  margin-left: 5%;
-  margin-left: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 94%;
+  height: 5vh;
+
+  border: 2px solid #bb8dfb;
+  border-radius: 6px;
+
+  font-size: 1.5rem;
+  font-weight: 700;
+`;
+
+const ShowPost = styled.div`
+  margin-top: 6vh;
+  margin-bottom: 1.5vh;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  width: 90%;
+  width: 94%;
   height: 5vh;
 
-  background-color: #bb8dfb;
-  border-radius: 3px;
+  border: 2px solid #bb8dfb;
+  border-radius: 6px;
 
   font-size: 1.5rem;
   font-weight: 700;
