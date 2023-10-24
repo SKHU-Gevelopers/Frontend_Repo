@@ -6,6 +6,7 @@ import {
   getRecivedApplication,
 } from "@/util/meetingLogs/meetingRecivedUtil";
 import { getSentApplication } from "@/util/meetingLogs/meetingSentUtil";
+import Link from "next/link";
 import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -180,7 +181,11 @@ function ReceivedRequests() {
                                     ></PictureImage>
                                   )}
                               </PictureWrap>
-                              <ShowPost>게시글</ShowPost>
+                              <Link
+                                href={`/detailBoard/${detailData?.targetPostId}`}
+                              >
+                                <ShowPost>게시글</ShowPost>
+                              </Link>
                               <AcceptButton
                                 onClick={() => {
                                   if (applicationId !== undefined) {
@@ -288,7 +293,11 @@ function SentRequests() {
                                     ></PictureImage>
                                   )}
                               </PictureWrap>
-                              <ShowPost>게시글</ShowPost>
+                              <Link
+                                href={`/detailBoard/${detailData?.targetPostId}`}
+                              >
+                                <ShowPost>게시글</ShowPost>
+                              </Link>
                               <AcceptButton
                                 onClick={() => {
                                   if (applicationId !== undefined) {
@@ -493,7 +502,7 @@ const AcceptButton = styled.div`
   align-items: center;
 
   width: 94%;
-  height: 5vh;
+  height: 6vh;
 
   border: 2px solid #bb8dfb;
   border-radius: 6px;
@@ -503,7 +512,7 @@ const AcceptButton = styled.div`
 `;
 
 const ShowPost = styled.div`
-  margin-top: 6vh;
+  margin-top: 3vh;
   margin-bottom: 1.5vh;
 
   display: flex;
@@ -511,7 +520,7 @@ const ShowPost = styled.div`
   align-items: center;
 
   width: 94%;
-  height: 5vh;
+  height: 6vh;
 
   border: 2px solid #bb8dfb;
   border-radius: 6px;
