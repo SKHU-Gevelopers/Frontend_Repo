@@ -76,3 +76,30 @@ export const clickLike = async (
     }
   }
 };
+
+export const getBulletinBoardGatheringUp = async (
+  accessToken: string,
+  refreshToken: string
+): Promise<any> => {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.get(`임시 url`, {
+      headers,
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.status === 401) {
+      try {
+        const { newAccessToken, newRefreshToken } = await requestToken(
+          refreshToken
+        );
+        return getBulletinBoardGatheringUp(newAccessToken, newRefreshToken);
+      } catch (error: any) {}
+    } else {
+      throw error;
+    }
+  }
+};

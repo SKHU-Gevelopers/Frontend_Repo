@@ -1,8 +1,11 @@
 import UnderNav from "@/components/UnderNav";
-import { getMyGuestBookUserData } from "@/util/myGuestBookUtil";
-import { parseCookies } from "nookies";
-import { useEffect, useState } from "react";
+import { getMyGuestBookUserData } from "@/util/guestBook/myGuestBookUtil";
+import { destroyCookie, parseCookies } from "nookies";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
+import { Logout } from "@/util/auth/signUtil";
+import router from "next/router";
 
 interface MyData {
   id: number;
@@ -18,6 +21,16 @@ interface GuestBook {
   content: string;
 }
 
+interface Page {
+  currentPage: number;
+  size: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+  numberOfElements: number;
+  first: boolean;
+  last: boolean;
+}
+
 export default function MyGuestBook() {
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
@@ -25,17 +38,88 @@ export default function MyGuestBook() {
 
   const [myData, setMyData] = useState<MyData | null>(null);
   const [guestBookData, setGuestBookData] = useState<GuestBook[]>([]);
+  const [pageData, setPageData] = useState<Page>({
+    currentPage: 1,
+    size: 0,
+    hasNext: false,
+    hasPrevious: false,
+    numberOfElements: 0,
+    first: true,
+    last: false,
+  });
+
+  // const [studentId, setStudentId] = useState<number>();
+
+  const isLoading = useRef(false); // 로딩 상태를 useRef로 관리
+  const [isScrollEnabled, setIsScrollEnabled] = useState(true);
+  const guestBookRef = useRef<HTMLDivElement | null>(null);
+
+  const getMyGuestBookData = () => {
+    if (isLoading.current) return;
+    isLoading.current = true;
+
+    getMyGuestBookUserData(accessToken, refreshToken, pageData?.currentPage)
+      .then((res) => {
+        if (res != null) {
+          setMyData(res.data.student);
+          setGuestBookData((prevData) => [...prevData, ...res.data.guestBooks]);
+          setPageData(res.data.page);
+          setIsScrollEnabled(!res.data.page.last);
+        }
+      })
+      .finally(() => {
+        isLoading.current = false;
+      });
+  };
 
   useEffect(() => {
-    getMyGuestBookUserData(accessToken, refreshToken).then((res) => {
-      setMyData(res.data.student);
-      setGuestBookData(res.data.guestBooks);
+    getMyGuestBookData();
+  }, [accessToken, refreshToken, pageData.currentPage, isLoading]);
+
+  function deleteCookie() {
+    Logout(accessToken).then((res) => {
+      destroyCookie(undefined, "refresh-token");
+      destroyCookie(undefined, "accessToken");
+      router.push("/");
     });
-  }, [accessToken, refreshToken]);
+  }
+
+  const handleScroll = useCallback(() => {
+    if (isScrollEnabled && pageData?.hasNext) {
+      const guestBookDiv = guestBookRef.current;
+
+      if (guestBookDiv && !isLoading.current) {
+        const scrollHeight = guestBookDiv.scrollHeight;
+        const scrollTop = guestBookDiv.scrollTop;
+        const clientHeight = guestBookDiv.clientHeight;
+
+        if (scrollHeight - scrollTop <= clientHeight + 100) {
+          setPageData((prevPageData) => ({
+            ...prevPageData,
+            currentPage: prevPageData.currentPage + 1,
+          }));
+          isLoading.current = false;
+        }
+      }
+    }
+  }, [isScrollEnabled, pageData]);
+
+  useEffect(() => {
+    const guestBookDiv = guestBookRef.current;
+
+    if (guestBookDiv) {
+      guestBookDiv.addEventListener("scroll", handleScroll);
+
+      return () => {
+        guestBookDiv.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [handleScroll]);
 
   return (
     <>
       <MainBox>
+        <LogoutDiv onClick={deleteCookie}>로그아웃</LogoutDiv>
         <ProfileBox>
           <ProfileImageWrap>
             <div className="profileImage">
@@ -58,7 +142,7 @@ export default function MyGuestBook() {
           </MBTI>
           {/* <Introduce>{user?.introduction}</Introduce> */}
         </ProfileBox>
-        <GuestBooks>
+        <GuestBooks ref={guestBookRef}>
           {guestBookData?.map((each, Id) => {
             return (
               <EachReview key={`writer${Id}`}>
@@ -88,7 +172,7 @@ const MainBox = styled.div`
   padding-bottom: 2vh;
 
   width: 100%;
-  height: 110vh;
+  height: 100vh;
 
   overflow: auto;
 `;
@@ -99,7 +183,7 @@ const ProfileBox = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 46vh;
+  height: 35vh;
 `;
 
 const ProfileImageWrap = styled.div`
@@ -107,7 +191,6 @@ const ProfileImageWrap = styled.div`
   height: 18vh;
   display: flex;
   justify-content: center;
-
 
   border-radius: 50%;
   & > .profileImage {
@@ -184,16 +267,10 @@ const GuestBooks = styled.div`
   padding-bottom: 7vh;
 
   width: 100%;
-  height: 85vh;
+  height: 60vh;
 
-  border-radius: 50%;
-`;
-
-const GuestBookForm = styled.form`
-  margin-bottom: 2vh;
-
-  width: 90%;
-  height: 13vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 const GuestImage = styled.img`

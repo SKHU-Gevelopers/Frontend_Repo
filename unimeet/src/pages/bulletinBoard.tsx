@@ -5,11 +5,9 @@ import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
 import Link from "next/link";
 import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
-import { destroyCookie, parseCookies } from "nookies";
+import { parseCookies } from "nookies";
 import { PostWriteBtn, PostWriteLink } from "@/styles/postStyle/postStyle";
-import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
-import { Logout } from "@/util/auth/signUtil";
-import { useRouter } from "next/router";
+import { ImDrawer2 } from "react-icons/Im";
 
 interface Post {
   id: number;
@@ -25,7 +23,6 @@ interface Post {
 }
 
 export default function BulletinBoard() {
-  const router = useRouter();
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
   const refreshToken = cookies["refresh-token"];
@@ -39,10 +36,14 @@ export default function BulletinBoard() {
     });
   }, [accessToken, refreshToken]);
 
-
   return (
     <>
       <MainBox>
+        <GatheringUpLink href={"/bulletinBoardGatheringUp"}>
+          <GetheringUpWrap>
+            <GetheringUpIcone></GetheringUpIcone>
+          </GetheringUpWrap>
+        </GatheringUpLink>
         <Article>
           {data &&
             data.map((each, index) => {
@@ -121,6 +122,30 @@ const MainBox = styled.div`
   background-color: #efe3ff67;
 `;
 
+const GetheringUpWrap = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0px 10px 10px 10px;
+
+  width: 50px;
+  height: 50px;
+
+  font-size: large;
+  position: fixed;
+  background-color: #674ff4;
+  color: white;
+  border: 1px solid #ddd6ff;
+  border-radius: 10px;
+  right: 5%;
+`;
+
+const GetheringUpIcone = styled(ImDrawer2)`
+  width: 100%;
+  height: 100%;
+`;
+
+const GatheringUpLink = styled(Link)``;
 const Article = styled.div`
   display: flex;
   flex-direction: column;
