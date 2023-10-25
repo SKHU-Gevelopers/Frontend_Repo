@@ -12,7 +12,7 @@ import {
   UnimeetTitle,
 } from "@/styles/pageStyle/MainloginStyle";
 import axios from "axios";
-import { parseCookies, setCookie } from "nookies";
+import { setCookie } from "nookies";
 import { AiOutlineUser } from "react-icons/ai";
 import Image from "next/image";
 
@@ -63,7 +63,7 @@ export default function Home() {
 
   function kakao_loginSubmit() {
     Kakao.Auth.authorize({
-      redirectUri: "http://localhost:3000/auth/kakao/callback",
+      redirectUri: "https://www.skhu-unimeet.site/auth/kakao/callback",
       scope:
         "profile_nickname, account_email, profile_image, gender, age_range, openid",
     });
