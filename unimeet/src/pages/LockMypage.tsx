@@ -6,7 +6,10 @@ import { skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import UnderNav from "@/components/UnderNav";
 import { ButtonStyle, FindImage, ImageCoordinate, InputDiv } from "@/styles/mypageStyle";
-import { parseCookies } from "nookies";
+import { destroyCookie, parseCookies } from "nookies";
+import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
+import { Logout } from "@/util/auth/signUtil";
+import router from "next/router";
 
 interface MajorsType {
   id: number;
@@ -98,10 +101,19 @@ export default function LockMypage() {
       .catch((err) => {});
   };
 
+  function deleteCookie() {
+    Logout(accessToken).then((res) => {
+      destroyCookie(undefined, "refresh-token");
+      destroyCookie(undefined, "accessToken");
+      router.push("/");
+    });
+  }
   return (
     <LockMainDiv>
       <UnderNav />
       <ImageBox>
+      <LogoutDiv onClick={deleteCookie}>로그아웃</LogoutDiv>
+
         <ImageCoordinate>
           <Image
             src={image}

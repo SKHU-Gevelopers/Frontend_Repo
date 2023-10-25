@@ -39,18 +39,10 @@ export default function BulletinBoard() {
     });
   }, [accessToken, refreshToken]);
 
-  function deleteCookie() {
-    Logout(accessToken).then((res) => {
-      destroyCookie(undefined, "refresh-token");
-      destroyCookie(undefined, "accessToken");
-      router.push("/");
-    });
-  }
 
   return (
     <>
       <MainBox>
-        <LogoutDiv onClick={deleteCookie}>로그아웃</LogoutDiv>
         <Article>
           {data &&
             data.map((each, index) => {

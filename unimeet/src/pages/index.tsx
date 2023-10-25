@@ -63,7 +63,7 @@ export default function Home() {
 
   function kakao_loginSubmit() {
     Kakao.Auth.authorize({
-      redirectUri: "https://www.skhu-unimeet.site/auth/kakao/callback",
+      redirectUri: "http://localhost:3000/auth/kakao/callback",
       scope:
         "profile_nickname, account_email, profile_image, gender, age_range, openid",
     });
