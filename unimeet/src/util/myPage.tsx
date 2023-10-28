@@ -90,7 +90,7 @@ export async function handleSubmit(
   const formData = new FormData();
   formData.append("nickname", nickname);
   formData.append("mbti", mbti);
-  formData.append("profileImgXXX=@", profileImgXXX);
+  formData.append("profileImg", profileImgXXX);
   formData.append("introduction", introduction);
   formData.append("majors", major1);
   formData.append("majors", major2);

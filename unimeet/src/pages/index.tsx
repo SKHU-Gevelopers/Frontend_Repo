@@ -97,15 +97,12 @@ export default function Home() {
             </TextBox>
             <ButtonDiv>
               <ButtonStyle type="submit">login</ButtonStyle>
-              <Link href="/signup">
-                <ButtonStyle>signup</ButtonStyle>
-              </Link>
             </ButtonDiv>
           </form>
           <div onClick={kakao_loginSubmit}>
             <Image
               src="/kakao_login_medium_narrow.png"
-              width={250}
+              width={200}
               height={45}
               alt="Kakao Login"
             />
