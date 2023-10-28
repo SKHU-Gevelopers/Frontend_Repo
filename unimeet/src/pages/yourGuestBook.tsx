@@ -160,9 +160,22 @@ export default function GestBook() {
         );
         alert("방명록이 등록되었습니다.");
         setPostGuestBookComment("");
-        window.location.reload();
       }
     }
+    try {
+      const updatedData = await getYourGuestBookUserData(
+        accessToken,
+        refreshToken,
+        writerIdAsNumber,
+        1
+      );
+      if (updatedData) {
+        setStudentData(updatedData.data.student);
+        setGuestBookData(updatedData.data.guestBooks);
+        setPageData(updatedData.data.page);
+        setIsScrollEnabled(!updatedData.data.page.last);
+      }
+    } catch (error) {}
   };
 
   return (
