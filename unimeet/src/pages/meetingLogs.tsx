@@ -9,7 +9,7 @@ import { getSentApplication } from "@/util/meetingLogs/meetingSentUtil";
 import Link from "next/link";
 import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 interface Application {
   id: number;
@@ -40,10 +40,17 @@ export default function MeetingLogs() {
     <>
       <Main>
         <SwitchDiv>
-          <ReceivedRequestsBtn onClick={() => switchBtn("received")}>
+          <ReceivedRequestsBtn
+            isSelected={selectedBtn === "received"}
+            onClick={() => switchBtn("received")}
+          >
             받은 신청함
           </ReceivedRequestsBtn>
-          <SentRequestsBtn onClick={() => switchBtn("sent")}>
+
+          <SentRequestsBtn
+            isSelected={selectedBtn === "sent"}
+            onClick={() => switchBtn("sent")}
+          >
             보낸 신청함
           </SentRequestsBtn>
         </SwitchDiv>
@@ -63,44 +70,70 @@ export default function MeetingLogs() {
 const Main = styled.div`
   width: 100%;
   max-height: 100%;
+  background-color: #efe3ff67;
+
   overflow: hidden;
 `;
 
 const SwitchDiv = styled.div`
   display: flex;
   flex-direction: row;
+
   width: 100%;
-  height: 5vh;
-  gap: 2%;
+  height: 8vh;
+
+  padding-top: 2vh;
+
+  background-color: #faf9fcba;
+
+  gap: 1vh;
   margin-top: 8vh;
   padding-left: 2%;
   padding-right: 2%;
 `;
 
-const ReceivedRequestsBtn = styled.div`
+const ReceivedRequestsBtn = styled.div<{ isSelected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 49%;
-  height: 5vh;
-  border-radius: 1.1rem 1.1rem 0 0;
-  background-color: #674ff4;
+
+  margin-top: 1vh;
+  margin-left: 4%;
+
+  width: 45%;
+  height: 4vh;
+  background-color: #c1c1c2;
   color: white;
   font-size: 1.2rem;
   font-weight: 700;
+
+  ${(props) =>
+    props.isSelected &&
+    css`
+      background-color: #bb8dfb;
+    `}
 `;
 
-const SentRequestsBtn = styled.div`
+const SentRequestsBtn = styled.div<{ isSelected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 49%;
-  height: 5vh;
-  border-radius: 1.1rem 1.1rem 0 0;
-  background-color: #674ff4;
+
+  margin-top: 1vh;
+  margin-right: 4%;
+
+  width: 45%;
+  height: 4vh;
+  background-color: #c1c1c2;
   color: white;
   font-size: 1.2rem;
   font-weight: 700;
+
+  ${(props) =>
+    props.isSelected &&
+    css`
+      background-color: #bb8dfb;
+    `}
 `;
 
 // 받은 신청함
@@ -138,98 +171,102 @@ function ReceivedRequests() {
 
   return (
     <MainBox>
-      <Article>
-        {listData &&
-          listData.map((each, index) => {
-            return (
-              <Application key={index}>
-                <Title>{each.title}</Title>
-                <Nickname>
-                  <ApplicantImageWrap>
-                    {each?.sender?.profileImageUrl && (
-                      <ApplicantImage
-                        src={each.sender.profileImageUrl}
-                        alt="신청자 사진"
-                      ></ApplicantImage>
-                    )}
-                  </ApplicantImageWrap>
-                  {each.sender.nickname}
-                </Nickname>
-                <Button>
-                  <ViewDetails
-                    onClick={() => {
-                      setIsOpen(true);
-                      setApplicationId(each.id);
-                    }}
-                  >
-                    상세보기
-                  </ViewDetails>
-                  {isOpen && (
-                    <BackGround>
-                      <ModalWrap>
-                        {listData && (
-                          <Modal isOpen={isOpen}>
-                            <DeleteModal onClick={() => setIsOpen(false)}>
-                              X
-                            </DeleteModal>
-                            <ModalContent>
-                              <DetailTitle>{detailData?.title}</DetailTitle>
-                              <DetailCategory>
-                                <SenderNickname>
-                                  신청자:
-                                  <ApplicantImageWrap>
-                                    {detailData?.sender.profileImageUrl && (
-                                      <ApplicantImage
-                                        src={detailData.sender.profileImageUrl}
-                                        alt="신청자 사진"
-                                      ></ApplicantImage>
+      <RequestBox>
+        <Article>
+          {listData &&
+            listData.map((each, index) => {
+              return (
+                <Application key={index}>
+                  <Title>{each.title}</Title>
+                  <Nickname>
+                    <ApplicantImageWrap>
+                      {each?.sender?.profileImageUrl && (
+                        <ApplicantImage
+                          src={each.sender.profileImageUrl}
+                          alt="신청자 사진"
+                        ></ApplicantImage>
+                      )}
+                    </ApplicantImageWrap>
+                    {each.sender.nickname}
+                  </Nickname>
+                  <Button>
+                    <ViewDetails
+                      onClick={() => {
+                        setIsOpen(true);
+                        setApplicationId(each.id);
+                      }}
+                    >
+                      상세보기
+                    </ViewDetails>
+                    {isOpen && (
+                      <BackGround>
+                        <ModalWrap>
+                          {listData && (
+                            <Modal isOpen={isOpen}>
+                              <DeleteModal onClick={() => setIsOpen(false)}>
+                                X
+                              </DeleteModal>
+                              <ModalContent>
+                                <DetailTitle>{detailData?.title}</DetailTitle>
+                                <DetailCategory>
+                                  <SenderNickname>
+                                    신청자:
+                                    <ApplicantImageWrap>
+                                      {detailData?.sender.profileImageUrl && (
+                                        <ApplicantImage
+                                          src={
+                                            detailData.sender.profileImageUrl
+                                          }
+                                          alt="신청자 사진"
+                                        ></ApplicantImage>
+                                      )}
+                                    </ApplicantImageWrap>
+                                    {detailData?.sender?.nickname}
+                                  </SenderNickname>
+                                </DetailCategory>
+                                <DetailContent>
+                                  {detailData?.content}
+                                </DetailContent>
+                                <PictureWrap>
+                                  {detailData?.meetUpImages &&
+                                    detailData?.meetUpImages.length > 0 && (
+                                      <PictureImage
+                                        src={detailData?.meetUpImages[0]}
+                                        alt="게시글 첨부 사진"
+                                      ></PictureImage>
                                     )}
-                                  </ApplicantImageWrap>
-                                  {detailData?.sender?.nickname}
-                                </SenderNickname>
-                              </DetailCategory>
-                              <DetailContent>
-                                {detailData?.content}
-                              </DetailContent>
-                              <PictureWrap>
-                                {detailData?.meetUpImages &&
-                                  detailData?.meetUpImages.length > 0 && (
-                                    <PictureImage
-                                      src={detailData?.meetUpImages[0]}
-                                      alt="게시글 첨부 사진"
-                                    ></PictureImage>
-                                  )}
-                              </PictureWrap>
-                              <Link
-                                href={`/detailBoard/${detailData?.targetPostId}`}
-                              >
-                                <ShowPost>게시글</ShowPost>
-                              </Link>
-                              <AcceptButton
-                                onClick={() => {
-                                  if (applicationId !== undefined) {
-                                    acceptApplication(
-                                      accessToken,
-                                      refreshToken,
-                                      applicationId
-                                    );
-                                  }
-                                  // setIsOpen(false);
-                                }}
-                              >
-                                수락하기
-                              </AcceptButton>
-                            </ModalContent>
-                          </Modal>
-                        )}
-                      </ModalWrap>
-                    </BackGround>
-                  )}
-                </Button>
-              </Application>
-            );
-          })}
-      </Article>
+                                </PictureWrap>
+                                <Link
+                                  href={`/detailBoard/${detailData?.targetPostId}`}
+                                >
+                                  <ShowPost>게시글</ShowPost>
+                                </Link>
+                                <AcceptButton
+                                  onClick={() => {
+                                    if (applicationId !== undefined) {
+                                      acceptApplication(
+                                        accessToken,
+                                        refreshToken,
+                                        applicationId
+                                      );
+                                    }
+                                    // setIsOpen(false);
+                                  }}
+                                >
+                                  수락하기
+                                </AcceptButton>
+                              </ModalContent>
+                            </Modal>
+                          )}
+                        </ModalWrap>
+                      </BackGround>
+                    )}
+                  </Button>
+                </Application>
+              );
+            })}
+        </Article>
+      </RequestBox>
     </MainBox>
   );
 }
@@ -269,99 +306,107 @@ function SentRequests() {
 
   return (
     <MainBox>
-      <Article>
-        {listData &&
-          listData.map((each, index) => {
-            return (
-              <Application key={index}>
-                <Title>{each.title}</Title>
-                <Nickname>
-                  <ApplicantImageWrap>
-                    {each?.sender?.profileImageUrl && (
-                      <ApplicantImage
-                        src={each.sender.profileImageUrl}
-                        alt="신청자 사진"
-                      ></ApplicantImage>
-                    )}
-                  </ApplicantImageWrap>
-                  {each.sender.nickname}
-                </Nickname>
-                <Button>
-                  <ViewDetails
-                    onClick={() => {
-                      setIsOpen(true);
-                      setApplicationId(each.id);
-                    }}
-                  >
-                    상세보기
-                  </ViewDetails>
-                  {isOpen && (
-                    <BackGround>
-                      <ModalWrap>
-                        {listData && (
-                          <Modal isOpen={isOpen}>
-                            <DeleteModal onClick={() => setIsOpen(false)}>
-                              X
-                            </DeleteModal>
-                            <ModalContent>
-                              <DetailTitle>{detailData?.title}</DetailTitle>
-                              <DetailCategory>
-                                <SenderNickname>
-                                  신청자:
-                                  <ApplicantImageWrap>
-                                    {detailData?.sender.profileImageUrl && (
-                                      <ApplicantImage
-                                        src={detailData.sender.profileImageUrl}
-                                        alt="신청자 사진"
-                                      ></ApplicantImage>
+      <RequestBox>
+        <Article>
+          {listData &&
+            listData.map((each, index) => {
+              return (
+                <Application key={index}>
+                  <Title>{each.title}</Title>
+                  <Nickname>
+                    <ApplicantImageWrap>
+                      {each?.sender?.profileImageUrl && (
+                        <ApplicantImage
+                          src={each.sender.profileImageUrl}
+                          alt="신청자 사진"
+                        ></ApplicantImage>
+                      )}
+                    </ApplicantImageWrap>
+                    {each.sender.nickname}
+                  </Nickname>
+                  <Button>
+                    <ViewDetails
+                      onClick={() => {
+                        setIsOpen(true);
+                        setApplicationId(each.id);
+                      }}
+                    >
+                      상세보기
+                    </ViewDetails>
+                    {isOpen && (
+                      <BackGround>
+                        <ModalWrap>
+                          {listData && (
+                            <Modal isOpen={isOpen}>
+                              <DeleteModal onClick={() => setIsOpen(false)}>
+                                X
+                              </DeleteModal>
+                              <ModalContent>
+                                <DetailTitle>{detailData?.title}</DetailTitle>
+                                <DetailCategory>
+                                  <SenderNickname>
+                                    신청자:
+                                    <ApplicantImageWrap>
+                                      {detailData?.sender.profileImageUrl && (
+                                        <ApplicantImage
+                                          src={
+                                            detailData.sender.profileImageUrl
+                                          }
+                                          alt="신청자 사진"
+                                        ></ApplicantImage>
+                                      )}
+                                    </ApplicantImageWrap>
+                                    {detailData?.sender?.nickname}
+                                  </SenderNickname>
+                                </DetailCategory>
+                                <DetailContent>
+                                  {detailData?.content}
+                                </DetailContent>
+                                <PictureWrap>
+                                  {detailData?.meetUpImages &&
+                                    detailData?.meetUpImages.length > 0 && (
+                                      <PictureImage
+                                        src={detailData?.meetUpImages[0]}
+                                        alt="게시글 첨부 사진"
+                                      ></PictureImage>
                                     )}
-                                  </ApplicantImageWrap>
-                                  {detailData?.sender?.nickname}
-                                </SenderNickname>
-                              </DetailCategory>
-                              <DetailContent>
-                                {detailData?.content}
-                              </DetailContent>
-                              <PictureWrap>
-                                {detailData?.meetUpImages &&
-                                  detailData?.meetUpImages.length > 0 && (
-                                    <PictureImage
-                                      src={detailData?.meetUpImages[0]}
-                                      alt="게시글 첨부 사진"
-                                    ></PictureImage>
-                                  )}
-                              </PictureWrap>
-                              <Link
-                                href={`/detailBoard/${detailData?.targetPostId}`}
-                              >
-                                <ShowIAppliedPost>게시글</ShowIAppliedPost>
-                              </Link>
-                            </ModalContent>
-                          </Modal>
-                        )}
-                      </ModalWrap>
-                    </BackGround>
-                  )}
-                </Button>
-              </Application>
-            );
-          })}
-      </Article>
+                                </PictureWrap>
+                                <Link
+                                  href={`/detailBoard/${detailData?.targetPostId}`}
+                                >
+                                  <ShowIAppliedPost>게시글</ShowIAppliedPost>
+                                </Link>
+                              </ModalContent>
+                            </Modal>
+                          )}
+                        </ModalWrap>
+                      </BackGround>
+                    )}
+                  </Button>
+                </Application>
+              );
+            })}
+        </Article>
+      </RequestBox>
     </MainBox>
   );
 }
 
 // SentRequests, ReceivedRequests 함수 공동 부분 CSS
 const MainBox = styled.div`
+  width: 100%;
+  height: 100vh;
+`;
+
+const RequestBox = styled.div`
   position: relative;
 
   display: flex;
   align-content: center;
 
   width: 100%;
-  height: 77vh;
-
-  background-color: #efe3ff;
+  height: 75vh;
+  background-color: #faf9fcba;
   opacity: 0.97;
 
   overflow-y: scroll;
@@ -379,11 +424,15 @@ const Article = styled.div`
 const Application = styled.div`
   padding-top: 1rem;
   padding-bottom: 1rem;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 1vh;
 
-  width: 90%;
+  width: 88%;
   height: auto;
 
-  border-bottom: solid 1px #bb8dfb;
+  border: solid 2px #bb8dfb;
+  border-radius: 5px;
 `;
 
 const Title = styled.div`
@@ -411,7 +460,7 @@ const ViewDetails = styled.div`
   width: 5rem;
   height: 1.7rem;
 
-  background-color: #bb8dfb;
+  border: 2px solid #bb8dfb;
 
   border-radius: 5px;
 `;
