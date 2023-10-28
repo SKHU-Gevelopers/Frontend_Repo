@@ -144,7 +144,17 @@ function ReceivedRequests() {
             return (
               <Application key={index}>
                 <Title>{each.title}</Title>
-                <Nickname>{each.sender.nickname}</Nickname>
+                <Nickname>
+                  <ApplicantImageWrap>
+                    {each?.sender?.profileImageUrl && (
+                      <ApplicantImage
+                        src={each.sender.profileImageUrl}
+                        alt="신청자 사진"
+                      ></ApplicantImage>
+                    )}
+                  </ApplicantImageWrap>
+                  {each.sender.nickname}
+                </Nickname>
                 <Button>
                   <ViewDetails
                     onClick={() => {
@@ -265,7 +275,17 @@ function SentRequests() {
             return (
               <Application key={index}>
                 <Title>{each.title}</Title>
-                <Nickname>{each.sender.nickname}</Nickname>
+                <Nickname>
+                  <ApplicantImageWrap>
+                    {each?.sender?.profileImageUrl && (
+                      <ApplicantImage
+                        src={each.sender.profileImageUrl}
+                        alt="신청자 사진"
+                      ></ApplicantImage>
+                    )}
+                  </ApplicantImageWrap>
+                  {each.sender.nickname}
+                </Nickname>
                 <Button>
                   <ViewDetails
                     onClick={() => {
@@ -371,6 +391,8 @@ const Title = styled.div`
 `;
 
 const Nickname = styled.div`
+  display: flex;
+  align-items: center;
   font-size: 1.3rem;
 `;
 
