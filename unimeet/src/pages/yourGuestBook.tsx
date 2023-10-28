@@ -8,8 +8,7 @@ import {
   postGuestBook,
 } from "@/util/guestBook/yourGuestBookUtil";
 import { parseCookies } from "nookies";
-import router, { useRouter } from "next/router";
-import { BackButton } from "@/styles/applyStyle";
+import { useRouter } from "next/router";
 import { MdArrowBack } from "react-icons/md";
 
 interface Student {
@@ -65,6 +64,10 @@ export default function GestBook() {
   const router = useRouter();
   const { writerId } = router.query;
   const writerIdAsNumber = Number(writerId);
+
+  const goBack = () => {
+    router.back(); // 이전 페이지로 돌아가기
+  };
 
   const getYourGuestBookData = () => {
     if (isLoading.current) return;
@@ -165,9 +168,14 @@ export default function GestBook() {
   return (
     <>
       <MainBox>
-        <DmButtonWrap>
-          <DmButton onClick={openDmModal} />
-        </DmButtonWrap>
+        <ButtonWrap>
+          <BackButtonWrap>
+            <MdArrowBackButton onClick={goBack} />
+          </BackButtonWrap>
+          <DmButtonWrap>
+            <DmButton onClick={openDmModal} />
+          </DmButtonWrap>
+        </ButtonWrap>
         {studentData && isDmModal && (
           <DmModal
             isOpen={isDmModal}
@@ -252,15 +260,34 @@ const MainBox = styled.div`
   overflow: auto;
 `;
 
+const ButtonWrap = styled.div`
+  display: flex;
+`;
+
+const BackButtonWrap = styled.div`
+  justify-content: flex-start;
+
+  margin-top: 2.5%;
+  padding-left: 5%;
+
+  width: 50%;
+  height: 2.7em;
+`;
+
 const DmButtonWrap = styled.div`
   display: flex;
   justify-content: end;
 
-  margin-top: 5%;
-  padding-right: 3.5vh;
+  margin-top: 2.5%;
+  padding-right: 5%;
 
-  width: 100%;
+  width: 50%;
   height: 2.7em;
+`;
+
+const MdArrowBackButton = styled(MdArrowBack)`
+  width: 2.7em;
+  height: 100%;
 `;
 
 const DmButton = styled(TbSend)`
