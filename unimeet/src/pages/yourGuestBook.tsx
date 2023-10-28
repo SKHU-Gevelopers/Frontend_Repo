@@ -4,10 +4,13 @@ import styled from "styled-components";
 import { TbSend } from "react-icons/tb";
 import DmModal from "@/components/DmModal";
 import {
-  getGuestBookUserData,
+  getYourGuestBookUserData,
   postGuestBook,
 } from "@/util/guestBook/yourGuestBookUtil";
 import { parseCookies } from "nookies";
+import router, { useRouter } from "next/router";
+import { BackButton } from "@/styles/applyStyle";
+import { MdArrowBack } from "react-icons/md";
 
 interface Student {
   id: number;
@@ -59,12 +62,26 @@ export default function GestBook() {
   const guestBookRef = useRef<HTMLDivElement | null>(null);
 
   const [isDmModal, setIsDmModal] = useState(false);
+  const router = useRouter();
+  const { writerId } = router.query;
+  const writerIdAsNumber = Number(writerId);
 
   const getYourGuestBookData = () => {
     if (isLoading.current) return;
     isLoading.current = true;
 
-    getGuestBookUserData(accessToken, refreshToken, pageData?.currentPage)
+    if (Number.isNaN(writerIdAsNumber)) {
+      router.back();
+      alert("방명록을 다시 들어와 주세요.");
+      return;
+    } // next.js link 태그 새로고침 오류 대안책
+
+    getYourGuestBookUserData(
+      accessToken,
+      refreshToken,
+      writerIdAsNumber,
+      pageData?.currentPage
+    )
       .then((res) => {
         if (res != null) {
           setStudentData(res.data.student);
