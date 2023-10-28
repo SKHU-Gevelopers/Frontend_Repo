@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
-import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
 import Link from "next/link";
 import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
 import { parseCookies } from "nookies";
 import { PostWriteBtn, PostWriteLink } from "@/styles/postStyle/postStyle";
 import { ImDrawer2 } from "react-icons/Im";
+import axios from "axios";
+import { requestToken } from "@/util/myPage";
 
 interface Post {
   id: number;
@@ -28,13 +29,28 @@ export default function BulletinBoard() {
   const refreshToken = cookies["refresh-token"];
 
   const [data, setData] = useState<Post[]>([]);
-  const [likedPosts, setLikedPosts] = useState<number[]>([]);
 
   useEffect(() => {
     getPostsData(accessToken, refreshToken).then((res) => {
       res && setData(res.data.posts);
     });
   }, []);
+
+  const handleLikeClick = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    postId: number
+  ) => {
+    e.preventDefault();
+    try {
+      await clickLike(accessToken, refreshToken, postId);
+      const updatedData = await getPostsData(accessToken, refreshToken);
+      if (updatedData) {
+        setData(updatedData.data.posts);
+      }
+    } catch (error) {
+      console.error("Error liking the post:", error);
+    }
+  };
 
   return (
     <>
@@ -72,28 +88,10 @@ export default function BulletinBoard() {
                       <Text>{each.content}</Text>
                     </WritingBox>
                     <ReactionBox>
-                      <HeartWrap
-                        onClick={(e) =>
-                          clickLike(
-                            accessToken,
-                            refreshToken,
-                            e,
-                            each.id,
-                            likedPosts,
-                            setLikedPosts
-                          )
-                        }
-                      >
-                        {likedPosts.includes(each.id) ? (
-                          <StyledLikedHeartIcon />
-                        ) : (
-                          <StyledHeartIcon />
-                        )}
+                      <HeartWrap onClick={(e) => handleLikeClick(e, each.id)}>
+                        <StyledHeartIcon />
                         <LikesCount>{each.likes}</LikesCount>
                       </HeartWrap>
-                      {/* <CommentWrap>
-                    <Comment src="/comment.png" alt="댓글" />
-                  </CommentWrap> */}
                     </ReactionBox>
                   </Link>
                 </Post>
@@ -153,7 +151,6 @@ const Article = styled.div`
 
   width: 100%;
   min-height: 95vh;
-  // 0.몇으로 하면 자동적으로 길이가 길어짐에 따라(100vh를 넘었을 때) 색의 경계선이 보임
 `;
 
 const Post = styled.div`
@@ -265,23 +262,7 @@ const StyledHeartIcon = styled(AiOutlineHeart)`
   font-size: 2.5rem;
 `;
 
-const StyledLikedHeartIcon = styled(AiFillHeart)`
-  font-size: 2.5rem;
-`;
-
 const LikesCount = styled.div`
   margin-left: 0.5%;
   font-size: 1rem;
 `;
-
-// const CommentWrap = styled.div`
-//   margin-left: 3%;
-
-//   width: 7%;
-//   height: 3.5vh;
-// `;
-
-// const Comment = styled.img`
-//   width: 100%;
-//   height: 100%;
-// `;
