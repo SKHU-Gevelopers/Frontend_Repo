@@ -7,8 +7,6 @@ import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
 import { parseCookies } from "nookies";
 import { PostWriteBtn, PostWriteLink } from "@/styles/postStyle/postStyle";
 import { ImDrawer2 } from "react-icons/Im";
-import axios from "axios";
-import { requestToken } from "@/util/myPage";
 
 interface Post {
   id: number;
@@ -55,45 +53,74 @@ export default function BulletinBoard() {
   return (
     <>
       <MainBox>
-        <GatheringUpLink href={"/bulletinBoardGatheringUp"}>
-          <GetheringUpWrap>
-            <GetheringUpIcone></GetheringUpIcone>
-          </GetheringUpWrap>
-        </GatheringUpLink>
         <Article>
           {data &&
             data.map((each, index) => {
               return (
                 <Post key={index}>
-                  <Link href={`/detailBoard/${each.id}`}>
-                    <Writer>
-                      <ProfileImageWrap>
-                        <ProfileImage
-                          src={each.profileImageUrl}
-                          alt="작성자 이미지 사진"
-                        ></ProfileImage>
-                      </ProfileImageWrap>
-                      <Name>{each.nickname}</Name>
-                    </Writer>
-                    {each.imageUrl !== "" && (
-                      <PictureWrap>
-                        <PictureImage
-                          src={each.imageUrl}
-                          alt="게시글 첨부 사진"
-                        ></PictureImage>
-                      </PictureWrap>
-                    )}
-                    <WritingBox>
-                      <Title>{each.title}</Title>
-                      <Text>{each.content}</Text>
-                    </WritingBox>
-                    <ReactionBox>
-                      <HeartWrap onClick={(e) => handleLikeClick(e, each.id)}>
-                        <StyledHeartIcon />
-                        <LikesCount>{each.likes}</LikesCount>
-                      </HeartWrap>
-                    </ReactionBox>
-                  </Link>
+                  {each.state === "DONE" && (
+                    <DoneState>
+                      <MatchComplete>매칭 완료!</MatchComplete>
+                      <Writer>
+                        <ProfileImageWrap>
+                          <ProfileImage
+                            src={each.profileImageUrl}
+                            alt="작성자 이미지 사진"
+                          ></ProfileImage>
+                        </ProfileImageWrap>
+                        <Name>{each.nickname}</Name>
+                      </Writer>
+                      {each.imageUrl !== "" && (
+                        <PictureWrap>
+                          <PictureImage
+                            src={each.imageUrl}
+                            alt="게시글 첨부 사진"
+                          ></PictureImage>
+                        </PictureWrap>
+                      )}
+                      <WritingBox>
+                        <Title>{each.title}</Title>
+                        <Text>{each.content}</Text>
+                      </WritingBox>
+                      <ReactionBox>
+                        <HeartWrap>
+                          <StyledHeartIcon />
+                          <LikesCount>{each.likes}</LikesCount>
+                        </HeartWrap>
+                      </ReactionBox>
+                    </DoneState>
+                  )}
+                  {each.state !== "DONE" && (
+                    <Link href={`/detailBoard/${each.id}`}>
+                      <Writer>
+                        <ProfileImageWrap>
+                          <ProfileImage
+                            src={each.profileImageUrl}
+                            alt="작성자 이미지 사진"
+                          ></ProfileImage>
+                        </ProfileImageWrap>
+                        <Name>{each.nickname}</Name>
+                      </Writer>
+                      {each.imageUrl !== "" && (
+                        <PictureWrap>
+                          <PictureImage
+                            src={each.imageUrl}
+                            alt="게시글 첨부 사진"
+                          ></PictureImage>
+                        </PictureWrap>
+                      )}
+                      <WritingBox>
+                        <Title>{each.title}</Title>
+                        <Text>{each.content}</Text>
+                      </WritingBox>
+                      <ReactionBox>
+                        <HeartWrap onClick={(e) => handleLikeClick(e, each.id)}>
+                          <StyledHeartIcon />
+                          <LikesCount>{each.likes}</LikesCount>
+                        </HeartWrap>
+                      </ReactionBox>
+                    </Link>
+                  )}
                 </Post>
               );
             })}
@@ -101,6 +128,11 @@ export default function BulletinBoard() {
             <PostWriteBtn>게시물 작성하기</PostWriteBtn>
           </PostWriteLink>
         </Article>
+        <GatheringUpLink href={"/bulletinBoardGatheringUp"}>
+          <GetheringUpWrap>
+            <GetheringUpIcone></GetheringUpIcone>
+          </GetheringUpWrap>
+        </GatheringUpLink>
       </MainBox>
       <UnderNav />
     </>
@@ -144,6 +176,7 @@ const GetheringUpIcone = styled(ImDrawer2)`
 `;
 
 const GatheringUpLink = styled(Link)``;
+
 const Article = styled.div`
   display: flex;
   flex-direction: column;
@@ -158,6 +191,31 @@ const Post = styled.div`
   height: auto;
 
   border-bottom: solid 1px #bb8dfb;
+`;
+
+const DoneState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: gray;
+  opacity: 0.5;
+
+  position: relative;
+`;
+
+const MatchComplete = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: white;
+  font-size: 3rem;
 `;
 
 const Writer = styled.div`
