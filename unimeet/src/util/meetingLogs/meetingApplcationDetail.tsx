@@ -1,7 +1,7 @@
 import { requestToken } from "@/util/myPage";
 import axios from "axios";
 
-export const getRecivedApplicationDetailVersion = async (
+export const getApplicationDetailVersion = async (
   accessToken: string,
   refreshToken: string,
   applicationId: number
@@ -24,7 +24,7 @@ export const getRecivedApplicationDetailVersion = async (
         const { newAccessToken, newRefreshToken } = await requestToken(
           refreshToken
         );
-        return getRecivedApplicationDetailVersion(
+        return getApplicationDetailVersion(
           newAccessToken,
           newRefreshToken,
           applicationId

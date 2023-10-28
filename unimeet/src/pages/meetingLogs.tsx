@@ -1,6 +1,6 @@
 import Modal from "@/components/Modal";
 import UnderNav from "@/components/UnderNav";
-import { getRecivedApplicationDetailVersion } from "@/util/meetingLogs/meetingApplcationDetail";
+import { getApplicationDetailVersion } from "@/util/meetingLogs/meetingApplcationDetail";
 import {
   acceptApplication,
   getRecivedApplication,
@@ -24,6 +24,7 @@ interface ApplicationDetail {
   sender: {
     id: number;
     nickname: string;
+    profileImageUrl: string;
   };
   targetPostId: number;
 }
@@ -103,7 +104,6 @@ const SentRequestsBtn = styled.div`
 `;
 
 // 받은 신청함
-
 function ReceivedRequests() {
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
@@ -126,7 +126,7 @@ function ReceivedRequests() {
 
   useEffect(() => {
     if (accessToken && applicationId !== undefined) {
-      getRecivedApplicationDetailVersion(
+      getApplicationDetailVersion(
         accessToken,
         refreshToken,
         applicationId
@@ -144,7 +144,17 @@ function ReceivedRequests() {
             return (
               <Application key={index}>
                 <Title>{each.title}</Title>
-                <Nickname>{each.sender.nickname}</Nickname>
+                <Nickname>
+                  <ApplicantImageWrap>
+                    {each?.sender?.profileImageUrl && (
+                      <ApplicantImage
+                        src={each.sender.profileImageUrl}
+                        alt="신청자 사진"
+                      ></ApplicantImage>
+                    )}
+                  </ApplicantImageWrap>
+                  {each.sender.nickname}
+                </Nickname>
                 <Button>
                   <ViewDetails
                     onClick={() => {
@@ -164,11 +174,20 @@ function ReceivedRequests() {
                             </DeleteModal>
                             <ModalContent>
                               <DetailTitle>{detailData?.title}</DetailTitle>
-                              <SenderNickname>
-                                <DetailCategory>
-                                  신청자: {detailData?.sender?.nickname}
-                                </DetailCategory>
-                              </SenderNickname>
+                              <DetailCategory>
+                                <SenderNickname>
+                                  신청자:
+                                  <ApplicantImageWrap>
+                                    {detailData?.sender.profileImageUrl && (
+                                      <ApplicantImage
+                                        src={detailData.sender.profileImageUrl}
+                                        alt="신청자 사진"
+                                      ></ApplicantImage>
+                                    )}
+                                  </ApplicantImageWrap>
+                                  {detailData?.sender?.nickname}
+                                </SenderNickname>
+                              </DetailCategory>
                               <DetailContent>
                                 {detailData?.content}
                               </DetailContent>
@@ -195,7 +214,7 @@ function ReceivedRequests() {
                                       applicationId
                                     );
                                   }
-                                  setIsOpen(false);
+                                  // setIsOpen(false);
                                 }}
                               >
                                 수락하기
@@ -238,7 +257,7 @@ function SentRequests() {
 
   useEffect(() => {
     if (accessToken && applicationId !== undefined) {
-      getRecivedApplicationDetailVersion(
+      getApplicationDetailVersion(
         accessToken,
         refreshToken,
         applicationId
@@ -256,7 +275,17 @@ function SentRequests() {
             return (
               <Application key={index}>
                 <Title>{each.title}</Title>
-                <Nickname>{each.sender.nickname}</Nickname>
+                <Nickname>
+                  <ApplicantImageWrap>
+                    {each?.sender?.profileImageUrl && (
+                      <ApplicantImage
+                        src={each.sender.profileImageUrl}
+                        alt="신청자 사진"
+                      ></ApplicantImage>
+                    )}
+                  </ApplicantImageWrap>
+                  {each.sender.nickname}
+                </Nickname>
                 <Button>
                   <ViewDetails
                     onClick={() => {
@@ -276,11 +305,20 @@ function SentRequests() {
                             </DeleteModal>
                             <ModalContent>
                               <DetailTitle>{detailData?.title}</DetailTitle>
-                              <SenderNickname>
-                                <DetailCategory>
-                                  신청자: {detailData?.sender?.nickname}
-                                </DetailCategory>
-                              </SenderNickname>
+                              <DetailCategory>
+                                <SenderNickname>
+                                  신청자:
+                                  <ApplicantImageWrap>
+                                    {detailData?.sender.profileImageUrl && (
+                                      <ApplicantImage
+                                        src={detailData.sender.profileImageUrl}
+                                        alt="신청자 사진"
+                                      ></ApplicantImage>
+                                    )}
+                                  </ApplicantImageWrap>
+                                  {detailData?.sender?.nickname}
+                                </SenderNickname>
+                              </DetailCategory>
                               <DetailContent>
                                 {detailData?.content}
                               </DetailContent>
@@ -296,22 +334,8 @@ function SentRequests() {
                               <Link
                                 href={`/detailBoard/${detailData?.targetPostId}`}
                               >
-                                <ShowPost>게시글</ShowPost>
+                                <ShowIAppliedPost>게시글</ShowIAppliedPost>
                               </Link>
-                              <AcceptButton
-                                onClick={() => {
-                                  if (applicationId !== undefined) {
-                                    acceptApplication(
-                                      accessToken,
-                                      refreshToken,
-                                      applicationId
-                                    );
-                                  }
-                                  setIsOpen(false);
-                                }}
-                              >
-                                수락하기
-                              </AcceptButton>
                             </ModalContent>
                           </Modal>
                         )}
@@ -367,6 +391,8 @@ const Title = styled.div`
 `;
 
 const Nickname = styled.div`
+  display: flex;
+  align-items: center;
   font-size: 1.3rem;
 `;
 
@@ -435,7 +461,7 @@ const DeleteModal = styled.div`
 
 const ModalContent = styled.div`
   width: 100%;
-  height: 60vh;
+  height: 75vh;
 
   padding-top: 2vh;
 
@@ -451,7 +477,7 @@ const DetailTitle = styled.div`
 `;
 
 const DetailContent = styled.div`
-  margin-top: 1.5vh;
+  margin-top: 4vh;
 
   width: 94%;
   height: 14vh;
@@ -472,9 +498,30 @@ const SenderNickname = styled.div`
   align-items: center;
 
   margin-top: 1.5vh;
+  margin-bottom: 1.5vh;
 
   font-size: 1.2rem;
   font-weight: 700;
+`;
+
+const ApplicantImageWrap = styled.div`
+  margin-left: 1vw;
+  margin-right: 1vw;
+
+  width: 50px;
+  height: 6vh;
+
+  border-radius: 50%;
+  border: solid 1px rgba(103, 79, 244, 0.8);
+
+  background-color: white;
+`;
+
+const ApplicantImage = styled.img`
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
 `;
 
 const PictureWrap = styled.div`
@@ -512,7 +559,25 @@ const AcceptButton = styled.div`
 `;
 
 const ShowPost = styled.div`
-  margin-top: 3vh;
+  margin-top: 6vh;
+  margin-bottom: 1.5vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 94%;
+  height: 6vh;
+
+  border: 2px solid #bb8dfb;
+  border-radius: 6px;
+
+  font-size: 1.5rem;
+  font-weight: 700;
+`;
+
+const ShowIAppliedPost = styled.div`
+  margin-top: 12vh;
   margin-bottom: 1.5vh;
 
   display: flex;
