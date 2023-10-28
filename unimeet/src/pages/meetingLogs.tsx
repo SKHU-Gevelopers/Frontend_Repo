@@ -399,6 +399,12 @@ const MainBox = styled.div`
 `;
 
 const RequestBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding-bottom: 2vh;
+
   position: relative;
 
   display: flex;
@@ -426,7 +432,7 @@ const Application = styled.div`
   padding-bottom: 1rem;
   padding-left: 10px;
   padding-right: 10px;
-  margin-top: 1vh;
+  margin-top: 2vh;
 
   width: 88%;
   height: auto;
