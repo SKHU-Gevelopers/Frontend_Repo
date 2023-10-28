@@ -72,7 +72,7 @@ export default function GestBook() {
 
     if (Number.isNaN(writerIdAsNumber)) {
       router.back();
-      alert("방명록을 다시 들어와 주세요.");
+      alert("프로필 이미지를 다시 클릭해주세요.");
       return;
     } // next.js link 태그 새로고침 오류 대안책
 
