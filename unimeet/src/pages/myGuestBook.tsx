@@ -166,7 +166,7 @@ export default function MyGuestBook() {
 const MainBox = styled.div`
   display: flex;
   flex-direction: column;
-  align-content: center;
+  align-items: center;
 
   padding-top: 2.7em;
   padding-bottom: 2vh;
@@ -264,10 +264,13 @@ const GuestBooks = styled.div`
   align-items: center;
 
   padding-top: 2vh;
-  padding-bottom: 7vh;
 
-  width: 100%;
-  height: 60vh;
+  width: 90%;
+  height: 54vh;
+
+  border-top: 3px solid white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
   overflow-y: scroll;
   overflow-x: hidden;
@@ -286,7 +289,7 @@ const EachReview = styled.div`
 
   margin-bottom: 3vh;
 
-  width: 90%;
+  width: 100%;
   height: 6vh;
 `;
 

@@ -418,8 +418,14 @@ const GetGuestBook = styled.div`
   flex-direction: column;
   align-items: center;
 
-  width: 100%;
-  height: 52vh;
+  padding-top: 2vh;
+
+  width: 90%;
+  height: 54vh;
+
+  border-top: 3px solid white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
   overflow-y: scroll;
   overflow-x: hidden;
@@ -446,7 +452,7 @@ const EachReview = styled.div`
 
   margin-bottom: 3vh;
 
-  width: 90%;
+  width: 100%;
   height: 6vh;
 `;
 
