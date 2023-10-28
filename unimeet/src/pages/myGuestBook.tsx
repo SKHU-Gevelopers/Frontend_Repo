@@ -183,7 +183,7 @@ const ProfileBox = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 35vh;
+  height: 33.5vh;
 `;
 
 const ProfileImageWrap = styled.div`
