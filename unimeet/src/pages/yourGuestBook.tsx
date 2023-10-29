@@ -318,8 +318,8 @@ const ProfileBox = styled.div`
 `;
 
 const ProfileImageWrap = styled.div`
-  width: 10rem;
-  height: 18vh;
+  width: 6em;
+  height: 6em;
 
   border-radius: 50%;
   border: solid 1px rgba(103, 79, 244, 0.8);
