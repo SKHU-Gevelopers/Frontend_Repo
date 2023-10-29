@@ -5,8 +5,8 @@ import UnderNav from "@/components/UnderNav";
 import Link from "next/link";
 import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
 import { parseCookies } from "nookies";
-import { PostWriteBtn, PostWriteLink } from "@/styles/postStyle/postStyle";
 import { ImDrawer2 } from "react-icons/Im";
+import { HiOutlinePencilAlt } from "react-icons/Hi";
 
 interface Post {
   id: number;
@@ -124,10 +124,12 @@ export default function BulletinBoard() {
                 </Post>
               );
             })}
-          <PostWriteLink href="/post/postWrite">
-            <PostWriteBtn>게시물 작성하기</PostWriteBtn>
-          </PostWriteLink>
         </Article>
+        <PostWriteLink href="/post/postWrite">
+          <PostWriteIconWrap>
+            <PostWriteIcon></PostWriteIcon>
+          </PostWriteIconWrap>
+        </PostWriteLink>
         <GatheringUpLink href={"/bulletinBoardGatheringUp"}>
           <GetheringUpWrap>
             <GetheringUpIcone></GetheringUpIcone>
@@ -151,31 +153,6 @@ const MainBox = styled.div`
 
   background-color: #efe3ff67;
 `;
-
-const GetheringUpWrap = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0px 10px 10px 10px;
-
-  width: 50px;
-  height: 50px;
-
-  font-size: large;
-  position: fixed;
-  background-color: #674ff4;
-  color: white;
-  border: 1px solid #ddd6ff;
-  border-radius: 10px;
-  right: 5%;
-`;
-
-const GetheringUpIcone = styled(ImDrawer2)`
-  width: 100%;
-  height: 100%;
-`;
-
-const GatheringUpLink = styled(Link)``;
 
 const Article = styled.div`
   display: flex;
@@ -324,3 +301,52 @@ const LikesCount = styled.div`
   margin-left: 0.5%;
   font-size: 1rem;
 `;
+
+const PostWriteIconWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 50px;
+  height: 50px;
+
+  position: fixed;
+  background-color: #674ff4;
+  color: white;
+  border: 1px solid #ddd6ff;
+  border-radius: 10px;
+  right: 4%;
+  top: 3em;
+`;
+
+const PostWriteIcon = styled(HiOutlinePencilAlt)`
+  width: 80%;
+  height: 80%;
+`;
+
+const PostWriteLink = styled(Link)``;
+
+const GetheringUpWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 10px 10px 10px;
+
+  width: 50px;
+  height: 50px;
+
+  position: fixed;
+  background-color: #674ff4;
+  color: white;
+  border: 1px solid #ddd6ff;
+  border-radius: 10px;
+  right: 4%;
+  top: 6.5em;
+`;
+
+const GetheringUpIcone = styled(ImDrawer2)`
+  width: 100%;
+  height: 100%;
+`;
+
+const GatheringUpLink = styled(Link)``;
