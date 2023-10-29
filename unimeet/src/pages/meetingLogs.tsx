@@ -181,10 +181,17 @@ function ReceivedRequests() {
                   <Nickname>
                     <ApplicantImageWrap>
                       {each?.sender?.profileImageUrl && (
-                        <ApplicantImage
-                          src={each.sender.profileImageUrl}
-                          alt="신청자 사진"
-                        ></ApplicantImage>
+                        <Link
+                          href={{
+                            pathname: "/yourGuestBook",
+                            query: { writerId: each.id },
+                          }}
+                        >
+                          <ApplicantImage
+                            src={each.sender.profileImageUrl}
+                            alt="신청자 사진"
+                          ></ApplicantImage>
+                        </Link>
                       )}
                     </ApplicantImageWrap>
                     {each.sender.nickname}
@@ -213,12 +220,19 @@ function ReceivedRequests() {
                                     신청자:
                                     <ApplicantImageWrap>
                                       {detailData?.sender.profileImageUrl && (
-                                        <ApplicantImage
-                                          src={
-                                            detailData.sender.profileImageUrl
-                                          }
-                                          alt="신청자 사진"
-                                        ></ApplicantImage>
+                                        <Link
+                                          href={{
+                                            pathname: "/yourGuestBook",
+                                            query: { writerId: each.id },
+                                          }}
+                                        >
+                                          <ApplicantImage
+                                            src={
+                                              detailData.sender.profileImageUrl
+                                            }
+                                            alt="신청자 사진"
+                                          ></ApplicantImage>
+                                        </Link>
                                       )}
                                     </ApplicantImageWrap>
                                     {detailData?.sender?.nickname}
@@ -316,10 +330,17 @@ function SentRequests() {
                   <Nickname>
                     <ApplicantImageWrap>
                       {each?.sender?.profileImageUrl && (
-                        <ApplicantImage
-                          src={each.sender.profileImageUrl}
-                          alt="신청자 사진"
-                        ></ApplicantImage>
+                        <Link
+                          href={{
+                            pathname: "/yourGuestBook",
+                            query: { writerId: each.id },
+                          }}
+                        >
+                          <ApplicantImage
+                            src={each.sender.profileImageUrl}
+                            alt="신청자 사진"
+                          ></ApplicantImage>
+                        </Link>
                       )}
                     </ApplicantImageWrap>
                     {each.sender.nickname}
@@ -348,12 +369,19 @@ function SentRequests() {
                                     신청자:
                                     <ApplicantImageWrap>
                                       {detailData?.sender.profileImageUrl && (
-                                        <ApplicantImage
-                                          src={
-                                            detailData.sender.profileImageUrl
-                                          }
-                                          alt="신청자 사진"
-                                        ></ApplicantImage>
+                                        <Link
+                                          href={{
+                                            pathname: "/yourGuestBook",
+                                            query: { writerId: each.id },
+                                          }}
+                                        >
+                                          <ApplicantImage
+                                            src={
+                                              detailData.sender.profileImageUrl
+                                            }
+                                            alt="신청자 사진"
+                                          ></ApplicantImage>
+                                        </Link>
                                       )}
                                     </ApplicantImageWrap>
                                     {detailData?.sender?.nickname}
