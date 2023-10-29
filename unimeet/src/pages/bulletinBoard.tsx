@@ -18,6 +18,7 @@ interface Post {
   gender: string;
   profileImageUrl: string;
   nickname: string;
+  writerId: number;
   likes: number;
 }
 
@@ -93,12 +94,19 @@ export default function BulletinBoard() {
                   {each.state !== "DONE" && (
                     <Link href={`/detailBoard/${each.id}`}>
                       <Writer>
-                        <ProfileImageWrap>
-                          <ProfileImage
-                            src={each.profileImageUrl}
-                            alt="작성자 이미지 사진"
-                          ></ProfileImage>
-                        </ProfileImageWrap>
+                        <Link
+                          href={{
+                            pathname: "/yourGuestBook",
+                            query: { writerId: each.writerId },
+                          }}
+                        >
+                          <ProfileImageWrap>
+                            <ProfileImage
+                              src={each.profileImageUrl}
+                              alt="작성자 이미지 사진"
+                            ></ProfileImage>
+                          </ProfileImageWrap>
+                        </Link>
                         <Name>{each.nickname}</Name>
                       </Writer>
                       {each.imageUrl !== "" && (
