@@ -14,16 +14,20 @@ const MainChat = () => {
   useEffect(() => {
     const cookies = parseCookies();
     const accessToken = cookies["accessToken"];
-    setAccessToken(accessToken);
     const refreshToken = cookies["refresh-token"];
-    setRefreshToken(refreshToken);
+
     if (!accessToken || !refreshToken) {
       router.push("/");
+    } else {
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
     }
-  });
+  }, [router, setAccessToken, setRefreshToken]);
+
   useEffect(() => {
     chatGetData(accessToken, refreshToken);
-  },[accessToken, refreshToken]);
+  }, [accessToken, refreshToken]);
+
   return (
     <ChatPage_Main>
       <MainBox_Chat>

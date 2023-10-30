@@ -18,12 +18,12 @@ import {
 } from "@/styles/applyStyle";
 import { MdArrowBack } from "react-icons/md";
 import { ChangeEvent, useEffect, useState } from "react";
-import { ImageCoordinate } from "../LockMypage";
 import UnderNav from "../../components/UnderNav";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
 import { meetingApplyFunc } from "@/util/meetingApply/apllyUtil";
 import Link from "next/link";
+import { ImageCoordinate } from "@/styles/mypageStyle";
 
 export default function MeetingApply() {
   const router = useRouter();
@@ -46,7 +46,8 @@ export default function MeetingApply() {
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
     }
-  },[accessToken, refreshToken]);
+  }, [router, setAccessToken, setRefreshToken]);
+
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const image = event.target.files?.[0];
@@ -76,8 +77,7 @@ export default function MeetingApply() {
       .then((res) => {
         router.push("/meetingLogs");
       })
-      .catch((err) => {
-      });
+      .catch((err) => {});
   };
 
   return (

@@ -1,9 +1,10 @@
-import { requestToken } from "./myPage";
+import { requestToken } from "../myPage";
 import axios from "axios";
 
 export const getMyGuestBookUserData = async (
   accessToken: string,
-  refreshToken: string
+  refreshToken: string,
+  page: number
 ): Promise<any> => {
   try {
     const headers = {
@@ -11,7 +12,7 @@ export const getMyGuestBookUserData = async (
       Authorization: `Bearer ${accessToken}`,
     };
     const response = await axios.get(
-      "https://unimeet.duckdns.org/users/my-page-pub",
+      `https://unimeet.duckdns.org/users/my-page-pub?page=${page}`,
       {
         headers,
       }
@@ -23,7 +24,7 @@ export const getMyGuestBookUserData = async (
         const { newAccessToken, newRefreshToken } = await requestToken(
           refreshToken
         );
-        return getMyGuestBookUserData(newAccessToken, newRefreshToken);
+        return getMyGuestBookUserData(newAccessToken, newRefreshToken, page);
       } catch (error: any) {}
     } else {
       throw error;

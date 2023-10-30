@@ -3,8 +3,13 @@ import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { TbSend } from "react-icons/tb";
 import DmModal from "@/components/DmModal";
-import { getGuestBookUserData, postGuestBook } from "@/util/guestBookUtil";
+import {
+  getYourGuestBookUserData,
+  postGuestBook,
+} from "@/util/guestBook/yourGuestBookUtil";
 import { parseCookies } from "nookies";
+import { useRouter } from "next/router";
+import { MdArrowBack } from "react-icons/md";
 
 interface Student {
   id: number;
@@ -56,23 +61,34 @@ export default function GestBook() {
   const guestBookRef = useRef<HTMLDivElement | null>(null);
 
   const [isDmModal, setIsDmModal] = useState(false);
+  const router = useRouter();
+  const { writerId } = router.query;
+  const writerIdAsNumber = Number(writerId);
 
-  const sortingGuestBookdata = (data: GuestBook[]) => {
-    const sortedData = [...data];
-    sortedData.sort((a, b) => a.id - b.id);
-    return sortedData;
+  const goBack = () => {
+    router.back(); // 이전 페이지로 돌아가기
   };
 
-  const getGuestBookData = () => {
+  const getYourGuestBookData = () => {
     if (isLoading.current) return;
     isLoading.current = true;
 
-    getGuestBookUserData(accessToken, refreshToken, pageData?.currentPage)
+    if (Number.isNaN(writerIdAsNumber)) {
+      router.back();
+      alert("프로필 이미지를 다시 클릭해주세요.");
+      return;
+    } // next.js link 태그 새로고침 오류 대안책
+
+    getYourGuestBookUserData(
+      accessToken,
+      refreshToken,
+      writerIdAsNumber,
+      pageData?.currentPage
+    )
       .then((res) => {
         if (res != null) {
           setStudentData(res.data.student);
-          const sortedGuestBookData = sortingGuestBookdata(res.data.guestBooks);
-          setGuestBookData((prevData) => [...prevData, ...sortedGuestBookData]);
+          setGuestBookData((prevData) => [...prevData, ...res.data.guestBooks]);
           setPageData(res.data.page);
           setIsScrollEnabled(!res.data.page.last);
         }
@@ -83,8 +99,8 @@ export default function GestBook() {
   };
 
   useEffect(() => {
-    getGuestBookData();
-  });
+    getYourGuestBookData();
+  }, [accessToken, refreshToken, pageData.currentPage, isLoading]);
 
   // 스크롤 이벤트 핸들러 추가
   const handleScroll = useCallback(() => {
@@ -146,14 +162,33 @@ export default function GestBook() {
         setPostGuestBookComment("");
       }
     }
+    try {
+      const updatedData = await getYourGuestBookUserData(
+        accessToken,
+        refreshToken,
+        writerIdAsNumber,
+        1
+      );
+      if (updatedData) {
+        setStudentData(updatedData.data.student);
+        setGuestBookData(updatedData.data.guestBooks);
+        setPageData(updatedData.data.page);
+        setIsScrollEnabled(!updatedData.data.page.last);
+      }
+    } catch (error) {}
   };
 
   return (
     <>
       <MainBox>
-        <DmButtonWrap>
-          <DmButton onClick={openDmModal} />
-        </DmButtonWrap>
+        <ButtonWrap>
+          <BackButtonWrap>
+            <MdArrowBackButton onClick={goBack} />
+          </BackButtonWrap>
+          <DmButtonWrap>
+            <DmButton onClick={openDmModal} />
+          </DmButtonWrap>
+        </ButtonWrap>
         {studentData && isDmModal && (
           <DmModal
             isOpen={isDmModal}
@@ -205,7 +240,7 @@ export default function GestBook() {
             <DivForScroll>
               {guestBookData?.map((each, id) => {
                 return (
-                  <EachReview key={`each${id}`}>
+                  <EachReview key={id}>
                     <GuestImageWrap>
                       <GuestImage
                         src={each.profileImageUrl}
@@ -238,15 +273,34 @@ const MainBox = styled.div`
   overflow: auto;
 `;
 
+const ButtonWrap = styled.div`
+  display: flex;
+`;
+
+const BackButtonWrap = styled.div`
+  justify-content: flex-start;
+
+  margin-top: 2.5%;
+  padding-left: 5%;
+
+  width: 50%;
+  height: 2.7em;
+`;
+
 const DmButtonWrap = styled.div`
   display: flex;
   justify-content: end;
 
-  margin-top: 5%;
-  padding-right: 3.5vh;
+  margin-top: 2.5%;
+  padding-right: 5%;
 
-  width: 100%;
+  width: 50%;
   height: 2.7em;
+`;
+
+const MdArrowBackButton = styled(MdArrowBack)`
+  width: 2.7em;
+  height: 100%;
 `;
 
 const DmButton = styled(TbSend)`
@@ -264,8 +318,8 @@ const ProfileBox = styled.div`
 `;
 
 const ProfileImageWrap = styled.div`
-  width: 10rem;
-  height: 18vh;
+  width: 6em;
+  height: 6em;
 
   border-radius: 50%;
   border: solid 1px rgba(103, 79, 244, 0.8);
@@ -421,8 +475,14 @@ const GetGuestBook = styled.div`
   flex-direction: column;
   align-items: center;
 
-  width: 100%;
-  height: 52vh;
+  padding-top: 2vh;
+
+  width: 90%;
+  height: 54vh;
+
+  border-top: 3px solid white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
   overflow-y: scroll;
   overflow-x: hidden;
@@ -449,7 +509,7 @@ const EachReview = styled.div`
 
   margin-bottom: 3vh;
 
-  width: 90%;
+  width: 100%;
   height: 6vh;
 `;
 

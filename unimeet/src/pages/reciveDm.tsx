@@ -29,7 +29,7 @@ export default function ReciveDm() {
         setDmData(res.data.dm);
       });
     }
-  }, [accessToken]);
+  });
 
   return (
     <>
