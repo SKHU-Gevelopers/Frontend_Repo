@@ -4,8 +4,8 @@ import styled from "styled-components";
 import UnderNav from "../UnderNav";
 import { chatDetailData } from "@/util/chat/chatUtil";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import DmModal from "@/components/chat/Sent";
 
 interface SenderInterface {
   id: number;
@@ -30,6 +30,12 @@ const ReciveDetailData = () => {
   const router = useRouter();
   const { dmId } = router.query;
   const dmIdAsNumber = Number(dmId);
+
+  const [isDmModal, setIsDmModal] = useState(false);
+
+  const openDmModal = () => {
+    setIsDmModal(true);
+  };
 
   const goBack = () => {
     router.back();
@@ -61,23 +67,23 @@ const ReciveDetailData = () => {
             <Content>{dmDetail?.content}</Content>
           </DmData>
         </Main>
-        <Sender>
+        <Sender onClick={openDmModal}>
           <SenderImageWrap>
             {dmDetail.sender?.profileImageUrl && (
-              <Link
-                href={{
-                  pathname: "/yourGuestBook",
-                  query: { writerId: dmDetail.sender.id },
-                }}
-              >
-                <SenderImage
-                  src={dmDetail.sender.profileImageUrl}
-                  alt="신청자 사진"
-                ></SenderImage>
-              </Link>
+              <SenderImage
+                src={dmDetail.sender.profileImageUrl}
+                alt="신청자 사진"
+              ></SenderImage>
             )}
           </SenderImageWrap>
           <NicknameSpan>{dmDetail.sender.nickname}에게 답장</NicknameSpan>
+          {dmDetail && isDmModal && (
+            <DmModal
+              isOpen={isDmModal}
+              onClose={() => setIsDmModal(false)}
+              senderId={dmDetail.sender.id}
+            ></DmModal>
+          )}
         </Sender>
         <UnderNav></UnderNav>
       </SentWrap>
