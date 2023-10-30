@@ -77,14 +77,14 @@ const ReciveDetailData = () => {
             )}
           </SenderImageWrap>
           <NicknameSpan>{dmDetail.sender.nickname}에게 답장</NicknameSpan>
-          {dmDetail && isDmModal && (
-            <DmModal
-              isOpen={isDmModal}
-              onClose={() => setIsDmModal(false)}
-              senderId={dmDetail.sender.id}
-            ></DmModal>
-          )}
         </Sender>
+        {dmDetail && isDmModal && (
+          <DmModal
+            isOpen={isDmModal}
+            onClose={() => setIsDmModal(false)}
+            senderId={dmDetail.sender.id}
+          ></DmModal>
+        )}
         <UnderNav></UnderNav>
       </SentWrap>
     </>
