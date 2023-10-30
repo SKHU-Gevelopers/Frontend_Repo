@@ -1,10 +1,7 @@
 import axios from "axios";
 import router from "next/router";
-import { destroyCookie, parseCookies, setCookie } from "nookies";
+import { destroyCookie, setCookie } from "nookies";
 
-// const cookies = parseCookies();
-// export const accesstoken = cookies["accessToken"];
-// export const refreshtoken = cookies["refresh-token"];
 // 매 페이지 마다 리로드 될 떄 token이 변경될 수 있다.
 export const requestToken = async (
   token: string,
@@ -35,7 +32,6 @@ export const requestToken = async (
     return { newAccessToken, newRefreshToken };
   } catch (err: any) {
     if (err.response.status === 400 || err.response.status === 401) {
-      alert("다시 로그인이 필요합니다.");
       destroyCookie(undefined, "refresh-token");
       destroyCookie(undefined, "accessToken");
       localStorage.removeItem("accessToken");
@@ -81,16 +77,17 @@ export async function handleSubmit(
   refreshToken: string,
   nickname: string,
   mbti: string,
-  profileImgXXX: string,
+  profileImg: File,
   introduction: string,
   major1: string,
   major2: string,
   kakaoId: string
 ): Promise<any> {
   const formData = new FormData();
+
   formData.append("nickname", nickname);
   formData.append("mbti", mbti);
-  formData.append("profileImg", profileImgXXX);
+  formData.append("profileImg", profileImg);
   formData.append("introduction", introduction);
   formData.append("majors", major1);
   formData.append("majors", major2);
@@ -120,7 +117,7 @@ export async function handleSubmit(
           newRefreshToken,
           nickname,
           mbti,
-          profileImgXXX,
+          profileImg,
           introduction,
           major1,
           major2,

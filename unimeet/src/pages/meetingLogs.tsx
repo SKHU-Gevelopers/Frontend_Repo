@@ -155,7 +155,7 @@ function ReceivedRequests() {
         setListData(res.data.meetUps);
       });
     }
-  });
+  }, [accessToken, refreshToken]);
 
   useEffect(() => {
     if (accessToken && applicationId !== undefined) {
@@ -167,7 +167,7 @@ function ReceivedRequests() {
         setDetailData(res.data.meetUp);
       });
     }
-  });
+  }, [accessToken, refreshToken, applicationId]);
 
   return (
     <MainBox>
@@ -304,7 +304,7 @@ function SentRequests() {
         setListData(res.data.meetUps);
       });
     }
-  }, [accessToken]);
+  }, [accessToken, refreshToken]);
 
   useEffect(() => {
     if (accessToken && applicationId !== undefined) {
@@ -316,7 +316,7 @@ function SentRequests() {
         setDetailData(res.data.meetUp);
       });
     }
-  }, [accessToken, applicationId]);
+  }, [accessToken, refreshToken, applicationId]);
 
   return (
     <MainBox>
