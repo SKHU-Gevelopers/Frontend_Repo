@@ -20,6 +20,12 @@ export const ButtonStyle = styled.button`
     transition: all 1s;
   }
 `;
+export const ImageCoordinate = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
+`;
 
 export const InputDiv = styled.textarea`
   font-size: 1.3em;
@@ -40,5 +46,22 @@ export const InputDiv = styled.textarea`
     background-color: #c0b5ff42;
     transform: translateY(-1px);
     transition: all 1s;
+  }
+`;
+export const FindImage = styled.div`
+  width: 150px;
+  height: 30px;
+  background: #674ff4;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background: rgb(77, 77, 77);
+    color: #fff;
   }
 `;

@@ -6,7 +6,8 @@ export const LogoutDiv = styled.div`
   align-items: center;
   padding: 3%;
   font-size: large;
-  position: fixed;
+  position: absolute;
+  top: 5%;
   background-color: #674ff4;
   color: white;
   border: 1px solid #ddd6ff;

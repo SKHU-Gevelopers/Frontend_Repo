@@ -1,12 +1,15 @@
 import Image from "next/image";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { MypageRequest, handleSubmit } from "@/util/myPage";
 import { skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import UnderNav from "@/components/UnderNav";
-import { ButtonStyle, InputDiv } from "@/styles/mypageStyle";
-import { parseCookies } from "nookies";
+import { ButtonStyle, FindImage, ImageCoordinate, InputDiv } from "@/styles/mypageStyle";
+import { destroyCookie, parseCookies } from "nookies";
+import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
+import { Logout } from "@/util/auth/signUtil";
+import router from "next/router";
 
 interface MajorsType {
   id: number;
@@ -14,7 +17,7 @@ interface MajorsType {
   requestText: string;
 }
 
-const LockMypage: React.FC = () => {
+export default function LockMypage() {
   const imageStyle = {
     borderRadius: "100%",
     borderWidth: "1px",
@@ -55,27 +58,26 @@ const LockMypage: React.FC = () => {
         setGender(res.data.gender);
         setKaKaoId(res.data.kakaoId);
         setInformation(res.data.introduction);
-        setImage(res.data.profileImageUrl);
+        setImageFile(res.data.profileImageUrl);
       });
     } else {
       alert("다시 로그인을 해주세요.");
     }
   }, [accessToken]);
 
-  const [image, setImage] = useState("/dogImage.png");
+  const [imageFile, setImageFile] = useState<File | null>(null); 
+  const [imagePreview, setImagePreview] = useState('');
+  
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files?.[0];
     if (!image) {
       alert("파일이 없습니다.");
       return;
+    }else{
+      setImageFile(image);
+      const imagePreviewUrl = URL.createObjectURL(image);
+      setImagePreview(imagePreviewUrl);
     }
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(image);
-    fileReader.onload = (data) => {
-      if (typeof data.target?.result === "string") {
-        setImage(data.target?.result);
-      }
-    };
   };
 
   const submitOn = (e: any) => {
@@ -88,7 +90,7 @@ const LockMypage: React.FC = () => {
       refreshToken,
       name,
       mbti,
-      image,
+      imageFile,
       information,
       major1,
       major2,
@@ -98,13 +100,22 @@ const LockMypage: React.FC = () => {
       .catch((err) => {});
   };
 
+  function deleteCookie() {
+    Logout(accessToken).then((res) => {
+      destroyCookie(undefined, "refresh-token");
+      destroyCookie(undefined, "accessToken");
+      router.push("/");
+    });
+  }
   return (
     <LockMainDiv>
       <UnderNav />
       <ImageBox>
+      <LogoutDiv onClick={deleteCookie}>로그아웃</LogoutDiv>
+
         <ImageCoordinate>
           <Image
-            src={image}
+            src={imagePreview}
             width={50}
             height={50}
             alt="Picture of the author"
@@ -216,7 +227,7 @@ const LockMypage: React.FC = () => {
       </InfoBox>
     </LockMainDiv>
   );
-};
+}
 
 export const FixBtn = styled(ButtonStyle)`
   margin: 0.3em 0;
@@ -275,12 +286,7 @@ const InputStyle = styled.input`
   }
 `;
 
-export const ImageCoordinate = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0.5rem;
-`;
+
 const SelectStyle = styled.select`
   font-family: monospace;
   width: 10rem;
@@ -313,22 +319,4 @@ const spin = keyframes`
     transform: rotate(0deg);
   }
 `;
-export const FindImage = styled.div`
-  width: 150px;
-  height: 30px;
-  background: #674ff4;
-  color: #fff;
-  border: none;
-  border-radius: 30px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    background: rgb(77, 77, 77);
-    color: #fff;
-  }
-`;
 
-export default LockMypage;

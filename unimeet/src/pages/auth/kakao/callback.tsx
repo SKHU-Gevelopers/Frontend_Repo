@@ -4,11 +4,6 @@ import { useCallback, useEffect } from "react";
 import { parseCookies, setCookie } from "nookies";
 import { Main } from "@/styles/DefaultStyle/flexStyle";
 
-interface ResponseType {
-  ok: boolean;
-  error?: any;
-}
-
 const Callback: NextPage = () => {
   const router = useRouter();
   const { code: authCode, error: kakaoServerError } = router.query;
@@ -18,12 +13,18 @@ const Callback: NextPage = () => {
       // 백엔드에 전송
       await fetch(
         "https://unimeet.duckdns.org/auth/kakao/callback?code=" + code,
-        {}
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       )
-        .then((res) => res.json())
+        .then((res) => {
+          return res.json();
+        })
         .then((res) => {
           if (res.statusCode === 200) {
-            console.log(res);
             // res 데이터에서 accessToken, refreshToken을 받아온다.
             const accessToken = res.data.accessToken;
             setCookie(null, "accessToken", accessToken, {

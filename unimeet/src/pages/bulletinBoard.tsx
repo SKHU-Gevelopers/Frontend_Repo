@@ -32,7 +32,7 @@ export default function BulletinBoard() {
     getPostsData(accessToken, refreshToken).then((res) => {
       res && setData(res.data.posts);
     });
-  }, []);
+  }, [accessToken, refreshToken]);
 
   const handleLikeClick = async (
     e: React.MouseEvent<HTMLButtonElement>,
