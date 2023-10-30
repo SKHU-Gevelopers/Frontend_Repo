@@ -42,7 +42,7 @@ const GetDataList = () => {
       <RequestBox>
         <Article>
           {sentDmList &&
-            sentDmList.map((each, index) => {
+            sentDmList.reverse().map((each, index) => {
               return (
                 <Application key={index}>
                   <Content>
