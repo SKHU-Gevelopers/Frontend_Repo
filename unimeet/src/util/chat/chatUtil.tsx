@@ -58,37 +58,6 @@ export const chatSentDataList = async (
   }
 };
 
-export const chatSent = async (
-  accessToken: string,
-  refreshToken: string,
-  recipientId: number
-): Promise<any> => {
-  try {
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const response = await axios.post(
-      `https://unimeet.duckdns.org/users/${recipientId}/dm`,
-      {
-        headers,
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    if (error.response && error.response.status === 401) {
-      try {
-        const { newAccessToken, newRefreshToken } = await requestToken(
-          refreshToken
-        );
-        return chatSent(newAccessToken, newRefreshToken, recipientId);
-      } catch (error: any) {}
-    } else {
-      throw error;
-    }
-  }
-};
-
 export const chatDetailData = async (
   accessToken: string,
   refreshToken: string,
