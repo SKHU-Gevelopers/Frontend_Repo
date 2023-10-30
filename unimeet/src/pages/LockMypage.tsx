@@ -116,10 +116,9 @@ export default function LockMypage() {
   };
 
   function deleteCookie() {
-    Logout(accessToken, refreshToken).then((res) => {
-
-      router.push("/");
-    });
+    destroyCookie(undefined, "refresh-token");
+    destroyCookie(undefined, "accessToken");
+    router.reload();
   }
   return (
     <LockMainDiv>
