@@ -1,74 +1,165 @@
 import UnderNav from "@/components/UnderNav";
-import { BacktoBoard, TopBox } from "@/styles/detailBoardStyle";
+import { BacktoBoard } from "@/styles/detailBoardStyle";
+import {
+  clickLike,
+  getBulletinBoardGatheringUp,
+} from "@/util/bulletinBoardUtil";
+import Link from "next/link";
+import { parseCookies } from "nookies";
+import { useEffect, useState } from "react";
+import { AiOutlineHeart } from "react-icons/ai";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import styled from "styled-components";
 
-const ExampleData = [
-  {
-    profileImageUrl: "",
-    nickname: "ㅎㅎ",
-    imageUrl: "gg",
-    title: "제목",
-    content: "본문",
-  },
-  {
-    profileImageUrl: "",
-    nickname: "ㅎㅎ",
-    imageUrl: "gg",
-    title: "제목",
-    content: "본문",
-  },
-  {
-    profileImageUrl: "",
-    nickname: "ㅎㅎ",
-    imageUrl: "gg",
-    title: "제목",
-    content: "본문",
-  },
-];
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  imageUrl: string;
+  state: string;
+  maxPeople: number;
+  gender: string;
+  profileImageUrl: string;
+  nickname: string;
+  writerId: number;
+  likes: number;
+  liked: boolean;
+}
 
 export default function BulletinBoardGatheringUp() {
+  const cookies = parseCookies();
+  const accessToken = cookies["accessToken"];
+  const refreshToken = cookies["refresh-token"];
+
+  const [data, setData] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setLoading(true);
+    getBulletinBoardGatheringUp(accessToken, refreshToken)
+      .then((res) => {
+        res && setData(res.data.posts);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [accessToken, refreshToken]);
+
+  const handleLikeClick = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    postId: number
+  ) => {
+    e.preventDefault();
+    if (confirm("모아보기에서 삭제할까요?")) {
+      try {
+        await clickLike(accessToken, refreshToken, postId);
+        const updatedData = await getBulletinBoardGatheringUp(
+          accessToken,
+          refreshToken
+        );
+        if (updatedData) {
+          setData(updatedData.data.posts);
+        }
+      } catch (error) {
+        console.error("Error liking the post:", error);
+      }
+    } else return;
+  };
+
   return (
     <>
       <MainBox>
-        <TopBox>
+        <BackBtnWrap>
           <BacktoBoard href="/bulletinBoard">
             <IoIosArrowRoundBack size={40} />
             뒤로가기
           </BacktoBoard>
-        </TopBox>
+        </BackBtnWrap>
         <Article>
-          {ExampleData &&
-            ExampleData.map((each, index) => {
+          {loading ? (
+            <LoadingDiv>Loading...</LoadingDiv>
+          ) : (
+            data &&
+            data.map((each, index) => {
               return (
                 <Post key={index}>
-                  <Writer>
-                    <ProfileImageWrap>
-                      <ProfileImage
-                        src={each.profileImageUrl}
-                        alt="작성자 이미지 사진"
-                      ></ProfileImage>
-                    </ProfileImageWrap>
-                    <Name>{each.nickname}</Name>
-                  </Writer>
-                  {each.imageUrl !== "" && (
-                    <PictureWrap>
-                      <PictureImage
-                        src={each.imageUrl}
-                        alt="게시글 첨부 사진"
-                      ></PictureImage>
-                    </PictureWrap>
+                  {each.state === "DONE" && (
+                    <DoneState>
+                      <MatchComplete>매칭 완료!</MatchComplete>
+                      <Writer>
+                        <ProfileImageWrap>
+                          <ProfileImage
+                            src={each.profileImageUrl}
+                            alt="작성자 이미지 사진"
+                          ></ProfileImage>
+                        </ProfileImageWrap>
+                        <Name>{each.nickname}</Name>
+                      </Writer>
+                      {each.imageUrl !== "" && (
+                        <PictureWrap>
+                          <PictureImage
+                            src={each.imageUrl}
+                            alt="게시글 첨부 사진"
+                          ></PictureImage>
+                        </PictureWrap>
+                      )}
+                      <WritingBox>
+                        <Title>{each.title}</Title>
+                        <Text>{each.content}</Text>
+                      </WritingBox>
+                      <ReactionBox>
+                        <HeartWrap onClick={(e) => handleLikeClick(e, each.id)}>
+                          <StyledHeartIcon />
+                          <LikesCount>{each.likes}</LikesCount>
+                        </HeartWrap>
+                      </ReactionBox>
+                    </DoneState>
                   )}
-                  <WritingBox>
-                    <Title>{each.title}</Title>
-                    <Text>{each.content}</Text>
-                  </WritingBox>
+                  {each.state !== "DONE" && (
+                    <Link href={`/detailBoard/${each.id}`}>
+                      <Writer>
+                        <Link
+                          href={{
+                            pathname: "/yourGuestBook",
+                            query: { writerId: each.writerId },
+                          }}
+                        >
+                          <ProfileImageWrap>
+                            <ProfileImage
+                              src={each.profileImageUrl}
+                              alt="작성자 이미지 사진"
+                            ></ProfileImage>
+                          </ProfileImageWrap>
+                        </Link>
+                        <Name>{each.nickname}</Name>
+                      </Writer>
+                      {each.imageUrl !== "" && (
+                        <PictureWrap>
+                          <PictureImage
+                            src={each.imageUrl}
+                            alt="게시글 첨부 사진"
+                          ></PictureImage>
+                        </PictureWrap>
+                      )}
+                      <WritingBox>
+                        <Title>{each.title}</Title>
+                        <Text>{each.content}</Text>
+                      </WritingBox>
+                      <ReactionBox>
+                        <HeartWrap onClick={(e) => handleLikeClick(e, each.id)}>
+                          <StyledHeartIcon />
+                          <LikesCount>{each.likes}</LikesCount>
+                        </HeartWrap>
+                      </ReactionBox>
+                    </Link>
+                  )}
                 </Post>
               );
-            })}
+            })
+          )}
         </Article>
-        <UnderNav></UnderNav>
       </MainBox>
+      <UnderNav />
     </>
   );
 }
@@ -76,13 +167,23 @@ export default function BulletinBoardGatheringUp() {
 const MainBox = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-content: center;
 
   margin-top: 5vh;
   padding-bottom: 10vh;
 
   width: 100%;
-  height: 100vh;
+  height: auto;
+
+  background-color: #efe3ff67;
+`;
+
+const BackBtnWrap = styled.div`
+  display: flex;
+  padding-top: 2vh;
+
+  width: 100%;
+  height: 4vh;
 `;
 
 const Article = styled.div`
@@ -91,10 +192,13 @@ const Article = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 90vh;
+  min-height: 95vh;
+`;
 
-  overflow-y: scroll;
-  overflow-x: hidden;
+const LoadingDiv = styled.div`
+  padding-top: 1rem;
+  font-size: 20pt;
+  color: #5a20aa;
 `;
 
 const Post = styled.div`
@@ -102,6 +206,31 @@ const Post = styled.div`
   height: auto;
 
   border-bottom: solid 1px #bb8dfb;
+`;
+
+const DoneState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: gray;
+  opacity: 0.5;
+
+  position: relative;
+`;
+
+const MatchComplete = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: white;
+  font-size: 3rem;
 `;
 
 const Writer = styled.div`
@@ -187,4 +316,26 @@ const ReactionBox = styled.div`
 
   width: 100%;
   height: 6vh;
+`;
+
+const HeartWrap = styled.button`
+  display: flex;
+  align-items: center;
+
+  margin-left: 3%;
+
+  width: 11%;
+  height: 3.8vh;
+
+  background-color: #a52a2a00;
+  border: none;
+`;
+
+const StyledHeartIcon = styled(AiOutlineHeart)`
+  font-size: 2.5rem;
+`;
+
+const LikesCount = styled.div`
+  margin-left: 0.5%;
+  font-size: 1rem;
 `;

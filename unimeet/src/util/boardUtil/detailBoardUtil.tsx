@@ -27,7 +27,7 @@ export const checkDetail = async (
         return checkDetail(meetingId, newAccessToken, newRefreshToken);
       } catch (tokenErr: any) {}
     } else {
-      throw err;
+      // throw err;
     }
   }
 };

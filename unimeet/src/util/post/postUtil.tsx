@@ -1,5 +1,4 @@
 import axios from "axios";
-import { access } from "fs";
 import router from "next/router";
 import { requestToken } from "../myPage";
 
@@ -12,7 +11,6 @@ export const Postting = async (
   maxPeople: number,
   gender: string
 ): Promise<any> => {
-  
   const formData = new FormData();
   formData.append("title", title);
   formData.append("content", content);
