@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { IoIosArrowRoundBack } from "react-icons/io";
 
-interface Sender {
+interface SenderInterface {
   id: number;
   nickname: string;
   profileImageUrl: string;
@@ -16,7 +16,7 @@ interface Sender {
 interface DmData {
   title: string;
   content: string;
-  sender: Sender;
+  sender: SenderInterface;
   sentAt: string;
 }
 
