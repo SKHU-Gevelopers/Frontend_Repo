@@ -100,7 +100,7 @@ export default function GestBook() {
 
   useEffect(() => {
     getYourGuestBookData();
-  }, [accessToken, refreshToken, pageData.currentPage, isLoading]);
+  }, [accessToken, refreshToken, writerIdAsNumber]);
 
   // 스크롤 이벤트 핸들러 추가
   const handleScroll = useCallback(() => {
