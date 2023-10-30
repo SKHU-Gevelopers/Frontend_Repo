@@ -1,11 +1,16 @@
 import Image from "next/image";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { MypageRequest, handleSubmit } from "@/util/myPage";
 import { skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import UnderNav from "@/components/UnderNav";
-import { ButtonStyle, FindImage, ImageCoordinate, InputDiv } from "@/styles/mypageStyle";
+import {
+  ButtonStyle,
+  FindImage,
+  ImageCoordinate,
+  InputDiv,
+} from "@/styles/mypageStyle";
 import { destroyCookie, parseCookies } from "nookies";
 import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
 import { Logout } from "@/util/auth/signUtil";
@@ -15,6 +20,7 @@ interface MajorsType {
   id: number;
   majors: string;
   requestText: string;
+  key: number;
 }
 
 export default function LockMypage() {
@@ -29,7 +35,8 @@ export default function LockMypage() {
   const filedisplay = {
     display: "none",
   };
-
+  const [imageFile, setImageFile] = useState<File>();
+  const [imageURL, setImageURL] = useState<string>("");
   const [name, setName] = useState("");
   const [mbti, setMbti] = useState("");
   const [major1, setMajor1] = useState("");
@@ -43,6 +50,7 @@ export default function LockMypage() {
     id: major.id,
     majors: major.majors,
     requestText: major.requestText,
+    key: major.key,
   }));
 
   useEffect(() => {
@@ -59,24 +67,27 @@ export default function LockMypage() {
         setKaKaoId(res.data.kakaoId);
         setInformation(res.data.introduction);
         setImageFile(res.data.profileImageUrl);
+        setImageURL(res.data.profileImageUrl);
+        console.log(imageFile);
       });
     } else {
       alert("다시 로그인을 해주세요.");
     }
   }, [accessToken]);
 
-  const [imageFile, setImageFile] = useState<File | null>(null); 
-  const [imagePreview, setImagePreview] = useState('');
-  
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files?.[0];
     if (!image) {
       alert("파일이 없습니다.");
       return;
-    }else{
-      setImageFile(image);
-      const imagePreviewUrl = URL.createObjectURL(image);
-      setImagePreview(imagePreviewUrl);
+    } else {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(image);
+      fileReader.onload = (data) => {
+        if (typeof data.target?.result === "string") {
+          setImageFile(image);
+        }
+      };
     }
   };
 
@@ -85,19 +96,21 @@ export default function LockMypage() {
     const cookies = parseCookies();
     const accessToken = cookies["accessToken"];
     const refreshToken = cookies["refresh-token"];
-    handleSubmit(
-      accessToken,
-      refreshToken,
-      name,
-      mbti,
-      imageFile,
-      information,
-      major1,
-      major2,
-      kakaoId
-    )
-      .then((res) => {})
-      .catch((err) => {});
+    if (imageFile) {
+      handleSubmit(
+        accessToken,
+        refreshToken,
+        name,
+        mbti,
+        imageFile,
+        information,
+        major1,
+        major2,
+        kakaoId
+      )
+        .then((res) => {})
+        .catch((err) => {});
+    }
   };
 
   function deleteCookie() {
@@ -111,16 +124,19 @@ export default function LockMypage() {
     <LockMainDiv>
       <UnderNav />
       <ImageBox>
-      <LogoutDiv onClick={deleteCookie}>로그아웃</LogoutDiv>
+        <LogoutDiv onClick={deleteCookie}>로그아웃</LogoutDiv>
 
         <ImageCoordinate>
-          <Image
-            src={imagePreview}
-            width={50}
-            height={50}
-            alt="Picture of the author"
-            style={imageStyle}
-          />
+          {imageFile && (
+            <Image
+              src={imageURL}
+              width={50}
+              height={50}
+              alt="Picture of the author"
+              style={imageStyle}
+              priority={false}
+            />
+          )}
         </ImageCoordinate>
         <label htmlFor="file">
           <FindImage className="btn-upload">파일 업로드하기</FindImage>
@@ -138,7 +154,6 @@ export default function LockMypage() {
           <span>별명:</span>
           <InputStyle
             value={name}
-            defaultValue={name}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setName(e.target.value);
             }}
@@ -163,7 +178,7 @@ export default function LockMypage() {
             onChange={(e) => setMbti(e.target.value)}
           >
             {mbtilist.map((mbtis) => (
-              <option key={mbtis.mbti} value={mbtis.mbti}>
+              <option key={mbtis.id} value={mbtis.mbti}>
                 {mbtis.mbti}
               </option>
             ))}
@@ -179,7 +194,7 @@ export default function LockMypage() {
             }}
           >
             {skhuMajors.map((major) => (
-              <option key={major.requestText} value={major.majors}>
+              <option key={major.key} value={major.majors}>
                 {major.majors}
               </option>
             ))}
@@ -190,13 +205,12 @@ export default function LockMypage() {
           <SelectStyle
             className="input"
             value={major2}
-            defaultValue={major2}
             onChange={(e) => {
               setMajor2(e.target.value);
             }}
           >
             {skhuMajors.map((major) => (
-              <option key={major.requestText} value={major.majors}>
+              <option key={major.key} value={major.majors}>
                 {major.majors}
               </option>
             ))}
@@ -286,7 +300,6 @@ const InputStyle = styled.input`
   }
 `;
 
-
 const SelectStyle = styled.select`
   font-family: monospace;
   width: 10rem;
@@ -319,4 +332,3 @@ const spin = keyframes`
     transform: rotate(0deg);
   }
 `;
-
