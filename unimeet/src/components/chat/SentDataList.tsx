@@ -64,7 +64,14 @@ const SentDataList = () => {
                     {each.title}
                   </Content>
                   <DetailBtnWrap>
-                    <DetailBtnIcon />
+                    <Link
+                      href={{
+                        pathname: "/message/sendDetailChat",
+                        query: { dmId: each.id },
+                      }}
+                    >
+                      <DetailBtnIcon />
+                    </Link>
                   </DetailBtnWrap>
                 </Application>
               );

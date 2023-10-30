@@ -1,5 +1,7 @@
+import SendDetailData from "@/components/chat/SendDetailData";
+
 const SendDetailChat = () => {
-  return;
+  return <SendDetailData></SendDetailData>;
 };
 
 export default SendDetailChat;
