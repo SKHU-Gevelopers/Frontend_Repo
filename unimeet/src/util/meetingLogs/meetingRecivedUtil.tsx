@@ -49,7 +49,7 @@ export const acceptApplication = async (
     alert("수락했습니다.");
   } catch (error: any) {
     if (error.response && error.response.status === 400)
-      alert("이미 수락된 상태입니다.");
+      alert("이미 수락했습니다.");
     else if (error.response && error.response.status === 401) {
       try {
         const { newAccessToken, newRefreshToken } = await requestToken(
