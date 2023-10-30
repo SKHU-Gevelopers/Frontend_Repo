@@ -66,7 +66,7 @@ export const getBulletinBoardGatheringUp = async (
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const response = await axios.get(`임시 url`, {
+    const response = await axios.get(`https://unimeet.duckdns.org/posts/like`, {
       headers,
     });
     return response.data;
