@@ -61,7 +61,7 @@ export const TextBox = styled.div`
 `;
 export const LoginBox = styled.div`
   width: 20rem;
-  height: 25rem;
+  height: 22rem;
   border-radius: 50px;
   position: relative;
   display: flex;

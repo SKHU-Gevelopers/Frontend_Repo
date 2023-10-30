@@ -39,6 +39,7 @@ export default function BulletinBoard() {
       .finally(() => {
         setLoading(false);
       });
+
   }, [accessToken, refreshToken]);
 
   const handleLikeClick = async (

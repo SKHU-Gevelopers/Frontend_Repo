@@ -13,4 +13,7 @@ module.exports = {
   compiler: {
     styledComponents: true,
   },
+  images: {
+    domains: ["unimeet-bucket.s3.ap-northeast-2.amazonaws.com"],
+  },
 };

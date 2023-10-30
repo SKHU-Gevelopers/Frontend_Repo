@@ -12,10 +12,9 @@ import {
   UnimeetTitle,
 } from "@/styles/pageStyle/MainloginStyle";
 import axios from "axios";
-import { parseCookies, setCookie } from "nookies";
+import { setCookie } from "nookies";
 import { AiOutlineUser } from "react-icons/ai";
 import Image from "next/image";
-import { parse } from "path";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -98,15 +97,12 @@ export default function Home() {
             </TextBox>
             <ButtonDiv>
               <ButtonStyle type="submit">login</ButtonStyle>
-              <Link href="/signup">
-                <ButtonStyle>signup</ButtonStyle>
-              </Link>
             </ButtonDiv>
           </form>
           <div onClick={kakao_loginSubmit}>
             <Image
               src="/kakao_login_medium_narrow.png"
-              width={250}
+              width={200}
               height={45}
               alt="Kakao Login"
             />
