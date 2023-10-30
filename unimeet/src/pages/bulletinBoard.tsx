@@ -5,7 +5,7 @@ import UnderNav from "@/components/UnderNav";
 import Link from "next/link";
 import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
 import { parseCookies } from "nookies";
-import { ImDrawer2 } from "react-icons/Im";
+import { ImDrawer2 } from "react-icons/im";
 import { HiOutlinePencilAlt } from "react-icons/Hi";
 
 interface Post {
