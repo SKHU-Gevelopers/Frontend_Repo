@@ -64,7 +64,14 @@ const GetDataList = () => {
                     {each.title}
                   </Content>
                   <DetailBtnWrap>
-                    <DetailBtnIcon />
+                    <Link
+                      href={{
+                        pathname: "/message/reciveDetailChat",
+                        query: { dmId: each.id },
+                      }}
+                    >
+                      <DetailBtnIcon />
+                    </Link>
                   </DetailBtnWrap>
                 </Application>
               );
