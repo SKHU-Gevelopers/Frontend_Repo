@@ -41,7 +41,7 @@ export const acceptApplication = async (
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     };
-    const response = await axios.post(
+    await axios.post(
       `https://unimeet.duckdns.org/meet-ups/${applicationId}/accept`,
       "수락하기",
       { headers }

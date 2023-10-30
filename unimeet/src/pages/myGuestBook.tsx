@@ -5,7 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
 import { Logout } from "@/util/auth/signUtil";
-import router from "next/router";
+import router, { useRouter } from "next/router";
+import Link from "next/link";
 
 interface MyData {
   id: number;
@@ -48,9 +49,7 @@ export default function MyGuestBook() {
     last: false,
   });
 
-  // const [studentId, setStudentId] = useState<number>();
-
-  const isLoading = useRef(false); // 로딩 상태를 useRef로 관리
+  const isLoading = useRef(false);
   const [isScrollEnabled, setIsScrollEnabled] = useState(true);
   const guestBookRef = useRef<HTMLDivElement | null>(null);
 
@@ -146,12 +145,17 @@ export default function MyGuestBook() {
           {guestBookData?.map((each, Id) => {
             return (
               <EachReview key={`writer${Id}`}>
-                <GuestImageWrap>
-                  <GuestImage
-                    src={each.profileImageUrl}
-                    alt="profileImage"
-                  ></GuestImage>
+                <GuestImageWrap onClick={() => {}}>
+                  <Link
+                    href={{
+                      pathname: "/yourGuestBook",
+                      query: { writerId: each.writerId },
+                    }}
+                  >
+                    <GuestImage src={each.profileImageUrl} alt="profileImage" />
+                  </Link>
                 </GuestImageWrap>
+
                 <GuestComment>{each.content}</GuestComment>
               </EachReview>
             );
@@ -166,7 +170,7 @@ export default function MyGuestBook() {
 const MainBox = styled.div`
   display: flex;
   flex-direction: column;
-  align-content: center;
+  align-items: center;
 
   padding-top: 2.7em;
   padding-bottom: 2vh;
@@ -183,7 +187,7 @@ const ProfileBox = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 35vh;
+  height: 33.5vh;
 `;
 
 const ProfileImageWrap = styled.div`
@@ -264,10 +268,13 @@ const GuestBooks = styled.div`
   align-items: center;
 
   padding-top: 2vh;
-  padding-bottom: 7vh;
 
-  width: 100%;
-  height: 60vh;
+  width: 90%;
+  height: 54vh;
+
+  border-top: 3px solid white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
   overflow-y: scroll;
   overflow-x: hidden;
@@ -286,7 +293,7 @@ const EachReview = styled.div`
 
   margin-bottom: 3vh;
 
-  width: 90%;
+  width: 100%;
   height: 6vh;
 `;
 

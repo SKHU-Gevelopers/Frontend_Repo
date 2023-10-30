@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
-import { AiFillHeart } from "react-icons/ai";
 import UnderNav from "@/components/UnderNav";
 import Link from "next/link";
 import { clickLike, getPostsData } from "@/util/bulletinBoardUtil";
 import { parseCookies } from "nookies";
-import { PostWriteBtn, PostWriteLink } from "@/styles/postStyle/postStyle";
 import { ImDrawer2 } from "react-icons/Im";
+import { HiOutlinePencilAlt } from "react-icons/Hi";
 
 interface Post {
   id: number;
@@ -28,7 +27,6 @@ export default function BulletinBoard() {
   const refreshToken = cookies["refresh-token"];
 
   const [data, setData] = useState<Post[]>([]);
-  const [likedPosts, setLikedPosts] = useState<number[]>([]);
 
   useEffect(() => {
     getPostsData(accessToken, refreshToken).then((res) => {
@@ -36,73 +34,107 @@ export default function BulletinBoard() {
     });
   }, [accessToken, refreshToken]);
 
+  const handleLikeClick = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    postId: number
+  ) => {
+    e.preventDefault();
+    try {
+      await clickLike(accessToken, refreshToken, postId);
+      const updatedData = await getPostsData(accessToken, refreshToken);
+      if (updatedData) {
+        setData(updatedData.data.posts);
+      }
+    } catch (error) {
+      console.error("Error liking the post:", error);
+    }
+  };
+
   return (
     <>
       <MainBox>
-        <GatheringUpLink href={"/bulletinBoardGatheringUp"}>
-          <GetheringUpWrap>
-            <GetheringUpIcone></GetheringUpIcone>
-          </GetheringUpWrap>
-        </GatheringUpLink>
         <Article>
           {data &&
             data.map((each, index) => {
               return (
                 <Post key={index}>
-                  <Link href={`/detailBoard/${each.id}`}>
-                    <Writer>
-                      <ProfileImageWrap>
-                        <ProfileImage
-                          src={each.profileImageUrl}
-                          alt="작성자 이미지 사진"
-                        ></ProfileImage>
-                      </ProfileImageWrap>
-                      <Name>{each.nickname}</Name>
-                    </Writer>
-                    {each.imageUrl !== "" && (
-                      <PictureWrap>
-                        <PictureImage
-                          src={each.imageUrl}
-                          alt="게시글 첨부 사진"
-                        ></PictureImage>
-                      </PictureWrap>
-                    )}
-                    <WritingBox>
-                      <Title>{each.title}</Title>
-                      <Text>{each.content}</Text>
-                    </WritingBox>
-                    <ReactionBox>
-                      <HeartWrap
-                        onClick={(e) =>
-                          clickLike(
-                            accessToken,
-                            refreshToken,
-                            e,
-                            each.id,
-                            likedPosts,
-                            setLikedPosts
-                          )
-                        }
-                      >
-                        {likedPosts.includes(each.id) ? (
-                          <StyledLikedHeartIcon />
-                        ) : (
+                  {each.state === "DONE" && (
+                    <DoneState>
+                      <MatchComplete>매칭 완료!</MatchComplete>
+                      <Writer>
+                        <ProfileImageWrap>
+                          <ProfileImage
+                            src={each.profileImageUrl}
+                            alt="작성자 이미지 사진"
+                          ></ProfileImage>
+                        </ProfileImageWrap>
+                        <Name>{each.nickname}</Name>
+                      </Writer>
+                      {each.imageUrl !== "" && (
+                        <PictureWrap>
+                          <PictureImage
+                            src={each.imageUrl}
+                            alt="게시글 첨부 사진"
+                          ></PictureImage>
+                        </PictureWrap>
+                      )}
+                      <WritingBox>
+                        <Title>{each.title}</Title>
+                        <Text>{each.content}</Text>
+                      </WritingBox>
+                      <ReactionBox>
+                        <HeartWrap>
                           <StyledHeartIcon />
-                        )}
-                        <LikesCount>{each.likes}</LikesCount>
-                      </HeartWrap>
-                      {/* <CommentWrap>
-                    <Comment src="/comment.png" alt="댓글" />
-                  </CommentWrap> */}
-                    </ReactionBox>
-                  </Link>
+                          <LikesCount>{each.likes}</LikesCount>
+                        </HeartWrap>
+                      </ReactionBox>
+                    </DoneState>
+                  )}
+                  {each.state !== "DONE" && (
+                    <Link href={`/detailBoard/${each.id}`}>
+                      <Writer>
+                        <ProfileImageWrap>
+                          <ProfileImage
+                            src={each.profileImageUrl}
+                            alt="작성자 이미지 사진"
+                          ></ProfileImage>
+                        </ProfileImageWrap>
+                        <Name>{each.nickname}</Name>
+                      </Writer>
+                      {each.imageUrl !== "" && (
+                        <PictureWrap>
+                          <PictureImage
+                            src={each.imageUrl}
+                            alt="게시글 첨부 사진"
+                          ></PictureImage>
+                        </PictureWrap>
+                      )}
+                      <WritingBox>
+                        <Title>{each.title}</Title>
+                        <Text>{each.content}</Text>
+                      </WritingBox>
+                      <ReactionBox>
+                        <HeartWrap onClick={(e) => handleLikeClick(e, each.id)}>
+                          <StyledHeartIcon />
+                          <LikesCount>{each.likes}</LikesCount>
+                        </HeartWrap>
+                      </ReactionBox>
+                    </Link>
+                  )}
                 </Post>
               );
             })}
-          <PostWriteLink href="/post/postWrite">
-            <PostWriteBtn>게시물 작성하기</PostWriteBtn>
-          </PostWriteLink>
         </Article>
+        <PostWriteLink href="/post/postWrite">
+          <PostWriteIconWrap>
+            <PostWriteIcon></PostWriteIcon>
+          </PostWriteIconWrap>
+        </PostWriteLink>
+        <GatheringUpLink href={"/bulletinBoardGatheringUp"}>
+          <GetheringUpWrap>
+            <GetheringUpIcone></GetheringUpIcone>
+          </GetheringUpWrap>
+        </GatheringUpLink>
       </MainBox>
       <UnderNav />
     </>
@@ -122,30 +154,6 @@ const MainBox = styled.div`
   background-color: #efe3ff67;
 `;
 
-const GetheringUpWrap = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0px 10px 10px 10px;
-
-  width: 50px;
-  height: 50px;
-
-  font-size: large;
-  position: fixed;
-  background-color: #674ff4;
-  color: white;
-  border: 1px solid #ddd6ff;
-  border-radius: 10px;
-  right: 5%;
-`;
-
-const GetheringUpIcone = styled(ImDrawer2)`
-  width: 100%;
-  height: 100%;
-`;
-
-const GatheringUpLink = styled(Link)``;
 const Article = styled.div`
   display: flex;
   flex-direction: column;
@@ -153,7 +161,6 @@ const Article = styled.div`
 
   width: 100%;
   min-height: 95vh;
-  // 0.몇으로 하면 자동적으로 길이가 길어짐에 따라(100vh를 넘었을 때) 색의 경계선이 보임
 `;
 
 const Post = styled.div`
@@ -161,6 +168,31 @@ const Post = styled.div`
   height: auto;
 
   border-bottom: solid 1px #bb8dfb;
+`;
+
+const DoneState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: gray;
+  opacity: 0.5;
+
+  position: relative;
+`;
+
+const MatchComplete = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: white;
+  font-size: 3rem;
 `;
 
 const Writer = styled.div`
@@ -265,23 +297,56 @@ const StyledHeartIcon = styled(AiOutlineHeart)`
   font-size: 2.5rem;
 `;
 
-const StyledLikedHeartIcon = styled(AiFillHeart)`
-  font-size: 2.5rem;
-`;
-
 const LikesCount = styled.div`
   margin-left: 0.5%;
   font-size: 1rem;
 `;
 
-// const CommentWrap = styled.div`
-//   margin-left: 3%;
+const PostWriteIconWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-//   width: 7%;
-//   height: 3.5vh;
-// `;
+  width: 50px;
+  height: 50px;
 
-// const Comment = styled.img`
-//   width: 100%;
-//   height: 100%;
-// `;
+  position: fixed;
+  background-color: #674ff4;
+  color: white;
+  border: 1px solid #ddd6ff;
+  border-radius: 10px;
+  right: 4%;
+  top: 3em;
+`;
+
+const PostWriteIcon = styled(HiOutlinePencilAlt)`
+  width: 80%;
+  height: 80%;
+`;
+
+const PostWriteLink = styled(Link)``;
+
+const GetheringUpWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 10px 10px 10px;
+
+  width: 50px;
+  height: 50px;
+
+  position: fixed;
+  background-color: #674ff4;
+  color: white;
+  border: 1px solid #ddd6ff;
+  border-radius: 10px;
+  right: 4%;
+  top: 6.5em;
+`;
+
+const GetheringUpIcone = styled(ImDrawer2)`
+  width: 100%;
+  height: 100%;
+`;
+
+const GatheringUpLink = styled(Link)``;
