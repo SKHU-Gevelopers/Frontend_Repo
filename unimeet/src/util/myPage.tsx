@@ -25,16 +25,16 @@ export const requestToken = async (
     const newAccessToken = response.data.data.accessToken;
     const newRefreshToken = response.data.data.refreshToken;
     setCookie(null, "accessToken", newAccessToken, {
-      maxAge: 30 * 24 * 60 * 60, // 30일
+      maxAge: 30 * 24 * 60,
       path: "/", // 쿠키 경로
     });
     setCookie(null, "refresh-token", newRefreshToken, {
-      maxAge: 30 * 24 * 60 * 60, // 30일
+      maxAge: 30 * 24 * 60,
       path: "/", // 쿠키 경로
     });
     return { newAccessToken, newRefreshToken };
   } catch (err: any) {
-    if (err.response.status === 400|| err.response.status === 401) {
+    if (err.response.status === 400 || err.response.status === 401) {
       alert("다시 로그인이 필요합니다.");
       destroyCookie(undefined, "refresh-token");
       destroyCookie(undefined, "accessToken");
@@ -90,12 +90,11 @@ export async function handleSubmit(
   const formData = new FormData();
   formData.append("nickname", nickname);
   formData.append("mbti", mbti);
-  formData.append("profileImgXXX=@", profileImgXXX);
+  formData.append("profileImg", profileImgXXX);
   formData.append("introduction", introduction);
   formData.append("majors", major1);
   formData.append("majors", major2);
-  formData.append("kakaoId",kakaoId);
-
+  formData.append("kakaoId", kakaoId);
 
   try {
     const response = await axios.post(

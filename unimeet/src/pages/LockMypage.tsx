@@ -1,12 +1,15 @@
 import Image from "next/image";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { MypageRequest, handleSubmit } from "@/util/myPage";
 import { skhuMajor } from "@/constants/department";
 import { mbtilist } from "@/constants/mbtilist";
 import UnderNav from "@/components/UnderNav";
 import { ButtonStyle, FindImage, ImageCoordinate, InputDiv } from "@/styles/mypageStyle";
-import { parseCookies } from "nookies";
+import { destroyCookie, parseCookies } from "nookies";
+import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
+import { Logout } from "@/util/auth/signUtil";
+import router from "next/router";
 
 interface MajorsType {
   id: number;
@@ -55,27 +58,26 @@ export default function LockMypage() {
         setGender(res.data.gender);
         setKaKaoId(res.data.kakaoId);
         setInformation(res.data.introduction);
-        setImage(res.data.profileImageUrl);
+        setImageFile(res.data.profileImageUrl);
       });
     } else {
       alert("다시 로그인을 해주세요.");
     }
   }, [accessToken]);
 
-  const [image, setImage] = useState("/dogImage.png");
+  const [imageFile, setImageFile] = useState<File | null>(null); 
+  const [imagePreview, setImagePreview] = useState('');
+  
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files?.[0];
     if (!image) {
       alert("파일이 없습니다.");
       return;
+    }else{
+      setImageFile(image);
+      const imagePreviewUrl = URL.createObjectURL(image);
+      setImagePreview(imagePreviewUrl);
     }
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(image);
-    fileReader.onload = (data) => {
-      if (typeof data.target?.result === "string") {
-        setImage(data.target?.result);
-      }
-    };
   };
 
   const submitOn = (e: any) => {
@@ -88,7 +90,7 @@ export default function LockMypage() {
       refreshToken,
       name,
       mbti,
-      image,
+      imageFile,
       information,
       major1,
       major2,
@@ -98,13 +100,22 @@ export default function LockMypage() {
       .catch((err) => {});
   };
 
+  function deleteCookie() {
+    Logout(accessToken).then((res) => {
+      destroyCookie(undefined, "refresh-token");
+      destroyCookie(undefined, "accessToken");
+      router.push("/");
+    });
+  }
   return (
     <LockMainDiv>
       <UnderNav />
       <ImageBox>
+      <LogoutDiv onClick={deleteCookie}>로그아웃</LogoutDiv>
+
         <ImageCoordinate>
           <Image
-            src={image}
+            src={imagePreview}
             width={50}
             height={50}
             alt="Picture of the author"
