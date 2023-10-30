@@ -26,7 +26,7 @@ const MainChat = () => {
     } else {
       chatGetDataList(accessToken, refreshToken);
     }
-  }, [accessToken, refreshToken]);
+  }, [accessToken, refreshToken, router]);
 
   return (
     <>
