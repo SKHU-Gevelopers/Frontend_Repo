@@ -13,8 +13,8 @@ import {
 } from "@/styles/mypageStyle";
 import { destroyCookie, parseCookies } from "nookies";
 import { LogoutDiv } from "@/styles/DivStyle/bulletinBoardDivStyle";
-import { Logout } from "@/util/auth/signUtil";
 import router from "next/router";
+import { Logout } from "@/util/auth/userUtil";
 
 interface MajorsType {
   id: number;
@@ -44,6 +44,7 @@ export default function LockMypage() {
   const [gender, setGender] = useState("");
   const [information, setInformation] = useState("");
   const [accessToken, setAccessToken] = useState("");
+  const [refreshToken, setRefreshToken] = useState("");
   const [kakaoId, setKaKaoId] = useState("");
 
   const skhuMajors: MajorsType[] = skhuMajor.flat().map((major) => ({
@@ -68,7 +69,6 @@ export default function LockMypage() {
         setInformation(res.data.introduction);
         setImageFile(res.data.profileImageUrl);
         setImageURL(res.data.profileImageUrl);
-        console.log(imageFile);
       });
     } else {
       alert("다시 로그인을 해주세요.");
@@ -95,7 +95,9 @@ export default function LockMypage() {
     e.preventDefault();
     const cookies = parseCookies();
     const accessToken = cookies["accessToken"];
+    setAccessToken(accessToken);
     const refreshToken = cookies["refresh-token"];
+    setRefreshToken(refreshToken);
     if (imageFile) {
       handleSubmit(
         accessToken,
@@ -114,9 +116,8 @@ export default function LockMypage() {
   };
 
   function deleteCookie() {
-    Logout(accessToken).then((res) => {
-      destroyCookie(undefined, "refresh-token");
-      destroyCookie(undefined, "accessToken");
+    Logout(accessToken, refreshToken).then((res) => {
+
       router.push("/");
     });
   }
