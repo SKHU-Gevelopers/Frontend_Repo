@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import UnderNav from "./UnderNav";
+import UnderNav from "../UnderNav";
 import axios from "axios";
 import { useState } from "react";
 import { TbSend } from "react-icons/tb";
@@ -7,13 +7,13 @@ import { parseCookies } from "nookies";
 import { requestToken } from "@/util/myPage";
 import router from "next/router";
 
-interface DmModalProps {
+interface SentProps {
   isOpen: boolean;
-  onClose: () => void; // 모달을 닫는 함수를 받도록 수정
+  onClose: () => void;
   senderId: number;
 }
 
-const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
+const Sent = ({ isOpen, onClose, senderId }: SentProps) => {
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
   const refreshToken = cookies["refresh-token"];
@@ -29,14 +29,18 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
     const newTitle = e.target.value;
     if (newTitle.length >= 20) {
       alert("글자수를 초과했습니다.");
-      setTitle("");
     } else {
       setTitle(e.target.value);
     }
   };
 
   const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
+    const newContent = e.target.value;
+    if (newContent.length >= 100) {
+      alert("글자수를 초과했습니다.");
+    } else {
+      setContent(e.target.value);
+    }
   };
 
   const DmPost = async (
@@ -69,13 +73,15 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
           alert("다시 로그인을 해주세요.");
           router.push("/");
         }
+      } else if (error.response && error.response.status === 400) {
+        alert("제목과 내용을 입력하세요.");
       }
     }
   };
 
   return (
     <>
-      <DmModalWrap>
+      <SentWrap>
         <Main>
           <Action>
             <DeleteModalWrap>
@@ -87,24 +93,24 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
           </Action>
           <DmInputData>
             <TitleInput
-              placeholder="제목을 입력하세요.(최대 20자)"
+              placeholder="쪽지 제목(최대 20자)"
               value={title}
               onChange={changeTitle}
             ></TitleInput>
             <ContentInput
-              placeholder="쪽지 내용을 입력하세요."
+              placeholder="쪽지 내용(최대 100자)"
               value={content}
               onChange={changeContent}
             ></ContentInput>
           </DmInputData>
         </Main>
         <UnderNav></UnderNav>
-      </DmModalWrap>
+      </SentWrap>
     </>
   );
 };
 
-const DmModalWrap = styled.div`
+const SentWrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -120,12 +126,12 @@ const DmModalWrap = styled.div`
 `;
 
 const Main = styled.div`
-  width: 90%;
-  height: 80%;
+  width: 60%;
+  height: 40%;
 
   background-color: rgba(255, 255, 255, 0.7);
 
-  border-radius: 2em;
+  border-radius: 0.5em;
 `;
 
 const Action = styled.div`
@@ -134,19 +140,20 @@ const Action = styled.div`
   padding-top: 1em;
 
   width: 100%;
-  height: 3em;
+  height: 2em;
 
   align-items: center;
 `;
 
 const DeleteModalWrap = styled.div`
+  margin-right: 62%;
   margin-left: 8%;
-  width: 50%;
+  width: 1.5em;
 `;
 
 const DeleteModal = styled.div`
   font-weight: 900;
-  font-size: 2em;
+  font-size: 1.3em;
 `;
 
 const SendWrap = styled.div`
@@ -154,12 +161,12 @@ const SendWrap = styled.div`
   justify-content: right;
 
   margin-right: 5%;
-  width: 50%;
+  width: 10%;
 `;
 
 const Send = styled(TbSend)`
-  width: 2em;
-  height: 2em;
+  width: 1.3em;
+  height: 1.3em;
 `;
 
 const DmInputData = styled.div`
@@ -175,17 +182,16 @@ const TitleInput = styled.textarea`
   padding: 0.5em;
 
   width: 100%;
-  height: 9vh;
+  height: 6vh;
   resize: none;
 
   background-color: rgba(255, 255, 255, 0);
 
-  font-size: 1.2rem;
+  font-size: 0.7rem;
   font-weight: 900;
 
   border: none;
-  outline: solid 5px rgba(198, 141, 245, 0.37);
-  border-radius: 0.8em;
+  outline: solid 2px rgba(198, 141, 245, 0.37);
 
   overflow: hidden;
 `;
@@ -195,18 +201,19 @@ const ContentInput = styled.textarea`
   margin-top: 3vh;
 
   width: 100%;
-  height: 55vh;
+  height: 20vh;
   resize: none;
 
   background-color: rgba(255, 255, 255, 0);
 
-  font-size: 1rem;
+  font-size: 0.7rem;
+  font-weight: 900;
 
   border: none;
-  outline: solid 5px rgba(198, 141, 245, 0.37);
+  outline: solid 2px rgba(198, 141, 245, 0.37);
   border-radius: 0.8em;
 
   overflow: hidden;
 `;
 
-export default DmModal;
+export default Sent;

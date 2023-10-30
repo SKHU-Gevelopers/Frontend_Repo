@@ -21,7 +21,7 @@ import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
 import { checkDetail } from "@/util/boardUtil/detailBoardUtil";
 import Link from "next/link";
-import DmModal from "@/components/DmModal";
+import DmModal from "@/components/chat/Sent";
 import { getcomments } from "@/util/boardUtil/commentUtil";
 
 interface CommentsProps {
@@ -57,6 +57,7 @@ export default function DetailBoard({ data }: DetailPageProps) {
   const [gender, setGender] = useState("여자");
   const [accessToken, setAccessToken] = useState("");
   const [refreshToken, setRefreshToken] = useState("");
+  const [writerId, setWriterId] = useState();
   const [comments, setComments] = useState<CommentsProps[]>([]);
 
   const [dm, setDm] = useState(false);
@@ -87,6 +88,7 @@ export default function DetailBoard({ data }: DetailPageProps) {
         setMaxpeople(res.data.maxPeople);
         setLikes(res.data.likes);
         setContent(res.data.content);
+        setWriterId(res.data.writerId);
         //   res.data.meetingPlace === null
         //     ? setPlace("미정")
         //     : setPlace(res.data.meetingPlace);
@@ -116,15 +118,22 @@ export default function DetailBoard({ data }: DetailPageProps) {
             뒤로가기
           </BacktoBoard>
           <ProfileImageWrap className="profileDiv">
-            <ProfileImageBox>
-              <ProfileImage
-                src={profileImageUrl}
-                alt="profileImg"
-                width={40}
-                height={40}
-              />
-              <span>{nickname}</span>
-            </ProfileImageBox>
+            <Link
+              href={{
+                pathname: "/yourGuestBook",
+                query: { writerId: writerId },
+              }}
+            >
+              <ProfileImageBox>
+                <ProfileImage
+                  src={profileImageUrl}
+                  alt="profileImg"
+                  width={40}
+                  height={40}
+                />
+                <span>{nickname}</span>
+              </ProfileImageBox>
+            </Link>
           </ProfileImageWrap>
         </TopBox>
         <DetailMainDiv>

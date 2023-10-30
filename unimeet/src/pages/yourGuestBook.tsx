@@ -2,7 +2,7 @@ import UnderNav from "@/components/UnderNav";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { TbSend } from "react-icons/tb";
-import DmModal from "@/components/DmModal";
+import DmModal from "@/components/chat/Sent";
 import {
   getYourGuestBookUserData,
   postGuestBook,
