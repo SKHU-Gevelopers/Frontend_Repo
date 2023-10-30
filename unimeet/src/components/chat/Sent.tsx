@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import UnderNav from "./UnderNav";
+import UnderNav from "../UnderNav";
 import axios from "axios";
 import { useState } from "react";
 import { TbSend } from "react-icons/tb";
@@ -7,13 +7,13 @@ import { parseCookies } from "nookies";
 import { requestToken } from "@/util/myPage";
 import router from "next/router";
 
-interface DmModalProps {
+interface SentProps {
   isOpen: boolean;
   onClose: () => void; // 모달을 닫는 함수를 받도록 수정
   senderId: number;
 }
 
-const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
+const Sent = ({ isOpen, onClose, senderId }: SentProps) => {
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
   const refreshToken = cookies["refresh-token"];
@@ -75,7 +75,7 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
 
   return (
     <>
-      <DmModalWrap>
+      <SentWrap>
         <Main>
           <Action>
             <DeleteModalWrap>
@@ -99,12 +99,12 @@ const DmModal = ({ isOpen, onClose, senderId }: DmModalProps) => {
           </DmInputData>
         </Main>
         <UnderNav></UnderNav>
-      </DmModalWrap>
+      </SentWrap>
     </>
   );
 };
 
-const DmModalWrap = styled.div`
+const SentWrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -209,4 +209,4 @@ const ContentInput = styled.textarea`
   overflow: hidden;
 `;
 
-export default DmModal;
+export default Sent;
