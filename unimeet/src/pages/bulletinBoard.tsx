@@ -28,12 +28,18 @@ export default function BulletinBoard() {
   const refreshToken = cookies["refresh-token"];
 
   const [data, setData] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    getPostsData(accessToken, refreshToken).then((res) => {
-      res && setData(res.data.posts);
-    });
-  }, []);
+    setLoading(true);
+    getPostsData(accessToken, refreshToken)
+      .then((res) => {
+        res && setData(res.data.posts);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [accessToken, refreshToken]);
 
   const handleLikeClick = async (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -55,7 +61,10 @@ export default function BulletinBoard() {
     <>
       <MainBox>
         <Article>
-          {data &&
+          {loading ? (
+            <LoadingDiv>Loading...</LoadingDiv>
+          ) : (
+            data &&
             data.map((each, index) => {
               return (
                 <Post key={index}>
@@ -131,7 +140,8 @@ export default function BulletinBoard() {
                   )}
                 </Post>
               );
-            })}
+            })
+          )}
         </Article>
         <PostWriteLink href="/post/postWrite">
           <PostWriteIconWrap>
@@ -169,6 +179,12 @@ const Article = styled.div`
 
   width: 100%;
   min-height: 95vh;
+`;
+
+const LoadingDiv = styled.div`
+  padding-top: 1rem;
+  font-size: 20pt;
+  color: #5a20aa;
 `;
 
 const Post = styled.div`
