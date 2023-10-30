@@ -3,6 +3,7 @@ import Link from "next/link";
 import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { BsFillEmojiHeartEyesFill } from "react-icons/bs";
 
 interface DmData {
   id: number;
@@ -60,8 +61,11 @@ const SentDataList = () => {
                         </Link>
                       )}
                     </ApplicantImageWrap>
-                    {each.sender.nickname}: {each.title}
+                    {each.title}
                   </Content>
+                  <DetailBtnWrap>
+                    <DetailBtnIcon />
+                  </DetailBtnWrap>
                 </Application>
               );
             })}
@@ -107,6 +111,9 @@ const Article = styled.div`
 `;
 
 const Application = styled.div`
+  display: flex;
+  align-items: center;
+
   padding-top: 1rem;
   padding-bottom: 1rem;
   padding-left: 10px;
@@ -121,6 +128,8 @@ const Application = styled.div`
 `;
 
 const Content = styled.div`
+  width: 81%;
+
   display: flex;
   align-items: center;
   font-size: 1rem;
@@ -130,8 +139,8 @@ const ApplicantImageWrap = styled.div`
   margin-left: 1vw;
   margin-right: 1vw;
 
-  width: 50px;
-  height: 6vh;
+  width: 3em;
+  height: 3em;
 
   border-radius: 50%;
   border: solid 1px rgba(103, 79, 244, 0.8);
@@ -144,6 +153,20 @@ const ApplicantImage = styled.img`
   height: 100%;
 
   border-radius: 50%;
+`;
+
+const DetailBtnWrap = styled.div`
+  margin-left: 3%;
+
+  width: 15%;
+  height: 2em;
+`;
+
+const DetailBtnIcon = styled(BsFillEmojiHeartEyesFill)`
+  width: 100%;
+  height: 100%;
+
+  color: rgba(103, 79, 244, 0.8);
 `;
 
 export default SentDataList;
