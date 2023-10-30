@@ -2,9 +2,9 @@ import UnderNav from "@/components/UnderNav";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { TbSend } from "react-icons/tb";
-import DmModal from "@/components/DmModal";
-import { getGuestBookUserData, postGuestBook } from "@/util/guestBookUtil";
 import { parseCookies } from "nookies";
+import { getMyGuestBookUserData } from "@/util/guestBook/myGuestBookUtil";
+import { postGuestBook } from "@/util/guestBook/yourGuestBookUtil";
 
 interface Student {
   id: number;
@@ -67,8 +67,8 @@ export default function GestBook() {
     if (isLoading.current) return;
     isLoading.current = true;
 
-    getGuestBookUserData(accessToken, refreshToken, pageData?.currentPage)
-      .then((res) => {
+    getMyGuestBookUserData(accessToken, refreshToken, pageData?.currentPage)
+      .then((res:any) => {
         if (res != null) {
           setStudentData(res.data.student);
           const sortedGuestBookData = sortingGuestBookdata(res.data.guestBooks);
@@ -154,13 +154,13 @@ export default function GestBook() {
         <DmButtonWrap>
           <DmButton onClick={openDmModal} />
         </DmButtonWrap>
-        {studentData && isDmModal && (
+        {/* {studentData && isDmModal && (
           <DmModal
             isOpen={isDmModal}
             onClose={() => setIsDmModal(false)}
             senderId={studentData?.id}
           ></DmModal>
-        )}
+        )} */}
         <ProfileBox>
           <ProfileImageWrap>
             <ProfileImage
