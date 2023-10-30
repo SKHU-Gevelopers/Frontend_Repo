@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import { HiPaperAirplane } from "react-icons/Hi";
+import { HiPaperAirplane } from "react-icons/hi";
 import SentDataList from "@/components/chat/SentDataList";
 import GetDataList from "@/components/chat/GetDataList";
 
