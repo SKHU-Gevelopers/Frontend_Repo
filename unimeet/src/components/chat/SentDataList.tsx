@@ -22,7 +22,7 @@ interface DmListResponse {
   dmList: DmData[];
 }
 
-const SentData = () => {
+const SentDataList = () => {
   const cookies = parseCookies();
   const accessToken = cookies["accessToken"];
   const refreshToken = cookies["refresh-token"];
@@ -44,7 +44,7 @@ const SentData = () => {
             sentDmList.map((each, index) => {
               return (
                 <Application key={index}>
-                  <Nickname>
+                  <Content>
                     <ApplicantImageWrap>
                       {each?.sender?.profileImageUrl && (
                         <Link
@@ -60,9 +60,8 @@ const SentData = () => {
                         </Link>
                       )}
                     </ApplicantImageWrap>
-                    {each.sender.nickname}
-                  </Nickname>
-                  <Title>{each.title}</Title>
+                    {each.sender.nickname}: {each.title}
+                  </Content>
                 </Application>
               );
             })}
@@ -118,17 +117,13 @@ const Application = styled.div`
   height: auto;
 
   border: solid 2px #bb8dfb;
-  border-radius: 5px;
+  border-radius: 50px;
 `;
 
-const Title = styled.div`
-  font-size: 2rem;
-`;
-
-const Nickname = styled.div`
+const Content = styled.div`
   display: flex;
   align-items: center;
-  font-size: 1.3rem;
+  font-size: 1rem;
 `;
 
 const ApplicantImageWrap = styled.div`
@@ -151,4 +146,4 @@ const ApplicantImage = styled.img`
   border-radius: 50%;
 `;
 
-export default SentData;
+export default SentDataList;
