@@ -5,6 +5,7 @@ import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { HiPaperAirplane } from "react-icons/Hi";
+import SentDataList from "@/components/chat/SentDataList";
 
 const MainChat = () => {
   const router = useRouter();
@@ -48,7 +49,7 @@ const MainChat = () => {
         {selectedBtn === "received" ? (
           <MainBox>hi</MainBox>
         ) : selectedBtn === "sent" ? (
-          <MainBox>bye</MainBox>
+          <SentDataList />
         ) : null}
       </Main>
       <UnderNav />
