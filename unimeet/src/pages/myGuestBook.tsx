@@ -73,7 +73,7 @@ export default function MyGuestBook() {
 
   useEffect(() => {
     getMyGuestBookData();
-  }, [accessToken, refreshToken, pageData.currentPage, isLoading]);
+  }, [accessToken, refreshToken, pageData?.currentPage]);
 
   function deleteCookie() {
     Logout(accessToken).then((res) => {

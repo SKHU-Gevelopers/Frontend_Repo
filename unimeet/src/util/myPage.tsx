@@ -32,7 +32,6 @@ export const requestToken = async (
     return { newAccessToken, newRefreshToken };
   } catch (err: any) {
     if (err.response.status === 400 || err.response.status === 401) {
-      alert("다시 로그인이 필요합니다.");
       destroyCookie(undefined, "refresh-token");
       destroyCookie(undefined, "accessToken");
       localStorage.removeItem("accessToken");

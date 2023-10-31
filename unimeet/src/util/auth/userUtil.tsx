@@ -1,25 +1,35 @@
 import axios from "axios";
-
-export const requestToken = () => {
-  axios.post(`https://unimeet.duckdns.org/token/reissue`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { requestToken } from "../myPage";
 
 export const Logout = async (
   accessToken: string,
   refreshToken: string
 ): Promise<any> => {
-  axios
-    .post(`https://unimeet.duckdns.org/sign-out`, {
+  try {
+  const response = await axios.post(
+    `https://unimeet.duckdns.org/sign-out`,
+    {},
+    {
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + accessToken,
       },
-    })
-    .then((res) => {
-      console.log(res);
-      console.log(res.data);
-    });
+    }
+  );
+  return response.data;
+  } catch (err: any) {
+    if (err.response && err.response.status === 401) {
+      try {
+        const { newAccessToken, newRefreshToken } = await requestToken(
+          refreshToken
+        );
+        return Logout(newAccessToken, newRefreshToken);
+      } catch (tokenErr: any) {
+        throw tokenErr;
+      }
+    } else {
+      throw err;
+    }
+  }
 };
