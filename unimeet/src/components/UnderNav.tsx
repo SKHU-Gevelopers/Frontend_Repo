@@ -20,12 +20,6 @@ const UnderNav = () => {
       <MainBox>
         <MainUl>
           <li>
-            <MainLink href="/lockMypage">
-              <MainImg src="/user.png" width="25" height="25" alt={""} />
-              <span>내정보</span>
-            </MainLink>
-          </li>
-          <li>
             <MainLink href="/myGuestBook">
               <MainImg src="/agenda.png" width="25" height="25" alt={""} />
               <span>방명록</span>

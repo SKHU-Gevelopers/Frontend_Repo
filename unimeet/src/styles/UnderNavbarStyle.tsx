@@ -6,7 +6,7 @@ export const MainBox = styled.div`
   justify-content: center;
   background-color: #fff7ff;
   width: 100%;
-  height: fit-content;
+  height: 4em;
   padding-top: 0.5rem;
   position: fixed;
   bottom: 0;
