@@ -12,13 +12,7 @@ const Callback: NextPage = () => {
     async (code: string | string[]) => {
       // 백엔드에 전송
       await fetch(
-        "https://unimeet.duckdns.org/auth/kakao/callback?code=" + code,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        "https://unimeet.duckdns.org/auth/kakao/callback-prod?code=" + code
       )
         .then((res) => {
           return res.json();
